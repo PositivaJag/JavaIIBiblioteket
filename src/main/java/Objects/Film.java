@@ -5,6 +5,8 @@
  */
 package Objects;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Jenni
@@ -12,12 +14,16 @@ package Objects;
 public class Film extends Copy{
     private String ageRating;
     private String prodCountry;
+    private ArrayList<String> directors;
+    private ArrayList<String> actors;
 
     public Film(String ageRating, String prodCountry, int streckkod, 
-            String loanKategori, String placement, int ObjektID, String Titel) {
+            String loanKategori, String placement, int ObjektID, String Titel, ArrayList<String> directors, ArrayList<String> actors) {
         super(streckkod, loanKategori, placement, ObjektID, Titel);
         this.ageRating = ageRating;
         this.prodCountry = prodCountry;
+        this.directors = directors;
+        this.actors = actors;
     }
 
     public String getAgeRating() {
@@ -34,6 +40,30 @@ public class Film extends Copy{
 
     public void setProdCountry(String prodCountry) {
         this.prodCountry = prodCountry;
+    }
+
+    public ArrayList<String> getDirectors() {
+        return directors;
+    }
+
+    public void setDirectors(ArrayList<String> directors) {
+        this.directors = directors;
+    }
+    
+    public void addDirector(String director){
+        this.directors.add(director);
+    }
+
+    public ArrayList<String> getActors() {
+        return actors;
+    }
+
+    public void setActors(ArrayList<String> actors) {
+        this.actors = actors;
+    }
+    
+    public void addActor(String actor){
+        this.actors.add(actor);
     }
     
     

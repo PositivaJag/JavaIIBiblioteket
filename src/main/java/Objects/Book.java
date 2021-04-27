@@ -5,6 +5,8 @@
  */
 package Objects;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Jenni
@@ -12,11 +14,13 @@ package Objects;
 public class Book extends Copy{
     
     private int ISBN;
+    private ArrayList<String> authors; 
 
-    public Book(int ISBN, int streckkod, String loanKategori, String placement, 
+    public Book(int ISBN, ArrayList<String> authors, int streckkod, String loanKategori, String placement, 
             int ObjektID, String Titel) {
         super(streckkod, loanKategori, placement, ObjektID, Titel);
         this.ISBN = ISBN;
+        this.authors = authors;
     }
 
     public int getISBN() {
@@ -26,7 +30,17 @@ public class Book extends Copy{
     public void setISBN(int ISBN) {
         this.ISBN = ISBN;
     }
+
+    public ArrayList<String> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(ArrayList<String> authors) {
+        this.authors = authors;
+    }
     
-    
+    public void addAuthor(String author){
+        this.authors.add(author);
+    }
     
 }

@@ -11,11 +11,11 @@ import java.util.Date;
  *
  * @author Jenni
  */
-public class Magazine extends Copy{
+public class Magazin extends Copy{
     Date magazineDate;
     int magazineNumber;
 
-    public Magazine(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, int ObjektID, String Titel) {
+    public Magazin(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, int ObjektID, String Titel) {
         super(streckkod, loanKategori, placement, ObjektID, Titel);
         this.magazineDate = magazineDate;
         this.magazineNumber = magazineNumber;
