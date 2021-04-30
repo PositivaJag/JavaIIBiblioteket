@@ -12,6 +12,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+
+import Database.DBConnection;
    
 public class LoginController {
 
@@ -32,14 +35,37 @@ public class LoginController {
 
     @FXML
     void pressButtonAvbryt(ActionEvent event) {
-        
         System.exit(0);
 
     }
 
     @FXML
     void pressButtonLogin(ActionEvent event) {
-        labelMessage.setText("Success!");
+        
+        String user = txtEmail.getText();
+        String pw = password.getText();
+        try{
+            //check if user is blank
+            if (user.isEmpty()){
+                labelMessage.setTextFill(Color.web("#FE0000"));
+                labelMessage.setText("Skriv in din mailadress");
+            }
+            //check if password is empty
+            else if (pw.isEmpty()){
+                labelMessage.setTextFill(Color.web("#FE0000"));
+                labelMessage.setText("Skriv in ditt lösenord");
+            }
+            
+            //check if user exist
+            checkUserPwor(user, pw);
+            
+            
+            
+            
+        }
+        catch(Exception e){
+            
+        }
 
     }
 

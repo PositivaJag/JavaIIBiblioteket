@@ -37,7 +37,7 @@ public class DatabasTestMain {
         
         DBConnection DB = new DBConnection("jdbc:mysql://localhost:3306/javaiibiblioteket", "root", "B0b1gny");
         
-        System.out.println(DB.isConnectedToDatabase());
+        System.out.println(DB.isConnectedToDB());
         
     }
 //        try{  
