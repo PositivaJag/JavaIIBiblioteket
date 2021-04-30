@@ -103,6 +103,31 @@ VALUES
 ;
 select * from kopia;
 
+INSERT INTO `javaiibiblioteket`.`tidsskrifter`
+(`Namn`,
+`Aktiv`)
+VALUES
+("Illustrerad vetenskap", 1),
+("Kamratposten", 0),
+("VK", 1);
+
+select * from tidsskrifter;
+
+INSERT INTO `javaiibiblioteket`.`låntagare`
+(`fNamn`,`eNamn`,`telNr`,`gatuaddress`,`eMail`,`postNr`,`låntagareKategori`,`Password`)
+VALUES
+("Jenni", "Ljung", 0701232250, "Kolvgatan 5", "jenni@kalle.com", 56444, "Student", "Stina123"),
+("Sten", "Hammar", 0705552269, null, "sten@hammar.se", 45655, "Forskare", "Pass123"),
+("Stina", "Holm", 0731235555, null, "stina@holm.se", 85974, "Allmänn", "Pass456"),
+("Jörgen", "Katt", 070658585, null, "alla@kall.nu", 85462, "Universitetsanställd", "Inger"),
+("Erik", "Karlsson", 0725421144, " Allas väg 5", "erk@umu.se", 85462, "Student", "best@test");
+
+select * from låntagare;
+
+SELECT `låntagarekategori`.`LåntagareKategori`
+FROM `javaiibiblioteket`.`låntagarekategori`;
+
+
 
 
 

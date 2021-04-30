@@ -13,13 +13,15 @@ public class Person {
     int personID;
     String fName;
     String lName;
-    String roles;
+    String email;
+    String password;
 
-    public Person(int personID, String fName, String lName, String Role) {
+    public Person(int personID, String fName, String lName, String email, String password) {
         this.personID = personID;
         this.fName = fName;
         this.lName = lName;
-        this.roles = Role;
+        this.email = email;
+        this.password = password;
     }
 
     public int getPersonID() {
@@ -41,17 +43,23 @@ public class Person {
 
     public void setlName(String lName) {
         this.lName = lName;
+    }  
+
+    public String getEmail() {
+        return email;
     }
 
-    public String getRole() {
-        return roles;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setRole(String Role) {
-        this.roles = Role;
+    public String getPassword() {
+        return password;
     }
-    
-    
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
     
     
 }
