@@ -67,7 +67,7 @@ public class DBConnection {
         return connectedToDB;
     }
     
-    public String[] getUserData(String email) throws SQLException{
+    public String[] getPersonData(String email) throws SQLException{
         
         String[] userData = new String[0];
         
@@ -103,15 +103,11 @@ public class DBConnection {
         return userData;
     }
     
-    public String[] getLoantagareData(String mail) {
+    public String[] getLoantagareData(String personID) {
         
      String[] LoantagareData = new String[0];
      
         try{
-            //get user data
-            String[] userDB = getUserData(mail);
-            String personID = userDB[0];
-            
             //Get loantagera data
             String SQL = "Select * from låntagare where personID = ?";
             pState = connection.prepareStatement(SQL);
@@ -133,8 +129,6 @@ public class DBConnection {
             printSQLExcept(e);
         }
         
-        
-        
         return LoantagareData;
 
     }
@@ -150,7 +144,7 @@ public class DBConnection {
         pState.setString(1, email);
         getQuery(pState);
         resultSet.next();
-        System.out.println(resultSet.getString(1));
+        //System.out.println(resultSet.getString(1));
         return (resultSet.getString(1).equals("Bibliotekarie"));
         }
         
@@ -195,7 +189,7 @@ public class DBConnection {
                 result = 0;
             }
             else{
-                System.out.println(resultSet.getString(1));
+                //System.out.println(resultSet.getString(1));
                 if (resultSet.getString(1).equals(pwordIn))
                     result = 1;
                     
@@ -203,7 +197,7 @@ public class DBConnection {
                     result =  2;
             }
             
-            System.out.println(result);
+            //System.out.println(result);
             return result;
             
         }
@@ -211,7 +205,7 @@ public class DBConnection {
         catch (SQLException e){
             printSQLExcept(e);
         }
-      System.out.println(99);  
+      //System.out.println(99);  
       return 99;  
     }
     

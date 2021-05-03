@@ -44,54 +44,41 @@ public class LoginController {
     @FXML
     void pressButtonLogin(ActionEvent event) throws SQLException {
 
-        String user = txtEmail.getText();
+        String mail = txtEmail.getText();
         String pw = password.getText();
+        
         try {
             //check if user is blank
-            if (user.isEmpty()) {
+            if (mail.isEmpty()) {
                 labelMessage.setTextFill(Color.web("#FE0000"));
                 labelMessage.setText("Skriv in din mailadress");
             } //check if password is empty
             else if (pw.isEmpty()) {
                 labelMessage.setTextFill(Color.web("#FE0000"));
                 labelMessage.setText("Skriv in ditt lösenord");
-            } else {
-                //check if user exist
-                DBConnection connection = DBConnection.getInstance();
-                int pwCheck = connection.checkUserPwor(user, pw);
-
-                if (pwCheck == 0 || pwCheck == 2) {
+                //check if mail and password is correct
+            } 
+            else {
+                //Create instance of UseCase
+                UseCase useCase = UseCase.getInstance();
+                //Check if mail and password match
+                int logginCheck = useCase.login(mail, pw);
+                
+                if (logginCheck == 0 || logginCheck == 2) {
                     labelMessage.setTextFill(Color.web("#FE0000"));
                     labelMessage.setText("Användarnamn eller lösenord är fel");
 
-                } //Login successfull
-                else if (pwCheck == 1) {
+                } 
+                //Login successfull
+                else if (logginCheck == 1) {
                     labelMessage.setTextFill(Color.web("#008000"));
                     labelMessage.setText("Loggin!");
-                    
-                    if (connection.chechIfLibrarian(user)) {
-                        Person activeLibrarian = new Person(user);
-
-                        for (int i = 0; i < 6; i++) {
-                            System.out.println(activeLibrarian.toString());
-
-                        }
-                    } else {
-                        String[] personDB = connection.getUserData(user);
-                        Loantagare activeUser = new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]);
-
-                        for (int i = 0; i < 6; i++) {
-                            System.out.println(activeUser.toString());
-                        }
-
-                    }
-                } else {
-                    labelMessage.setTextFill(Color.web("#FE0000"));
-                    labelMessage.setText("Något gick fel");
-
                 }
-
-            }
+                else {
+                labelMessage.setTextFill(Color.web("#FE0000"));
+                labelMessage.setText("Något gick fel");
+                }
+                }
         } catch (Exception e) {
 
         }

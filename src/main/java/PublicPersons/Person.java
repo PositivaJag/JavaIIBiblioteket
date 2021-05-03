@@ -35,7 +35,7 @@ public class Person {
         DBConnection connection = DBConnection.getInstance();
         
         //Get user data
-        String[] personDB = connection.getUserData(email);
+        String[] personDB = connection.getPersonData(email);
         this.personID = personDB[0];
         this.fName = personDB[1];
         this.lName = personDB[2];
