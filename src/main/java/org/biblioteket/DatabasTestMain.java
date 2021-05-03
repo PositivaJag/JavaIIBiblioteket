@@ -35,7 +35,7 @@ public class DatabasTestMain {
     
     public static void main(String[] args)throws SQLException{
         
-        DBConnection DB = new DBConnection("jdbc:mysql://localhost:3306/javaiibiblioteket", "root", "B0b1gny");
+       DBConnection DB = DBConnection.getInstance();
         
         System.out.println(DB.isConnectedToDB());
         

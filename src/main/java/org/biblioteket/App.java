@@ -34,13 +34,9 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
 
-        DBConnection db = new DBConnection("jdbc:mysql://localhost:3306/javaiibiblioteket", "root", "B0b1gny");
         }
         catch (IOException e){
             System.out.println("IO Exception : "+e.getMessage());
-        }
-        catch (SQLException e){
-            System.out.println("SQL Exception: " +e.getMessage());
         }
     }
 

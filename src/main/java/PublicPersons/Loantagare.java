@@ -5,27 +5,46 @@
  */
 package PublicPersons;
 
+import Database.DBConnection;
+
 /**
  *
  * @author Jenni
  */
 public class Loantagare extends Person{
     
-    int telNr;
+    String telNr;
     String gatuAdress;
-    int postNr;
-    String Kategori;
+    String postNr;
+    String kategori;
 
     //Construktor för alla fält. 
-    public Loantagare(int telNr, String gatuAdress, int postNr, String Kategori, int personID, String fName, String lName, String email, String password) {
-        super(personID, fName, lName, email, password);
+    public Loantagare(String personID, String fName, String lName, String email, String password, String personTyp,String telNr, String gatuAdress, String postNr, String Kategori) {
+        super(personID, fName, lName, email, password, personTyp);
         this.telNr = telNr;
         this.gatuAdress = gatuAdress;
         this.postNr = postNr;
-        this.Kategori = Kategori;
+        this.kategori = Kategori;
+    }
+    
+    public Loantagare(String personID, String fName, String lName, String email, String password, String personTyp){
+        super(personID, fName, lName, email, password, personTyp);
+        try{
+            DBConnection connection = DBConnection.getInstance();
+             
+            String[] loantagareDB = connection.getLoantagareData(personID);
+        this.telNr = loantagareDB[1];
+        this.gatuAdress = loantagareDB[2];
+        this.postNr = loantagareDB[3];
+        this.kategori = loantagareDB[4];
+        
+        }
+        catch(Exception e) {
+            
+        }
     }
 
-    public int getTelNr() {
+    public String getTelNr() {
         return telNr;
     }
 
@@ -33,15 +52,15 @@ public class Loantagare extends Person{
         return gatuAdress;
     }
 
-    public int getPostNr() {
+    public String getPostNr() {
         return postNr;
     }
 
     public String getKategori() {
-        return Kategori;
+        return kategori;
     }
 
-    public void setTelNr(int telNr) {
+    public void setTelNr(String telNr) {
         this.telNr = telNr;
     }
 
@@ -49,14 +68,20 @@ public class Loantagare extends Person{
         this.gatuAdress = gatuAdress;
     }
 
-    public void setPostNr(int postNr) {
+    public void setPostNr(String postNr) {
         this.postNr = postNr;
     }
 
     public void setKategori(String Kategori) {
-        this.Kategori = Kategori;
+        this.kategori = Kategori;
     }
     
+    @Override
+    public String toString(){
+        return "Persondata\n"+super.personID+"\n"+super.fName+"\n"+super.lName+"\n"+super.password+"\n"+super.personTyp+"\n\n"+
+                "Låntagardata\n"+this.telNr+"\n"+this.gatuAdress+"\n"+this.postNr+"\n"+this.kategori;
+
+    }
     
 
 

@@ -127,6 +127,23 @@ select * from låntagare;
 SELECT `låntagarekategori`.`LåntagareKategori`
 FROM `javaiibiblioteket`.`låntagarekategori`;
 
+select * from låntagarekategori;
+
+
+CREATE TABLE IF NOT EXISTS `JavaIIBiblioteket`.`Person` (
+  `PersonID` INT NOT NULL AUTO_INCREMENT,
+  `fNamn` VARCHAR(45) NOT NULL,
+  `eNamn` VARCHAR(45) NOT NULL,
+  `eMail` VARCHAR(45) NOT NULL,
+  `lösenord` VARCHAR(45) NULL,
+  `personTyp` VARCHAR(45) NULL,
+  PRIMARY KEY (`PersonID`),
+  UNIQUE INDEX `personID_UNIQUE` (`PersonID` ASC) VISIBLE,
+  UNIQUE INDEX `eMail_UNIQUE` (`eMail` ASC) VISIBLE)
+ENGINE = InnoDB
+
+
+
 
 
 

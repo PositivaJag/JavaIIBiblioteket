@@ -5,26 +5,51 @@
  */
 package PublicPersons;
 
+import Database.DBConnection;
+import java.sql.SQLException;
+
 /**
  *
  * @author Jenni
  */
 public class Person {
-    int personID;
+    String personID;
     String fName;
     String lName;
     String email;
     String password;
+    String personTyp;
 
-    public Person(int personID, String fName, String lName, String email, String password) {
+    public Person(String personID, String fName, String lName, String email, String password, String personTyp) {
         this.personID = personID;
         this.fName = fName;
         this.lName = lName;
         this.email = email;
         this.password = password;
+        this.personTyp = personTyp;
+    }
+    
+    public Person (String email) throws SQLException{
+        //Check connection to DB
+        try{
+        DBConnection connection = DBConnection.getInstance();
+        
+        //Get user data
+        String[] personDB = connection.getUserData(email);
+        this.personID = personDB[0];
+        this.fName = personDB[1];
+        this.lName = personDB[2];
+        this.email = email;
+        this.password = personDB[4];
+        this.personTyp = personDB[5];
+        } 
+        catch(SQLException e){
+            
+        }
+        
     }
 
-    public int getPersonID() {
+    public String getPersonID() {
         return personID;
     }
 
@@ -59,6 +84,13 @@ public class Person {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    @Override
+    public String toString(){
+        return "Persondata\n"+personID+"\n"+fName+"\n"+lName+"\n"+password+"\n"+personTyp+"\n";
+        
+        
     }
     
     
