@@ -5,6 +5,7 @@
  */
 package Database;
 
+import Objects.Objekt;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
@@ -12,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -33,6 +36,12 @@ public class DBConnection {
     private static final String DBUserName = "root";
     private static final String DBPassword = "B0b1gny";
     private boolean connectedToDB = false;
+    
+    public enum LoginResult {
+        LOGIN_OK,
+        WRONG_PASSWORD,
+        NO_SUCH_USER
+    }
     
     //Constructor of connection
     private DBConnection(String url, String username, String password) throws SQLException {
@@ -133,8 +142,40 @@ public class DBConnection {
 
     }
     
+    public ResultSet getAllObjectData() throws Exception{
+        try {
+            //Get objekt from DB
+            String SQL = "Select ObjektID, Titel, Typ from Objekt";
+            pState = connection.prepareStatement(SQL);
+            getQuery(pState);
 
+            return resultSet;
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new Exception("Something went wroing in method getAllObjectData "
+                + "in Class DBConnection");
 
+    }
+
+     public ResultSet getAllCopiesData(int objektID) throws Exception {
+          try {
+            //Get objekt from DB
+            String SQL = "Select * from Kopia where ObjektID = ?";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, objektID);
+            getQuery(pState);
+
+            return resultSet;
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        throw new Exception("Something went wrong in method DBConnection.getAllCopiesData");
+
+        
+    }
     
     public boolean chechIfLibrarian(String email) throws SQLException{
         
@@ -154,6 +195,9 @@ public class DBConnection {
         }
     }
     
+    
+     
+     
     private void getQuery(PreparedStatement pState) throws SQLException{
         //Check if we have contact with database
         if (connectedToDB == true){            
@@ -169,9 +213,9 @@ public class DBConnection {
             System.out.println("Ingen kontakt med databasen");
     }
     
-    public int checkUserPwor(String email, String pwordIn) throws SQLException{
+    public LoginResult checkUserPassword(String email, String pwordIn) throws Exception{
         try{
-            int result;
+            LoginResult result;
             
             String SQL = "Select lösenord from person where eMail = ?";
             pState = connection.prepareStatement(SQL);
@@ -186,31 +230,27 @@ public class DBConnection {
 
             //Check if row exists
             if (!resultSet.next()){
-                result = 0;
+                result = LoginResult.NO_SUCH_USER;
             }
             else{
                 //System.out.println(resultSet.getString(1));
                 if (resultSet.getString(1).equals(pwordIn))
-                    result = 1;
+                    result = LoginResult.LOGIN_OK;
                     
                 else 
-                    result =  2;
+                    result = LoginResult.WRONG_PASSWORD;
             }
             
             //System.out.println(result);
             return result;
-            
         }
             
         catch (SQLException e){
             printSQLExcept(e);
         }
       //System.out.println(99);  
-      return 99;  
+      throw new Exception("Unknown error");
     }
-    
-    
-    
     
     public void printSQLExcept(SQLException e){
         System.out.println(e.getMessage());

@@ -4,24 +4,32 @@
  * and open the template in the editor.
  */
 package Objects;
-
+import Objects.Objekt;
+import java.sql.SQLException;
 /**
  *
  * @author Jenni
  */
-public class Copy extends Object{
+public class Copy{
     
     private int streckkod;
     private String loanKategori;
     private String placement;
 
-    public Copy(int streckkod, String loanKategori, String placement, int ObjektID, String Titel) {
-        super(ObjektID, Titel);
-        this.streckkod = streckkod;
-        this.loanKategori = loanKategori;
-        this.placement = placement;
+    Copy(int streckkod, String loanKategori, String placement) throws SQLException {
+            this.streckkod = streckkod;
+            this.loanKategori = loanKategori;
+            this.placement = placement;
     }
-
+    
+    public Copy newCopy(int streckkod, String loanKategori, String placement, Objekt objektID) throws SQLException, Exception {
+        if (Objekt.checkInstance(objektID)){
+            return new Copy(streckkod, loanKategori, placement);
+        }
+        else
+            throw new Exception("Objektet "+objektID.getTitel()+"finns inte.");
+    }
+        
     public int getStreckkod() {
         return streckkod;
     }
@@ -46,9 +54,9 @@ public class Copy extends Object{
         this.placement = placement;
     }
 
-    public String[] getCopy(){
-        String[] c = new String[]{Integer.toString(super.getObjektID()), super.getTitel(), 
-            Integer.toString(this.streckkod), this.loanKategori, this.placement };
-        return c;    
-    }
+//    public String[] getCopy(){
+//        String[] c = new String[]{Integer.toString(super.getObjektID()), super.getTitel(), 
+//            Integer.toString(this.streckkod), this.loanKategori, this.placement };
+//        return c;    
+//    }
 }

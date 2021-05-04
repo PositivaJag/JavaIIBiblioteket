@@ -5,6 +5,7 @@
  */
 package Objects;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -17,8 +18,8 @@ public class Book extends Copy{
     private ArrayList<String> authors; 
 
     public Book(int ISBN, ArrayList<String> authors, int streckkod, String loanKategori, String placement, 
-            int ObjektID, String Titel) {
-        super(streckkod, loanKategori, placement, ObjektID, Titel);
+            int ObjektID, String Titel) throws SQLException {
+        super(streckkod, loanKategori, placement);
         this.ISBN = ISBN;
         this.authors = authors;
     }

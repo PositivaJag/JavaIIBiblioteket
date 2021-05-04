@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
 import Database.DBConnection;
+import Database.DBConnection.LoginResult;
 import PublicPersons.Loantagare;
 import PublicPersons.Person;
 import java.sql.SQLException;
@@ -62,15 +63,15 @@ public class LoginController {
                 //Create instance of UseCase
                 UseCase useCase = UseCase.getInstance();
                 //Check if mail and password match
-                int logginCheck = useCase.login(mail, pw);
+                LoginResult logginCheck = useCase.login(mail, pw);
                 
-                if (logginCheck == 0 || logginCheck == 2) {
+                if (logginCheck == LoginResult.NO_SUCH_USER || logginCheck == LoginResult.WRONG_PASSWORD) {
                     labelMessage.setTextFill(Color.web("#FE0000"));
                     labelMessage.setText("Användarnamn eller lösenord är fel");
 
                 } 
                 //Login successfull
-                else if (logginCheck == 1) {
+                else if (logginCheck == LoginResult.LOGIN_OK) {
                     labelMessage.setTextFill(Color.web("#008000"));
                     labelMessage.setText("Loggin!");
                 }

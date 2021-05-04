@@ -5,6 +5,7 @@
  */
 package Objects;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -15,8 +16,8 @@ public class Magazin extends Copy{
     Date magazineDate;
     int magazineNumber;
 
-    public Magazin(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, int ObjektID, String Titel) {
-        super(streckkod, loanKategori, placement, ObjektID, Titel);
+    public Magazin(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, int ObjektID, String Titel) throws SQLException {
+        super(streckkod, loanKategori, placement);
         this.magazineDate = magazineDate;
         this.magazineNumber = magazineNumber;
     }

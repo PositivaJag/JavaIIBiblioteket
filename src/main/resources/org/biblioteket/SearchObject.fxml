@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.SearchObjectController">
+   <children>
+      <TableView layoutX="43.0" layoutY="79.0" prefHeight="278.0" prefWidth="529.0">
+        <columns>
+          <TableColumn fx:id="columnID" prefWidth="48.0" text="ID" />
+          <TableColumn fx:id="columnTitel" prefWidth="225.0" text="Titel" />
+            <TableColumn prefWidth="49.0" text="Typ" />
+            <TableColumn prefWidth="134.0" text="Författare/Regisör" />
+            <TableColumn prefWidth="72.0" text="Ämnesord" />
+        </columns>
+      </TableView>
+      <TextField fx:id="searchField" layoutX="203.0" layoutY="37.0" prefHeight="25.0" prefWidth="244.0" promptText="sök" />
+      <Label layoutX="67.0" layoutY="39.0" text="Skriv in sökord här:  ">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

@@ -140,7 +140,15 @@ CREATE TABLE IF NOT EXISTS `JavaIIBiblioteket`.`Person` (
   PRIMARY KEY (`PersonID`),
   UNIQUE INDEX `personID_UNIQUE` (`PersonID` ASC) VISIBLE,
   UNIQUE INDEX `eMail_UNIQUE` (`eMail` ASC) VISIBLE)
-ENGINE = InnoDB
+ENGINE = InnoDB;
+
+select * from person;
+select * from låntagare;
+
+
+INSERT INTO `javaiibiblioteket`.`lån`
+(`DatumLån`,`ReturSenast`,`DatumRetur`,`streckkod`,`Låntagare`)
+VALUES
 
 
 
