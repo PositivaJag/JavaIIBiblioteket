@@ -14,22 +14,59 @@ public class Objekt {
     private int objectID;
     private String titel;
     private String type;
-    private ArrayList<Integer> Copies;
+    private ArrayList<Integer> copies;
+    private String authors;
 
     
-    public Objekt(int ObjektID, String Titel, String type) {
-        this.Copies = new ArrayList<Integer>(5);
+    
+     public Objekt(int ObjektID, String Titel, String type, String authors) {
+        this.copies = new ArrayList<>(5);
         this.objectID = ObjektID;
         this.titel = Titel;
         this.type = type;
+        this.authors = authors;
+        
+    }
+
+
+    public int getObjectID() {
+        return objectID;
+    }
+
+    public void setObjectID(int objectID) {
+        this.objectID = objectID;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public ArrayList<Integer> getCopies() {
+        return copies;
+    }
+
+    public void setCopies(ArrayList<Integer> copies) {
+        this.copies = copies;
+    }
+
+    public String getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(String authors) {
+        this.authors = authors;
     }
 
     public void addCopy(int kopia){
-        this.Copies.add(kopia);
+        this.copies.add(kopia);
     }
     
     public void removeCopy(int kopia){
-        this.Copies.remove(kopia);
+        this.copies.remove(kopia);
     }
     
     public String getTitel() {
@@ -40,10 +77,6 @@ public class Objekt {
         this.titel = Titel;
     }
 
-    public int getObjektID() {
-        return objectID;
-    }
-    
         public static Boolean checkInstance(Objekt instance) throws SQLException {
             return instance != null;
     }

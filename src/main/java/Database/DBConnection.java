@@ -158,6 +158,31 @@ public class DBConnection {
                 + "in Class DBConnection");
 
     }
+    
+    public String getAuthorsAsString(int objektID) throws SQLException{
+        String authors;
+         try {
+            //Get objekt from DB
+            String SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\n')) "
+                    + "as Författare "
+                    + "from författare f, bokförfattare b, objekt o" 
+                    + "where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID "
+                    + "and o.objektID = ? "
+                    + "group by o.ObjektID;";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, objektID);
+            getQuery(pState);
+            
+            resultSet.next();
+            authors = resultSet.getString(1);
+            System.out.println("Författare: " +authors);
+            return authors;
+         }
+         catch (SQLException e){
+             printSQLExcept(e);
+         }
+        return null;
+    }
 
      public ResultSet getAllCopiesData(int objektID) throws Exception {
           try {
