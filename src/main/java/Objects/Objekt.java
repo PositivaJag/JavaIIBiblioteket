@@ -11,7 +11,7 @@ import org.biblioteket.UseCase;
  * @author Jenni
  */
 public class Objekt {
-    private int objectID;
+    private int objektID;
     private String titel;
     private String type;
     private ArrayList<Integer> copies;
@@ -21,7 +21,7 @@ public class Objekt {
     
      public Objekt(int ObjektID, String Titel, String type, String authors) {
         this.copies = new ArrayList<>(5);
-        this.objectID = ObjektID;
+        this.objektID = ObjektID;
         this.titel = Titel;
         this.type = type;
         this.authors = authors;
@@ -29,12 +29,12 @@ public class Objekt {
     }
 
 
-    public int getObjectID() {
-        return objectID;
+    public int getObjektID() {
+        return objektID;
     }
 
-    public void setObjectID(int objectID) {
-        this.objectID = objectID;
+    public void setObjektID(int objectID) {
+        this.objektID = objectID;
     }
 
     public String getType() {

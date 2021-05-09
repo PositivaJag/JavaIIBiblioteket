@@ -27,7 +27,7 @@ public class App extends Application {
         
         try{
         Parent root = 
-         FXMLLoader.load(getClass().getResource("Login.fxml"));
+         FXMLLoader.load(getClass().getResource("SearchObject.fxml"));
       
         Scene scene = new Scene(root);
         //stage.setTitle("Display Query Results");
