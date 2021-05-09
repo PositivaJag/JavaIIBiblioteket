@@ -6,21 +6,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import org.biblioteket.UseCase;
 
+
+
 /**
  *
  * @author Jenni
  */
 public class Objekt {
-    private int objektID;
+    private String objektID;
     private String titel;
     private String type;
-    private ArrayList<Integer> copies;
+//    private ArrayList<Integer> copies;
     private String authors;
 
     
     
-     public Objekt(int ObjektID, String Titel, String type, String authors) {
-        this.copies = new ArrayList<>(5);
+     public Objekt(String ObjektID, String Titel, String type, String authors) {
+//        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
         this.titel = Titel;
         this.type = type;
@@ -29,11 +31,11 @@ public class Objekt {
     }
 
 
-    public int getObjektID() {
+    public String getObjektID() {
         return objektID;
     }
 
-    public void setObjektID(int objectID) {
+    public void setObjektID(String objectID) {
         this.objektID = objectID;
     }
 
@@ -45,13 +47,13 @@ public class Objekt {
         this.type = type;
     }
 
-    public ArrayList<Integer> getCopies() {
-        return copies;
-    }
+//    public ArrayList<Integer> getCopies() {
+//        return copies;
+//    }
 
-    public void setCopies(ArrayList<Integer> copies) {
-        this.copies = copies;
-    }
+//    public void setCopies(ArrayList<Integer> copies) {
+//        this.copies = copies;
+//    }
 
     public String getAuthors() {
         return authors;
@@ -61,13 +63,13 @@ public class Objekt {
         this.authors = authors;
     }
 
-    public void addCopy(int kopia){
-        this.copies.add(kopia);
-    }
-    
-    public void removeCopy(int kopia){
-        this.copies.remove(kopia);
-    }
+//    public void addCopy(int kopia){
+//        this.copies.add(kopia);
+//    }
+//    
+//    public void removeCopy(int kopia){
+//        this.copies.remove(kopia);
+//    }
     
     public String getTitel() {
         return titel;

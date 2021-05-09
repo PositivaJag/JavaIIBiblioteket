@@ -36,7 +36,7 @@ public class App extends Application {
 
         }
         catch (IOException e){
-            System.out.println("IO Exception : "+e.getMessage());
+            System.out.println("IO Exception: "+e.getMessage());
         }
     }
 

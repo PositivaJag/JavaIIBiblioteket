@@ -163,9 +163,7 @@ public class DBConnection {
         String authors;
          try {
             //Get objekt from DB
-            String SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Författare from författare f, bokförfattare b, objekt o \n" +
-                            "where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = 5\n" +
-                            "group by o.ObjektID;";
+            String SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Författare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
             getQuery(pState);

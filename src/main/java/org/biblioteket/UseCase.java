@@ -78,7 +78,7 @@ public class UseCase {
             //Create objects,add to resultat
             ArrayList<Objekt> resultat = new ArrayList<>();
             while (resultSet.next()) {
-                resultat.add(new Objekt(resultSet.getInt(1), resultSet.getString(2),
+                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
                         resultSet.getString(3), connection.getAuthorsAsString(resultSet.getInt(1))));
             }
             return resultat;
@@ -93,18 +93,20 @@ public class UseCase {
     }
     
 
-    public List<Objekt> createAllCopies(int objektID) throws SQLException, Exception {
+    public List<Objekt> createAllCopies(String objektID) throws SQLException, Exception {
         
         try {
             //Connect to db
             DBConnection connection = DBConnection.getInstance();
             //Get Objekt data from DB
-            ResultSet resultSet = connection.getAllCopiesData(objektID);
+            ResultSet resultSet = connection.getAllCopiesData(Integer.parseInt(objektID));
             //Create objects,add to resultat
             List<Objekt> resultat = new ArrayList<>();
             while (resultSet.next()) {
-                resultat.add(new Objekt(resultSet.getInt(1), resultSet.getString(2),
-                        resultSet.getString(3), connection.getAuthorsAsString(resultSet.getInt(1))));
+                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
+                        resultSet.getString(2),
+                        resultSet.getString(3), 
+                        connection.getAuthorsAsString(resultSet.getInt(1))));
             }
             return resultat;
         } 
