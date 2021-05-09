@@ -13,10 +13,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
-import Database.DBConnection;
-import Database.DBConnection.LoginResult;
-import PublicPersons.Loantagare;
-import PublicPersons.Person;
+import org.biblioteket.Database.DBConnection;
+import org.biblioteket.Database.DBConnection.LoginResult;
+import org.biblioteket.Persons.Loantagare;
+import org.biblioteket.Persons.Person;
 import java.sql.SQLException;
 
 public class LoginController {

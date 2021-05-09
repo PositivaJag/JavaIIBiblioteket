@@ -5,7 +5,7 @@
  */
 package org.biblioteket;
 
-import Database.DBConnection;
+import org.biblioteket.Database.DBConnection;
 import java.sql.Connection; 
 import java.sql.PreparedStatement; 
 import java.sql.ResultSet;

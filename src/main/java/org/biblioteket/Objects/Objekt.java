@@ -1,6 +1,6 @@
 /*
  */
-package Objects;
+package org.biblioteket.Objects;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -3,8 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Objects;
-import Objects.Objekt;
+package org.biblioteket.Objects;
+import org.biblioteket.Objects.Objekt;
 import java.sql.SQLException;
 /**
  *

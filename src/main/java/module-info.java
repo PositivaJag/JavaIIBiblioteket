@@ -6,5 +6,7 @@ module org.biblioteket {
     requires java.desktop;
 
     opens org.biblioteket to javafx.fxml;
+    opens org.biblioteket.Objects to javafx.base;
+    exports org.biblioteket.Objects;
     exports org.biblioteket;
 }

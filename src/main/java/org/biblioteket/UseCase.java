@@ -5,11 +5,11 @@
  */
 package org.biblioteket;
 
-import Database.DBConnection;
-import Database.DBConnection.LoginResult;
-import Objects.Objekt;
-import PublicPersons.Loantagare;
-import PublicPersons.Person;
+import org.biblioteket.Database.DBConnection;
+import org.biblioteket.Database.DBConnection.LoginResult;
+import org.biblioteket.Objects.Objekt;
+import org.biblioteket.Persons.Loantagare;
+import org.biblioteket.Persons.Person;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

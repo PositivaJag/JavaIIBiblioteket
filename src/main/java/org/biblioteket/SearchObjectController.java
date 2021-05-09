@@ -5,8 +5,8 @@
  */
 package org.biblioteket;
 
-import Database.DBConnection;
-import Objects.Objekt;
+import org.biblioteket.Database.DBConnection;
+import org.biblioteket.Objects.Objekt;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.sql.SQLException;
@@ -78,10 +78,10 @@ public class SearchObjectController {
         
  
         //Skapa tableColumns
-        TableColumn<Map, String>  column1 = new TableColumn<>("ObjektID");
-        TableColumn<Map, String> column2 = new TableColumn<>("Titel");
-        TableColumn<Map, String> column3 = new TableColumn<>("Typ");
-        TableColumn<Map, String> column4 = new TableColumn<>("Författare");
+        TableColumn<Objekt, String>  column1 = new TableColumn<>("ObjektID");
+        TableColumn<Objekt, String> column2 = new TableColumn<>("Titel");
+        TableColumn<Objekt, String> column3 = new TableColumn<>("Typ");
+        TableColumn<Objekt, String> column4 = new TableColumn<>("Författare");
         
         column1.setCellValueFactory(new PropertyValueFactory<>("objektID"));
         column2.setCellValueFactory(new PropertyValueFactory<>("titel"));
@@ -91,17 +91,6 @@ public class SearchObjectController {
         searchTable.getColumns().addAll(column1, column2, column3, column4);
         searchTable.setItems(objektList);
         
-        
-//        
-//        Field[] fields = result.get(0).getClass().getDeclaredFields();
-//        System.out.println(Arrays.toString(fields));
-//        for (Field field : fields){
-//            TableColumn column = new TableColumn<>(field.getName());
-//            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
-//            searchTable.getColumns().add(column);
-//            System.out.println(searchTable.getColumns().toString());
-            
-//        searchTable.setItems(objektList);
     } 
             
     @FXML

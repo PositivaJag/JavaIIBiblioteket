@@ -1,6 +1,6 @@
 package org.biblioteket;
 
-import Database.DBConnection;
+import org.biblioteket.Database.DBConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
