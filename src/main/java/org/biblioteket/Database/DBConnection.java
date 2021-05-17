@@ -142,7 +142,7 @@ public class DBConnection {
 
     }
     
-    public ResultSet getAllObjectData() throws Exception{
+    public ResultSet getAllObjektData() throws Exception{
         try {
             //Get objekt from DB
             String SQL = "Select ObjektID, Titel, Typ from Objekt";
@@ -159,11 +159,30 @@ public class DBConnection {
 
     }
     
-    public String getAuthorsAsString(int objektID) throws SQLException{
+    public String getArtistsAsString(int objektID, String type) throws SQLException, Exception{
         String authors;
          try {
+             String SQL = "";
+             //Find out the type of objekt. 
+             if (type.equalsIgnoreCase("Bok"))
+             {
+                 SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Artister from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
+             }
+             else if (type.equalsIgnoreCase("Film"))
+             {
+                 SQL = "select group_concat(Concat(r.fNamn, ' ', r.eNamn, '\\n')) as Artister from regisöraktör r, filmregisöraktör f, Objekt o where r.RegisörAktörID = f.RegisörAktörID and o.ObjektID = f.ObjektID and o.objektID = ? group by o.ObjektID;";
+
+             }
+             else if (type.equalsIgnoreCase("Tidskrift"))
+             {
+                 SQL = "select t.Namn as Artister from tidsskrifter t, objekt o where t.tidskriftID = o.TidskrifterID and o.objektId = ?;";
+             }
+             else
+             {
+                 throw new Exception ("Something went wroing in methon getAuthorsAsString\n"
+                         + "type "+type+ "is not valid");
+             }
             //Get objekt from DB
-            String SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Författare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
             getQuery(pState);

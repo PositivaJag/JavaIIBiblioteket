@@ -69,17 +69,16 @@ public class UseCase {
     }
 
     public ArrayList<Objekt> getAllObjekts() throws SQLException, Exception {
-
         try {
             //Connect to db
             DBConnection connection = DBConnection.getInstance();
             //Get Objekt data from DB
-            ResultSet resultSet = connection.getAllObjectData();
+            ResultSet resultSet = connection.getAllObjektData();
             //Create objects,add to resultat
             ArrayList<Objekt> resultat = new ArrayList<>();
             while (resultSet.next()) {
                 resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
-                        resultSet.getString(3), connection.getAuthorsAsString(resultSet.getInt(1))));
+                        resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1), resultSet.getString(3))));
             }
             return resultat;
         } 
@@ -106,7 +105,7 @@ public class UseCase {
                 resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
                         resultSet.getString(2),
                         resultSet.getString(3), 
-                        connection.getAuthorsAsString(resultSet.getInt(1))));
+                        connection.getArtistsAsString(resultSet.getInt(1), resultSet.getString(3))));
             }
             return resultat;
         } 
