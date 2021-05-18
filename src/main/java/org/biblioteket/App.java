@@ -27,7 +27,7 @@ public class App extends Application {
         
         try{
         Parent root = 
-         FXMLLoader.load(getClass().getResource("SearchObject.fxml"));
+         FXMLLoader.load(getClass().getResource("SearchObject20210517.fxml"));
       
         Scene scene = new Scene(root);
         //stage.setTitle("Display Query Results");
@@ -36,7 +36,7 @@ public class App extends Application {
 
         }
         catch (IOException e){
-            System.out.println("IO Exception: "+e.getMessage());
+            System.out.println("IO Exception in : "+e.getMessage());
         }
     }
 
