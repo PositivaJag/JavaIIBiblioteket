@@ -4,6 +4,7 @@ module org.biblioteket {
     requires javafx.base;
     requires java.sql;
     requires java.desktop;
+    requires java.base;
 
     opens org.biblioteket to javafx.fxml;
     opens org.biblioteket.Objects to javafx.base;
