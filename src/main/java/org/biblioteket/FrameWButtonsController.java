@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.biblioteket.Objects.Objekt;
 
 public class FrameWButtonsController {
     @FXML
@@ -20,21 +21,24 @@ public class FrameWButtonsController {
     @FXML
     private AnchorPane leftPane;
     @FXML
-    private Button buttonSearch, buttonLoad, buttonRetur, buttonMyPage, buttonHem;
+    private Button buttonSearch, buttonLoan, buttonRetur, buttonLogout, buttonHem;
     
     private Panel view;
+    private Objekt inloggad = null;
 
     
     
     
     @FXML
     void clickButtonLoan(ActionEvent event) {
+//        if (inloggad == null){
+//            if (getPopup("Login.fxml"))
+//                inloggad = 
         
     }
 
     @FXML
-    void clickButtonMyPage(ActionEvent event) {
-        getPopup("Login.fxml");
+    void clickButtonLogout(ActionEvent event) {
         
 
     }

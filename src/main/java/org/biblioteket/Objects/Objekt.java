@@ -17,7 +17,7 @@ public class Objekt {
     private String titel;
     private String type;
 //    private ArrayList<Integer> copies;
-    private String authors;
+    private String artists;
 
     
     
@@ -26,7 +26,7 @@ public class Objekt {
         this.objektID = ObjektID;
         this.titel = Titel;
         this.type = type;
-        this.authors = authors;
+        this.artists = authors;
         
     }
 
@@ -55,12 +55,12 @@ public class Objekt {
 //        this.copies = copies;
 //    }
 
-    public String getAuthors() {
-        return authors;
+    public String getArtists() {
+        return artists;
     }
 
-    public void setAuthors(String authors) {
-        this.authors = authors;
+    public void setArtists(String authors) {
+        this.artists = authors;
     }
 
 //    public void addCopy(int kopia){

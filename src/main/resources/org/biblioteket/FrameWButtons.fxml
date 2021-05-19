@@ -29,12 +29,12 @@
                               <Insets top="10.0" />
                            </VBox.margin>
                         </Button>
-                        <Button fx:id="buttonMyPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonMyPage" prefHeight="40.0" prefWidth="200.0" text="Min sida">
+                        <Button fx:id="buttonHem" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonHem" prefHeight="40.0" prefWidth="200.0" text="Hem">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
                         </Button>
-                        <Button fx:id="buttonHem" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonHem" prefHeight="40.0" prefWidth="200.0" text="Hem">
+                        <Button fx:id="buttonLogout" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonLogout" prefHeight="40.0" prefWidth="200.0" text="Logga ut" visible="false">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>

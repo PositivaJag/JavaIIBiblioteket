@@ -76,9 +76,11 @@ public class Loantagare extends Person{
         this.kategori = Kategori;
     }
     
+    
+    
     @Override
     public String toString(){
-        return "Persondata\n"+super.personID+"\n"+super.fName+"\n"+super.lName+"\n"+super.password+"\n"+super.personTyp+"\n\n"+
+        return "Persondata\n"+getPersonID()+"\n"+getfName()+"\n"+getlName()+"\n"+getPassword()+"\n"+getPersonTyp()+"\n\n"+
                 "Låntagardata\n"+this.telNr+"\n"+this.gatuAdress+"\n"+this.postNr+"\n"+this.kategori;
 
     }

@@ -79,7 +79,7 @@ public class UseCase {
             ArrayList<Objekt> resultat = new ArrayList<>();
             while (resultSet.next()) {
                 resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
-                        resultSet.getString(3), connection.getAuthorsAsString(resultSet.getInt(1))));
+                        resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1))));
             }
             return resultat;
         } 
@@ -106,7 +106,7 @@ public class UseCase {
                 resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
                         resultSet.getString(2),
                         resultSet.getString(3), 
-                        connection.getAuthorsAsString(resultSet.getInt(1))));
+                        connection.getArtistsAsString(resultSet.getInt(1))));
             }
             return resultat;
         } 

@@ -13,12 +13,12 @@ import java.sql.SQLException;
  * @author Jenni
  */
 public class Person {
-    String personID;
-    String fName;
-    String lName;
-    String email;
-    String password;
-    String personTyp;
+    private String personID;
+    private String fName;
+    private String lName;
+    private String email;
+    private String password;
+    private String personTyp;
 
     public Person(String personID, String fName, String lName, String email, String password, String personTyp) {
         this.personID = personID;
@@ -85,6 +85,11 @@ public class Person {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getPersonTyp() {
+        return personTyp;
+    }
+    
     
     @Override
     public String toString(){

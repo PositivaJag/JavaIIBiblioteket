@@ -13,13 +13,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
-import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Database.DBConnection.LoginResult;
-import org.biblioteket.Persons.Loantagare;
-import org.biblioteket.Persons.Person;
 import java.sql.SQLException;
 import javafx.scene.Node;
-import javafx.stage.Stage;
 
 public class LoginController {
 

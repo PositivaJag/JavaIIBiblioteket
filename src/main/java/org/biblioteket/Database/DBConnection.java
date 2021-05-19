@@ -5,7 +5,6 @@
  */
 package org.biblioteket.Database;
 
-import org.biblioteket.Objects.Objekt;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.DriverManager;
@@ -13,9 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.table.AbstractTableModel;
 
 /**
  *
@@ -32,9 +28,9 @@ public class DBConnection {
     private ResultSet resultSet;
     
     //Connection parameters
-    private static final String DBUrl = "jdbc:mysql://localhost:3306/javaiibiblioteket";
-    private static final String DBUserName = "root";
-    private static final String DBPassword = "B0b1gny";
+    private static final String dbUrl = "jdbc:mysql://localhost:3306/javaiibiblioteket";
+    private static final String dbUserName = "root";
+    private static final String dbPassword = "B0b1gny";
     private boolean connectedToDB = false;
     
     public enum LoginResult {
@@ -62,7 +58,7 @@ public class DBConnection {
     //Singleton implementation
     public static DBConnection getInstance() throws SQLException{
         if (instance == null){
-            instance = new DBConnection(DBUrl, DBUserName, DBPassword);
+            instance = new DBConnection(dbUrl, dbUserName, dbPassword);
         }
         return instance;
     }
@@ -159,7 +155,7 @@ public class DBConnection {
 
     }
     
-    public String getAuthorsAsString(int objektID) throws SQLException{
+    public String getArtistsAsString(int objektID) throws SQLException{
         String authors;
          try {
             //Get objekt from DB

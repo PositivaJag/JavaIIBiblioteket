@@ -31,16 +31,16 @@ public class SearchObjectController {
     private Button buttonSearch;
     @FXML
     private TableView searchTable;
-    @FXML
-    private TableColumn<?, ?> columnID;
-    @FXML
-    private TableColumn<?, ?> columnTitel;
-    @FXML
-    private TableColumn<?, ?> columnTyp;
-    @FXML
-    private TableColumn<?, ?> columnAuthor;
-    @FXML
-    private Button buttonExit;
+//    @FXML
+//    private TableColumn<?, ?> columnID;
+//    @FXML
+//    private TableColumn<?, ?> columnTitel;
+//    @FXML
+//    private TableColumn<?, ?> columnTyp;
+//    @FXML
+//    private TableColumn<?, ?> columnAuthor;
+//    @FXML
+//    private Button buttonExit;
     
     private List<Objekt> result;
     private ObservableList<Objekt> objektList;
