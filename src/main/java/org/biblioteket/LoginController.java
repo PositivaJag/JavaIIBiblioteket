@@ -31,8 +31,6 @@ public class LoginController {
     @FXML
     private PasswordField password;
 
-    @FXML
-    private Button buttonAvbryt;
 
     @FXML
     void pressButtonAvbryt(ActionEvent event) {
@@ -70,8 +68,10 @@ public class LoginController {
                 } 
                 //Login successfull
                 else if (logginCheck == LoginResult.LOGIN_OK) {
-                    labelMessage.setTextFill(Color.web("#008000"));
-                    labelMessage.setText("Loggin!");
+//                    labelMessage.setTextFill(Color.web("#008000"));
+//                    labelMessage.setText("Loggin!");
+//                    FrameWButtonsController.setButtonLogoutVisibility(true);
+                    ((Node)(event.getSource())).getScene().getWindow().hide();
                 }
                 else {
                 labelMessage.setTextFill(Color.web("#FE0000"));

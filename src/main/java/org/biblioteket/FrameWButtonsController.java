@@ -26,12 +26,17 @@ public class FrameWButtonsController {
     @FXML
     private AnchorPane leftPane;
     @FXML
-    private Button buttonSearch, buttonLoan, buttonRetur, buttonLogout, buttonHem;
+    private static Button buttonSearch, buttonLoan, buttonRetur, buttonLogout, buttonHem;
     
     private Panel view;
     private UseCase useCase;
-
+    private LoginResult loginResult;
     
+    
+
+     public void initialize(){
+         
+     }
     
     
     @FXML
@@ -39,9 +44,10 @@ public class FrameWButtonsController {
         try {
             //Check if someone is logged in.
             useCase = UseCase.getInstance();
-            if (useCase.getPersonTyp() == PersonTyp.NONE)
+            if (useCase.getPersonTyp() == PersonTyp.NONE){
                 loadPopup("Login.fxml");
-            
+                
+            }
             else
                 System.out.println("Ladda sindan");
                 loadPage("Loan.fxml");
@@ -52,13 +58,13 @@ public class FrameWButtonsController {
         
   
     }
-
+    
     @FXML
     void clickButtonLogout(ActionEvent event) {
         try {
            if( UseCase.getInstance().logout() == LoginResult.LOGOUT){
                loadPage("Velcome.fxml");
-               buttonLogout.setVisible(false);
+               setButtonLogoutVisibility(false);
            }
             
         } catch (SQLException ex) {
@@ -70,8 +76,8 @@ public class FrameWButtonsController {
 
     @FXML
     void clickButtonReturn(ActionEvent event) {
-        buttonLogout.setVisible(true);
-
+        //setButtonLogoutVisibility(true);
+        buttonLogout.setVisible(false);
     }
     
     @FXML
@@ -113,6 +119,10 @@ public class FrameWButtonsController {
             Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+    }
+    
+    public void setButtonLogoutVisibility(Boolean bool){
+        buttonLogout.setVisible(bool);
     }
 
 }

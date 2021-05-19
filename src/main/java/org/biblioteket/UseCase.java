@@ -52,10 +52,10 @@ public class UseCase {
                 if (connection.chechIfLibrarian(mail)) {
                     activeLibrarian = new Person(mail);
                     
-                    for (int i = 0; i < 6; i++) {
-                        System.out.println(activeLibrarian.toString());
-   
-                    }
+////                    for (int i = 0; i < 6; i++) {
+////                        System.out.println(activeLibrarian.toString());
+//   
+//                    }
                     personTyp = PersonTyp.BIBLIOTEKARIE;
                 } 
                 //Create loantagare
