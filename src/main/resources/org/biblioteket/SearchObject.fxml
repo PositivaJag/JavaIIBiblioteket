@@ -24,10 +24,5 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Button fx:id="buttonExit" layoutX="553.0" layoutY="6.0" mnemonicParsing="false" onAction="#clickButtonExit" prefHeight="25.0" prefWidth="31.0" text="X" textAlignment="CENTER">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Button>
    </children>
 </AnchorPane>

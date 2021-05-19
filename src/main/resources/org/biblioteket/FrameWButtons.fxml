@@ -6,52 +6,50 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" style="-fx-background-color: F43B22;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.FrameWButtonsController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.FrameWButtonsController">
    <children>
       <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0">
          <left>
-            <AnchorPane fx:id="leftPane" prefHeight="400.0" prefWidth="185.0" style="-fx-background-color: #Bcbcbc;" BorderPane.alignment="CENTER">
+            <AnchorPane fx:id="leftPane" prefHeight="400.0" prefWidth="185.0" BorderPane.alignment="CENTER">
                <children>
-                  <VBox>
+                  <VBox layoutY="65.0">
                      <children>
                         <Button fx:id="buttonSearch" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#klickButtonSearch" prefHeight="40.0" text="Sök">
                            <VBox.margin>
-                              <Insets left="5.0" right="5.0" top="10.0" />
+                              <Insets top="10.0" />
                            </VBox.margin>
                         </Button>
                         <Button fx:id="buttonLoan" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonLoan" prefHeight="40.0" prefWidth="200.0" text="Låna">
-                           <padding>
-                              <Insets top="5.0" />
-                           </padding>
                            <VBox.margin>
-                              <Insets left="5.0" right="5.0" top="10.0" />
+                              <Insets top="10.0" />
                            </VBox.margin>
                         </Button>
                         <Button fx:id="buttonReturn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonReturn" prefHeight="40.0" prefWidth="200.0" text="Lämna tillbaka">
-                           <padding>
-                              <Insets top="5.0" />
-                           </padding>
                            <VBox.margin>
-                              <Insets left="5.0" right="5.0" top="10.0" />
+                              <Insets top="10.0" />
                            </VBox.margin>
                         </Button>
                         <Button fx:id="buttonMyPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonMyPage" prefHeight="40.0" prefWidth="200.0" text="Min sida">
-                           <padding>
-                              <Insets top="5.0" />
-                           </padding>
                            <VBox.margin>
-                              <Insets left="5.0" right="5.0" top="10.0" />
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Button fx:id="buttonHem" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonHem" prefHeight="40.0" prefWidth="200.0" text="Hem">
+                           <VBox.margin>
+                              <Insets top="10.0" />
                            </VBox.margin>
                         </Button>
                      </children>
                      <padding>
-                        <Insets top="75.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </VBox>
-                  <Button layoutX="9.0" layoutY="358.0" mnemonicParsing="false" text="Button" />
                </children>
             </AnchorPane>
          </left>
+         <right>
+            <fx:include source="Velcome.fxml" />
+         </right>
       </BorderPane>
    </children>
 </AnchorPane>

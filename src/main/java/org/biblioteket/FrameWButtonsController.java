@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 public class FrameWButtonsController {
     @FXML
@@ -19,7 +20,7 @@ public class FrameWButtonsController {
     @FXML
     private AnchorPane leftPane;
     @FXML
-    private Button buttonSearch, buttonLoad, buttonRetur, buttonMyPage;
+    private Button buttonSearch, buttonLoad, buttonRetur, buttonMyPage, buttonHem;
     
     private Panel view;
 
@@ -33,12 +34,19 @@ public class FrameWButtonsController {
 
     @FXML
     void clickButtonMyPage(ActionEvent event) {
+        getPopup("Login.fxml");
+        
 
     }
 
     @FXML
     void clickButtonReturn(ActionEvent event) {
 
+    }
+    
+    @FXML
+    void clickButtonHem(ActionEvent event) {
+        loadPage("Velcome.fxml");
     }
 
     @FXML
@@ -50,7 +58,7 @@ public class FrameWButtonsController {
 
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxml));
-            borderPane.setCenter(root);
+            borderPane.setRight(root);
             return true;
             
         } catch (IOException ex) {
@@ -60,6 +68,21 @@ public class FrameWButtonsController {
             return false;
         }
         
+    }
+    private boolean getPopup(String fxml){
+        
+        try {
+            Parent root =
+                FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Stage stage = new Stage();
+            Scene popup = new Scene(root);
+            stage.setScene(popup);
+            stage.show();
+            return true;
+        } catch (IOException ex) {
+            Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 
 }

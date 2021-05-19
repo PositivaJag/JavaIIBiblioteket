@@ -18,6 +18,8 @@ import org.biblioteket.Database.DBConnection.LoginResult;
 import org.biblioteket.Persons.Loantagare;
 import org.biblioteket.Persons.Person;
 import java.sql.SQLException;
+import javafx.scene.Node;
+import javafx.stage.Stage;
 
 public class LoginController {
 
@@ -38,7 +40,7 @@ public class LoginController {
 
     @FXML
     void pressButtonAvbryt(ActionEvent event) {
-        System.exit(0);
+        ((Node)(event.getSource())).getScene().getWindow().hide();
 
     }
 

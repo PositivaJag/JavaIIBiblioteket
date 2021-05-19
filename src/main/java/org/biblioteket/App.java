@@ -19,7 +19,7 @@ public class App extends Application {
         
 //        try{
         Parent root = 
-         FXMLLoader.load(getClass().getResource("SearchObject.fxml"));
+         FXMLLoader.load(getClass().getResource("FrameWButtons.fxml"));
       
         Scene scene = new Scene(root);
         stage.setScene(scene);
