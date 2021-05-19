@@ -36,7 +36,8 @@ public class DBConnection {
     public enum LoginResult {
         LOGIN_OK,
         WRONG_PASSWORD,
-        NO_SUCH_USER
+        NO_SUCH_USER,
+        LOGOUT
     }
     
     //Constructor of connection

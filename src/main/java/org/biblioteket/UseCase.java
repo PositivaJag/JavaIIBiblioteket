@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.paint.Color;
+import org.biblioteket.Persons.Person.PersonTyp;
 
 /**
  *
@@ -23,6 +24,11 @@ import javafx.scene.paint.Color;
 public class UseCase {
 
     private static UseCase instance;
+    PersonTyp personTyp = PersonTyp.NONE; 
+    Person activeLibrarian = null;
+    Loantagare activeUser = null;
+    
+   
 
     //Singleton implementation. 
     public static UseCase getInstance() throws SQLException {
@@ -44,20 +50,23 @@ public class UseCase {
             if (pwCheck == LoginResult.LOGIN_OK) {
                 //Create librarian
                 if (connection.chechIfLibrarian(mail)) {
-                    Person activeLibrarian = new Person(mail);
-
+                    activeLibrarian = new Person(mail);
+                    
                     for (int i = 0; i < 6; i++) {
                         System.out.println(activeLibrarian.toString());
+   
                     }
+                    personTyp = PersonTyp.BIBLIOTEKARIE;
                 } 
                 //Create loantagare
                 else {
                     String[] personDB = connection.getPersonData(mail);
-                    Loantagare activeUser = new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]);
+                    activeUser = new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]);
 
                     for (int i = 0; i < 6; i++) {
                         System.out.println(activeUser.toString());
                     }
+                    personTyp = PersonTyp.LOANTAGARE;
                 }
             } 
             return pwCheck;
@@ -67,6 +76,13 @@ public class UseCase {
         }
         throw new Exception("Unknown error");
     }
+    public LoginResult logout(){
+        personTyp = PersonTyp.NONE;
+        activeUser = null;
+        activeLibrarian = null;
+        return LoginResult.LOGOUT;
+    }
+    
 
     public ArrayList<Objekt> getAllObjekts() throws SQLException, Exception {
 
@@ -118,4 +134,17 @@ public class UseCase {
         }
         throw new Exception("Something went wrong in UseCase.createAllObjects()");
 }
+
+    public PersonTyp getPersonTyp() {
+        return personTyp;
+    }
+
+    public Person getActiveLibrarian() {
+        return activeLibrarian;
+    }
+
+    public Loantagare getActiveUser() {
+        return activeUser;
+    }
+    
 }

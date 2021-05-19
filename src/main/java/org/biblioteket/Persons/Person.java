@@ -19,6 +19,12 @@ public class Person {
     private String email;
     private String password;
     private String personTyp;
+    
+    public enum PersonTyp{
+        BIBLIOTEKARIE,
+        LOANTAGARE, 
+        NONE
+    }
 
     public Person(String personID, String fName, String lName, String email, String password, String personTyp) {
         this.personID = personID;

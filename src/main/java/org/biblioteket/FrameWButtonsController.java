@@ -2,6 +2,7 @@ package org.biblioteket;
 
 import java.awt.Panel;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -13,7 +14,11 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.biblioteket.Database.DBConnection;
+import org.biblioteket.Database.DBConnection.LoginResult;
 import org.biblioteket.Objects.Objekt;
+import org.biblioteket.Persons.Person;
+import org.biblioteket.Persons.Person.PersonTyp;
 
 public class FrameWButtonsController {
     @FXML
@@ -24,27 +29,48 @@ public class FrameWButtonsController {
     private Button buttonSearch, buttonLoan, buttonRetur, buttonLogout, buttonHem;
     
     private Panel view;
-    private Objekt inloggad = null;
+    private UseCase useCase;
 
     
     
     
     @FXML
     void clickButtonLoan(ActionEvent event) {
-//        if (inloggad == null){
-//            if (getPopup("Login.fxml"))
-//                inloggad = 
+        try {
+            //Check if someone is logged in.
+            useCase = UseCase.getInstance();
+            if (useCase.getPersonTyp() == PersonTyp.NONE)
+                loadPopup("Login.fxml");
+            
+            else
+                System.out.println("Ladda sindan");
+                loadPage("Loan.fxml");
+                
+        } catch (SQLException ex) {
+            Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
+  
     }
 
     @FXML
     void clickButtonLogout(ActionEvent event) {
+        try {
+           if( UseCase.getInstance().logout() == LoginResult.LOGOUT){
+               loadPage("Velcome.fxml");
+               buttonLogout.setVisible(false);
+           }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
 
     }
 
     @FXML
     void clickButtonReturn(ActionEvent event) {
+        buttonLogout.setVisible(true);
 
     }
     
@@ -73,7 +99,7 @@ public class FrameWButtonsController {
         }
         
     }
-    private boolean getPopup(String fxml){
+    private boolean loadPopup(String fxml){
         
         try {
             Parent root =
