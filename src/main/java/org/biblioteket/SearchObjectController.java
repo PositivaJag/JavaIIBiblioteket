@@ -46,6 +46,10 @@ public class SearchObjectController {
     private ObservableList<Objekt> objektList;
     private MainController useCase;
             
+    /**
+     *
+     * @throws Exception
+     */
     public void initialize() throws Exception{
         
         getAllObjekts();

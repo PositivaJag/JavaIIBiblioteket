@@ -19,9 +19,14 @@ public class Objekt {
 //    private ArrayList<Integer> copies;
     private String artists;
 
-    
-    
-     public Objekt(String ObjektID, String Titel, String type, String authors) {
+    /**
+     *
+     * @param ObjektID
+     * @param Titel
+     * @param type
+     * @param authors
+     */
+    public Objekt(String ObjektID, String Titel, String type, String authors) {
 //        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
         this.titel = Titel;
@@ -30,19 +35,34 @@ public class Objekt {
         
     }
 
-
+    /**
+     *
+     * @return
+     */
     public String getObjektID() {
         return objektID;
     }
 
+    /**
+     *
+     * @param objectID
+     */
     public void setObjektID(String objectID) {
         this.objektID = objectID;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setType(String type) {
         this.type = type;
     }
@@ -55,10 +75,19 @@ public class Objekt {
 //        this.copies = copies;
 //    }
 
+    /**
+     *
+     * @return
+     */
+
     public String getArtists() {
         return artists;
     }
 
+    /**
+     *
+     * @param authors
+     */
     public void setArtists(String authors) {
         this.artists = authors;
     }
@@ -70,16 +99,31 @@ public class Objekt {
 //    public void removeCopy(int kopia){
 //        this.copies.remove(kopia);
 //    }
+
+    /**
+     *
+     * @return
+     */
     
     public String getTitel() {
         return titel;
     }
 
+    /**
+     *
+     * @param Titel
+     */
     public void setTitel(String Titel) {
         this.titel = Titel;
     }
 
-        public static Boolean checkInstance(Objekt instance) throws SQLException {
+    /**
+     *
+     * @param instance
+     * @return
+     * @throws SQLException
+     */
+    public static Boolean checkInstance(Objekt instance) throws SQLException {
             return instance != null;
     }
     

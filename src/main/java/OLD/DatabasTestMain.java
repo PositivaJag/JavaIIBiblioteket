@@ -33,6 +33,11 @@ import javax.swing.table.TableRowSorter;
  */
 public class DatabasTestMain {
     
+    /**
+     *
+     * @param args
+     * @throws SQLException
+     */
     public static void main(String[] args)throws SQLException{
         
        DBConnection DB = DBConnection.getInstance();

@@ -7,32 +7,34 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * JavaFX App
  */
 public class App extends Application {
 
+    /**
+     * Starts the GUI at FrameWButtons.fxml.
+     */
     @Override
-    public void start(Stage stage) throws IOException, SQLException {
-        
-//        try{
-        Parent root = 
-         FXMLLoader.load(getClass().getResource("FrameWButtons.fxml"));
-      
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-        
+    public void start(Stage stage) {
 
-
-//        }
-//        catch (IOException e){
-//            System.out.println("IO Exception: "+e.getMessage());
-//        }
+        try {
+            //Get first scene. 
+            Parent root
+                    = FXMLLoader.load(getClass().getResource("FrameWButtons.fxml"));
+            //Set scene and stage. 
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * main function to start the program.
+     */
     public static void main(String[] args) {
         launch(args);
     }

@@ -22,6 +22,16 @@ public class Copy{
             this.placement = placement;
     }
     
+    /**
+     *
+     * @param streckkod
+     * @param loanKategori
+     * @param placement
+     * @param objektID
+     * @return
+     * @throws SQLException
+     * @throws Exception
+     */
     public Copy newCopy(int streckkod, String loanKategori, String placement, Objekt objektID) throws SQLException, Exception {
         if (Objekt.checkInstance(objektID)){
             return new Copy(streckkod, loanKategori, placement);
@@ -30,26 +40,50 @@ public class Copy{
             throw new Exception("Objektet "+objektID.getTitel()+"finns inte.");
     }
         
+    /**
+     *
+     * @return
+     */
     public int getStreckkod() {
         return streckkod;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getLoanKategori() {
         return loanKategori;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPlacement() {
         return placement;
     }
 
+    /**
+     *
+     * @param streckkod
+     */
     public void setStreckkod(int streckkod) {
         this.streckkod = streckkod;
     }
 
+    /**
+     *
+     * @param loanKategori
+     */
     public void setLoanKategori(String loanKategori) {
         this.loanKategori = loanKategori;
     }
 
+    /**
+     *
+     * @param placement
+     */
     public void setPlacement(String placement) {
         this.placement = placement;
     }

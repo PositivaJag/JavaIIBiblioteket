@@ -18,6 +18,19 @@ public class Film extends Copy{
     private ArrayList<String> directors;
     private ArrayList<String> actors;
 
+    /**
+     *
+     * @param ageRating
+     * @param prodCountry
+     * @param streckkod
+     * @param loanKategori
+     * @param placement
+     * @param ObjektID
+     * @param Titel
+     * @param directors
+     * @param actors
+     * @throws SQLException
+     */
     public Film(String ageRating, String prodCountry, int streckkod, 
             String loanKategori, String placement, int ObjektID, String Titel, ArrayList<String> directors, ArrayList<String> actors) throws SQLException {
         super(streckkod, loanKategori, placement);
@@ -27,42 +40,82 @@ public class Film extends Copy{
         this.actors = actors;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAgeRating() {
         return ageRating;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getProdCountry() {
         return prodCountry;
     }
 
+    /**
+     *
+     * @param ageRating
+     */
     public void setAgeRating(String ageRating) {
         this.ageRating = ageRating;
     }
 
+    /**
+     *
+     * @param prodCountry
+     */
     public void setProdCountry(String prodCountry) {
         this.prodCountry = prodCountry;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getDirectors() {
         return directors;
     }
 
+    /**
+     *
+     * @param directors
+     */
     public void setDirectors(ArrayList<String> directors) {
         this.directors = directors;
     }
     
+    /**
+     *
+     * @param director
+     */
     public void addDirector(String director){
         this.directors.add(director);
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getActors() {
         return actors;
     }
 
+    /**
+     *
+     * @param actors
+     */
     public void setActors(ArrayList<String> actors) {
         this.actors = actors;
     }
     
+    /**
+     *
+     * @param actor
+     */
     public void addActor(String actor){
         this.actors.add(actor);
     }

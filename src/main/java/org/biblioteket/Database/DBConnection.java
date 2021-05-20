@@ -33,10 +33,29 @@ public class DBConnection {
     private static final String dbPassword = "B0b1gny";
     private boolean connectedToDB = false;
     
+    /**
+     *
+     */
     public enum LoginResult {
+
+        /**
+         *
+         */
         LOGIN_OK,
+
+        /**
+         *
+         */
         WRONG_PASSWORD,
+
+        /**
+         *
+         */
         NO_SUCH_USER,
+
+        /**
+         *
+         */
         LOGOUT
     }
     
@@ -57,6 +76,12 @@ public class DBConnection {
   } 
     
     //Singleton implementation
+
+    /**
+     *
+     * @return
+     * @throws SQLException
+     */
     public static DBConnection getInstance() throws SQLException{
         if (instance == null){
             instance = new DBConnection(dbUrl, dbUserName, dbPassword);
@@ -64,15 +89,28 @@ public class DBConnection {
         return instance;
     }
 
-
+    /**
+     *
+     * @return
+     */
     public Statement getStatement() {
         return statement;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isConnectedToDB() {
         return connectedToDB;
     }
     
+    /**
+     *
+     * @param email
+     * @return
+     * @throws SQLException
+     */
     public String[] getPersonData(String email) throws SQLException{
         
         String[] userData = new String[0];
@@ -109,6 +147,11 @@ public class DBConnection {
         return userData;
     }
     
+    /**
+     *
+     * @param personID
+     * @return
+     */
     public String[] getLoantagareData(String personID) {
         
      String[] LoantagareData = new String[0];
@@ -139,6 +182,11 @@ public class DBConnection {
 
     }
     
+    /**
+     *
+     * @return
+     * @throws Exception
+     */
     public ResultSet getAllObjectData() throws Exception{
         try {
             //Get objekt from DB
@@ -156,6 +204,12 @@ public class DBConnection {
 
     }
     
+    /**
+     *
+     * @param objektID
+     * @return
+     * @throws SQLException
+     */
     public String getArtistsAsString(int objektID) throws SQLException{
         String authors;
          try {
@@ -176,7 +230,13 @@ public class DBConnection {
         return null;
     }
 
-     public ResultSet getAllCopiesData(int objektID) throws Exception {
+    /**
+     *
+     * @param objektID
+     * @return
+     * @throws Exception
+     */
+    public ResultSet getAllCopiesData(int objektID) throws Exception {
           try {
             //Get objekt from DB
             String SQL = "Select * from Kopia where ObjektID = ?";
@@ -194,6 +254,12 @@ public class DBConnection {
         
     }
     
+    /**
+     *
+     * @param email
+     * @return
+     * @throws SQLException
+     */
     public boolean chechIfLibrarian(String email) throws SQLException{
         
         try{
@@ -230,6 +296,13 @@ public class DBConnection {
             System.out.println("Ingen kontakt med databasen");
     }
     
+    /**
+     *
+     * @param email
+     * @param pwordIn
+     * @return
+     * @throws Exception
+     */
     public LoginResult checkUserPassword(String email, String pwordIn) throws Exception{
         try{
             LoginResult result;
@@ -269,6 +342,10 @@ public class DBConnection {
       throw new Exception("Unknown error");
     }
     
+    /**
+     *
+     * @param e
+     */
     public void printSQLExcept(SQLException e){
         System.out.println(e.getMessage());
     }

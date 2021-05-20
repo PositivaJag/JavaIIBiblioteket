@@ -1,13 +1,7 @@
 package org.biblioteket;
 
-import java.awt.Panel;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,57 +14,60 @@ import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection.LoginResult;
 import org.biblioteket.Persons.Person.PersonTyp;
 
+/**The class controlls the menu buttons
+ * and border panes. 
+ * @author Jenni
+ */
 public class FrameWButtonsController{
     @FXML
     private BorderPane borderPane;
     @FXML
     private AnchorPane leftPane;
     @FXML
-            Button buttonSearch;
+    private Button buttonSearch;
     @FXML
-            Button buttonLoan;
+    private Button buttonLoan;
     @FXML
-            Button buttonRetur;
+    private Button buttonRetur;
     @FXML
     public Button buttonLogout;
     @FXML
     private Button buttonHem;
     
-    private Panel view;
     private MainController mainController;
-    private static LoginResult loginResult;
     
     
-
-     public void initialize(){
- 
-
-     }
-    
-    
+    /**
+     * Handles button clicks for the loan button. 
+     * One must log on to access the page. Check with Class MainController
+     * if someone is logged on or not. If no one is, load login page. 
+     */
     @FXML
     void clickButtonLoan(ActionEvent event) {
         try {
-            //Check if someone is logged in.
+            //Get an instance of Main Controller
             mainController = MainController.getInstance();
+            //If personTyp == NONE, --> no one is logged in. 
             if (mainController.getPersonTyp() == PersonTyp.NONE){
                 loadPopup("Login.fxml");
-                
             }
-            else
-                System.out.println("Ladda sindan");
-                loadPage("Loan.fxml");
-                
-        } catch (SQLException ex) {
-            Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
+            else    //If someone alread logged in
+                loadPage("Loan.fxml");       
+        } 
+        catch (SQLException ex) {
+           ex.printStackTrace();
         }
-        
-  
     }
     
+    /**
+     *Handles button clicks for the Logout button.
+     * not working at the moment because the function for 
+     * making the button visible isn´t working. 
+     */
     @FXML
     void clickButtonLogout(ActionEvent event) {
         try {
+            
            if( MainController.getInstance().logout() == LoginResult.LOGOUT)
            {
                loadPage("Velcome.fxml");
@@ -78,32 +75,47 @@ public class FrameWButtonsController{
            }
             
         } catch (SQLException ex) {
-            Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();;
         }
     }
 
+    /**
+     *Not working at the moment. 
+     */
     @FXML
     void clickButtonReturn(ActionEvent event) {
        
     }
     
+    /**
+     * Handles button clicks for the Home button.
+     * Loads the home-page. 
+     * 
+     */
     @FXML
     void clickButtonHem(ActionEvent event) {
         try{
-        loadPage("Velcome.fxml");
-        buttonLogout.setDisable(true);
+            loadPage("Velcome.fxml");
         } catch (Exception e){
             System.out.println(e.getCause().getClass());
         }
     }
 
+    /**
+     * Handles button clicks for the search button.
+     * loads the search page. 
+     */
     @FXML
     void klickButtonSearch(ActionEvent event) {
         loadPage("SearchObject.fxml");
     }
     
+    /**
+     * Loads a fxml-file into the borderPande. 
+     * @param fxml the name of an fxml-file including .fxml.
+     * @return boolean value to know if everything went well or not. 
+     */
     private boolean loadPage(String fxml){
-
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxml));
             borderPane.setRight(root);
@@ -112,13 +124,17 @@ public class FrameWButtonsController{
         } catch (IOException ex) {
             System.out.println("Exception i klass FrameWButtonsController.java, i "
                     + "metoden loadPage()");
-            Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();;
             return false;
-        }
-        
+        }   
     }
+    
+    /**
+     * Loads a fxml-file as a popup.
+     * @param fxml the name of an fxml-file including .fxml.
+     * @return boolean value to know if everything went well or not. 
+     */
     private boolean loadPopup(String fxml){
-        
         try {
             Parent root =
                 FXMLLoader.load(getClass().getResource("Login.fxml"));
@@ -128,18 +144,17 @@ public class FrameWButtonsController{
             stage.show();
             return true;
         } catch (IOException ex) {
-            Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();;
             return false;
         }
     }
     
+    /**
+     *Not working. 
+     * @param bool
+     */
     public void setLogoutVisibility(Boolean bool){
         buttonLogout.setVisible(bool);
     }
-
-
-    
-
-
 }
 

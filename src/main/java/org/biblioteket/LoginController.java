@@ -17,6 +17,10 @@ import org.biblioteket.Database.DBConnection.LoginResult;
 import java.sql.SQLException;
 import javafx.scene.Node;
 
+/**
+ *
+ * @author Jenni
+ */
 public class LoginController {
 
     @FXML

@@ -19,6 +19,20 @@ public class Loantagare extends Person{
     String kategori;
 
     //Construktor för alla fält. 
+
+    /**
+     *
+     * @param personID
+     * @param fName
+     * @param lName
+     * @param email
+     * @param password
+     * @param personTyp
+     * @param telNr
+     * @param gatuAdress
+     * @param postNr
+     * @param Kategori
+     */
     public Loantagare(String personID, String fName, String lName, String email, String password, String personTyp,String telNr, String gatuAdress, String postNr, String Kategori) {
         super(personID, fName, lName, email, password, personTyp);
         this.telNr = telNr;
@@ -27,6 +41,15 @@ public class Loantagare extends Person{
         this.kategori = Kategori;
     }
     
+    /**
+     *
+     * @param personID
+     * @param fName
+     * @param lName
+     * @param email
+     * @param password
+     * @param personTyp
+     */
     public Loantagare(String personID, String fName, String lName, String email, String password, String personTyp){
         super(personID, fName, lName, email, password, personTyp);
         try{
@@ -44,34 +67,66 @@ public class Loantagare extends Person{
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTelNr() {
         return telNr;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getGatuAdress() {
         return gatuAdress;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPostNr() {
         return postNr;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getKategori() {
         return kategori;
     }
 
+    /**
+     *
+     * @param telNr
+     */
     public void setTelNr(String telNr) {
         this.telNr = telNr;
     }
 
+    /**
+     *
+     * @param gatuAdress
+     */
     public void setGatuAdress(String gatuAdress) {
         this.gatuAdress = gatuAdress;
     }
 
+    /**
+     *
+     * @param postNr
+     */
     public void setPostNr(String postNr) {
         this.postNr = postNr;
     }
 
+    /**
+     *
+     * @param Kategori
+     */
     public void setKategori(String Kategori) {
         this.kategori = Kategori;
     }
