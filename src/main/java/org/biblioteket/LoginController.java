@@ -70,8 +70,8 @@ public class LoginController {
                 else if (logginCheck == LoginResult.LOGIN_OK) {
 //                    labelMessage.setTextFill(Color.web("#008000"));
 //                    labelMessage.setText("Loggin!");
-                    FrameWButtonsController FWBControll = new FrameWButtonsController();
-                    FWBControll.setLogoutVisibility(true);
+//                    FrameWButtonsController FWBControll = new FrameWButtonsController();
+//                    FWBControll.setLogoutVisibility(true);
                     ((Node)(event.getSource())).getScene().getWindow().hide();
                 }
                 else {
