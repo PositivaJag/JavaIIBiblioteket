@@ -44,7 +44,7 @@ public class SearchObjectController {
     
     private List<Objekt> result;
     private ObservableList<Objekt> objektList;
-    private UseCase useCase;
+    private MainController useCase;
             
     public void initialize() throws Exception{
         
@@ -59,7 +59,7 @@ public class SearchObjectController {
         searchTable.getColumns().clear();
         
         //Create observableList
-        result = UseCase.getInstance().getAllObjekts();
+        result = MainController.getInstance().getAllObjekts();
         System.out.println(result.size());
         objektList = FXCollections.observableList(result);
         for (Objekt O : objektList)

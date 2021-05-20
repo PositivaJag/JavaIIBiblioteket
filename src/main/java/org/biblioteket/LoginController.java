@@ -56,8 +56,8 @@ public class LoginController {
                 //check if mail and password is correct
             } 
             else {
-                //Create instance of UseCase
-                UseCase useCase = UseCase.getInstance();
+                //Create instance of MainController
+                MainController useCase = MainController.getInstance();
                 //Check if mail and password match
                 LoginResult logginCheck = useCase.login(mail, pw);
                 
@@ -70,7 +70,8 @@ public class LoginController {
                 else if (logginCheck == LoginResult.LOGIN_OK) {
 //                    labelMessage.setTextFill(Color.web("#008000"));
 //                    labelMessage.setText("Loggin!");
-//                    FrameWButtonsController.setButtonLogoutVisibility(true);
+                    FrameWButtonsController FWBControll = new FrameWButtonsController();
+                    FWBControll.setLogoutVisibility(true);
                     ((Node)(event.getSource())).getScene().getWindow().hide();
                 }
                 else {

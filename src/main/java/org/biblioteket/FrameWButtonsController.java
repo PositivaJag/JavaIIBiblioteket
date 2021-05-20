@@ -1,10 +1,13 @@
 package org.biblioteket;
 
 import java.awt.Panel;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,28 +17,34 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Database.DBConnection.LoginResult;
-import org.biblioteket.Objects.Objekt;
-import org.biblioteket.Persons.Person;
 import org.biblioteket.Persons.Person.PersonTyp;
 
-public class FrameWButtonsController {
+public class FrameWButtonsController{
     @FXML
     private BorderPane borderPane;
     @FXML
     private AnchorPane leftPane;
     @FXML
-    private static Button buttonSearch, buttonLoan, buttonRetur, buttonLogout, buttonHem;
+            Button buttonSearch;
+    @FXML
+            Button buttonLoan;
+    @FXML
+            Button buttonRetur;
+    @FXML
+    public Button buttonLogout;
+    @FXML
+    private Button buttonHem;
     
     private Panel view;
-    private UseCase useCase;
-    private LoginResult loginResult;
+    private MainController mainController;
+    private static LoginResult loginResult;
     
     
 
      public void initialize(){
-         
+ 
+
      }
     
     
@@ -43,8 +52,8 @@ public class FrameWButtonsController {
     void clickButtonLoan(ActionEvent event) {
         try {
             //Check if someone is logged in.
-            useCase = UseCase.getInstance();
-            if (useCase.getPersonTyp() == PersonTyp.NONE){
+            mainController = MainController.getInstance();
+            if (mainController.getPersonTyp() == PersonTyp.NONE){
                 loadPopup("Login.fxml");
                 
             }
@@ -62,27 +71,30 @@ public class FrameWButtonsController {
     @FXML
     void clickButtonLogout(ActionEvent event) {
         try {
-           if( UseCase.getInstance().logout() == LoginResult.LOGOUT){
+           if( MainController.getInstance().logout() == LoginResult.LOGOUT)
+           {
                loadPage("Velcome.fxml");
-               setButtonLogoutVisibility(false);
+               setLogoutVisibility(false);
            }
             
         } catch (SQLException ex) {
             Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-
     }
 
     @FXML
     void clickButtonReturn(ActionEvent event) {
-        //setButtonLogoutVisibility(true);
-        buttonLogout.setVisible(false);
+       
     }
     
     @FXML
     void clickButtonHem(ActionEvent event) {
+        try{
         loadPage("Velcome.fxml");
+        buttonLogout.setDisable(true);
+        } catch (Exception e){
+            System.out.println(e.getCause().getClass());
+        }
     }
 
     @FXML
@@ -121,9 +133,13 @@ public class FrameWButtonsController {
         }
     }
     
-    public void setButtonLogoutVisibility(Boolean bool){
+    public void setLogoutVisibility(Boolean bool){
         buttonLogout.setVisible(bool);
     }
+
+
+    
+
 
 }
 

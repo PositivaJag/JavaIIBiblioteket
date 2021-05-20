@@ -5,6 +5,8 @@
  */
 package org.biblioteket;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Database.DBConnection.LoginResult;
 import org.biblioteket.Objects.Objekt;
@@ -16,14 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.paint.Color;
 import org.biblioteket.Persons.Person.PersonTyp;
+import org.biblioteket.FrameWButtonsController;
 
 /**
  *
  * @author Jenni
  */
-public class UseCase {
+public class MainController{
 
-    private static UseCase instance;
+    private static MainController instance;
     PersonTyp personTyp = PersonTyp.NONE; 
     Person activeLibrarian = null;
     Loantagare activeUser = null;
@@ -31,10 +34,12 @@ public class UseCase {
    
 
     //Singleton implementation. 
-    public static UseCase getInstance() throws SQLException {
+    public static MainController getInstance() throws SQLException {
         if (instance == null) {
-            instance = new UseCase();
+            instance = new MainController();
+            
         }
+        
         return instance;
     }
 
@@ -49,6 +54,8 @@ public class UseCase {
             //create loggin object if all is ok
             if (pwCheck == LoginResult.LOGIN_OK) {
                 //Create librarian
+//                Class<? extends Class> FWBControll = FrameWButtonsController.class.getClass();
+//                FWBControll.getMethod(setLogoutVisibility());
                 if (connection.chechIfLibrarian(mail)) {
                     activeLibrarian = new Person(mail);
                     
@@ -147,4 +154,6 @@ public class UseCase {
         return activeUser;
     }
     
+
+   
 }
