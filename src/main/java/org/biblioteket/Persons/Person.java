@@ -62,23 +62,23 @@ public class Person {
     }
 
     /**
-     *
-     * @return
+     * Getter
+     * @return personID
      */
     public String getPersonID() {
         return personID;
     }
 
     /**
-     *
-     * @return
+     * Getter
+     * @return first name
      */
     public String getfName() {
         return fName;
     }
 
     /**
-     *
+     * Setter 
      * @param fName
      */
     public void setfName(String fName) {
@@ -86,15 +86,15 @@ public class Person {
     }
 
     /**
-     *
-     * @return
+     * Getter
+     * @return last name
      */
     public String getlName() {
         return lName;
     }
 
     /**
-     *
+     * Setter
      * @param lName
      */
     public void setlName(String lName) {
@@ -102,15 +102,15 @@ public class Person {
     }  
 
     /**
-     *
-     * @return
+     * Getter
+     * @return email
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     *
+     * Setter
      * @param email
      */
     public void setEmail(String email) {
@@ -118,15 +118,15 @@ public class Person {
     }
 
     /**
-     *
-     * @return
+     * Getter
+     * @return password
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     *
+     * Setter
      * @param password
      */
     public void setPassword(String password) {
@@ -134,23 +134,18 @@ public class Person {
     }
 
     /**
-     *
-     * @return
+     * Getter
+     * @return person type
      */
-    public String getPersonTypAsString() {
-        return personTyp.toString();
-    }
-    
-    /**
-     * 
-     * @return 
-     */
-    public PersonTyp getPersonTypAsEnum(){
+    public PersonTyp getPersonTyp(){
         return personTyp;
     }
     
-    private void setPersonTypFromString(String personTyp){
-        
+    /**
+     * Setter for personTyp with string input from DB.
+     * @param personTyp 
+     */
+    public final void setPersonTypFromString(String personTyp){
         if (personTyp.equalsIgnoreCase("Bibliotekarie"))
             this.personTyp = PersonTyp.BIBLIOTEKARIE;
         else if (personTyp.equalsIgnoreCase("Låntagare"))
@@ -159,11 +154,19 @@ public class Person {
             this.personTyp = PersonTyp.NONE;
     }
     
+    /**
+     * Setter for personTyp with enum as input. 
+     * @param personTyp 
+     */
     public void setPersonTypFromEnum(PersonTyp personTyp){
         this.personTyp = personTyp;
     }
     
     
+    /**
+     * Prints Person info as string. 
+     * @return String.
+     */
     @Override
     public String toString(){
         return "Persondata\n"+personID+"\n"+fName+"\n"+lName+"\n"+password+"\n"+personTyp+"\n";

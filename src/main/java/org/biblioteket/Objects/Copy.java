@@ -2,31 +2,34 @@ package org.biblioteket.Objects;
 
 /**
  * Handles Copes of Objekts
+ *
  * @author Jenni
  */
-public class Copy{
-    
+public class Copy {
+
     private int streckkod;
     private final String objektID;
     private String loanKategori;
     private String placement;
 
-   /**
-    * Constructor
-    * @param streckkod
-    * @param objektID
-    * @param loanKategori
-    * @param placement
-    */
-    public Copy(int streckkod, String objektID, String loanKategori, String placement){
-            this.streckkod = streckkod;
-            this.objektID = objektID;
-            this.loanKategori = loanKategori;
-            this.placement = placement;
+    /**
+     * Constructor
+     *
+     * @param streckkod
+     * @param objektID
+     * @param loanKategori
+     * @param placement
+     */
+    public Copy(int streckkod, String objektID, String loanKategori, String placement) {
+        this.streckkod = streckkod;
+        this.objektID = objektID;
+        this.loanKategori = loanKategori;
+        this.placement = placement;
     }
-    
+
     /**
      * Getter
+     *
      * @return streckkod
      */
     public int getStreckkod() {
@@ -35,6 +38,7 @@ public class Copy{
 
     /**
      * Getter
+     *
      * @return loanKategori
      */
     public String getLoanKategori() {
@@ -43,6 +47,7 @@ public class Copy{
 
     /**
      * Getter
+     *
      * @return Placement
      */
     public String getPlacement() {
@@ -51,6 +56,7 @@ public class Copy{
 
     /**
      * Setter
+     *
      * @param streckkod
      */
     public void setStreckkod(int streckkod) {
@@ -59,6 +65,7 @@ public class Copy{
 
     /**
      * Setter
+     *
      * @param loanKategori
      */
     public void setLoanKategori(String loanKategori) {
@@ -67,6 +74,7 @@ public class Copy{
 
     /**
      * Setter
+     *
      * @param placement
      */
     public void setPlacement(String placement) {

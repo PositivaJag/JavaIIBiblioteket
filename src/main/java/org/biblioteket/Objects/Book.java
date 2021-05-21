@@ -23,7 +23,8 @@ public class Book extends Copy {
      * @param ObjektID
      * @param Titel
      */
-    public Book(int ISBN, ArrayList<String> authors, int streckkod, String loanKategori, String placement,
+    public Book(int ISBN, ArrayList<String> authors, int streckkod, 
+            String loanKategori, String placement,
             String ObjektID, String Titel) {
         super(streckkod, ObjektID, loanKategori, placement);
         this.ISBN = ISBN;

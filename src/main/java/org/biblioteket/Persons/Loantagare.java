@@ -14,12 +14,12 @@ import org.biblioteket.Database.DBConnection;
  */
 public class Loantagare extends Person{
     
-    String telNr;
-    String gatuAdress;
-    String postNr;
-    LoantagareKategori kategori;
+    private String telNr;
+    private String gatuAdress;
+    private String postNr;
+    private LoantagareKategori kategori;
     
-    enum LoantagareKategori{
+    public enum LoantagareKategori{
         STUDENT, 
         RESEARCHER, 
         UNIVERSITY_EMPLOYEE,
@@ -141,7 +141,7 @@ public class Loantagare extends Person{
      * Setter for kategori with string input from DB.
      * @param kategori
      */
-    private void setKategoriFromString(String kategori) {
+    public final void setKategoriFromString(String kategori) {
         switch (kategori){
             case "Student":
                 this.kategori = LoantagareKategori.STUDENT;
@@ -158,7 +158,7 @@ public class Loantagare extends Person{
     }
     
     /**
-     * Setter frok kategori  with enum as input. 
+     * Setter for kategori  with enum as input. 
      * @param kategori 
      */
     public void setKategoriFromEnum(LoantagareKategori kategori){
@@ -172,7 +172,7 @@ public class Loantagare extends Person{
      */
     @Override
     public String toString(){
-        return "Persondata\n"+getPersonID()+"\n"+getfName()+"\n"+getlName()+"\n"+getPassword()+"\n"+getPersonTypAsString()+"\n\n"+
+        return "Persondata\n"+getPersonID()+"\n"+getfName()+"\n"+getlName()+"\n"+getPassword()+"\n"+getPersonTyp().toString()+"\n\n"+
                 "Låntagardata\n"+this.telNr+"\n"+this.gatuAdress+"\n"+this.postNr+"\n"+this.kategori;
 
     }

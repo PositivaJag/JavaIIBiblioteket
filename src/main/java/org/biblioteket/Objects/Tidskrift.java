@@ -9,8 +9,8 @@ import java.util.Date;
  */
 public class Tidskrift extends Copy{
     
-    Date magazineDate;
-    int magazineNumber;
+    private final Date magazineDate;
+    private final int magazineNumber;
 
     /**
      * Constructor
@@ -19,11 +19,11 @@ public class Tidskrift extends Copy{
      * @param streckkod
      * @param loanKategori
      * @param placement
-     * @param ObjektID
+     * @param objektID
      * @param Titel
-     * @throws SQLException
      */
-    public Tidskrift(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, String objektID, String Titel) throws SQLException {
+    public Tidskrift(Date magazineDate, int magazineNumber, int streckkod, 
+            String loanKategori, String placement, String objektID, String Titel){
         super(streckkod, objektID, loanKategori, placement);
         this.magazineDate = magazineDate;
         this.magazineNumber = magazineNumber;

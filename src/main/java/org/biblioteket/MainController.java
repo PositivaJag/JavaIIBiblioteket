@@ -20,12 +20,12 @@ import org.biblioteket.Persons.Person.PersonTyp;
 public class MainController {
 
     private static MainController instance; //Single instance
-    Person activeLibrarian = null;  //Person object if Librarian is logged in. 
-    Loantagare activeUser = null;   //Loantagare object if Loantagare is logged in. 
+    private Person activeLibrarian = null;  //Person object if Librarian is logged in. 
+    private Loantagare activeUser = null;   //Loantagare object if Loantagare is logged in. 
 
     //Enum type of person that is logged in
     //Source of enum in Class Person
-    PersonTyp activeUserType = PersonTyp.NONE;
+    private PersonTyp activeUserType = PersonTyp.NONE;
 
     /**
      * Singleton implementation. Check if there is an instance available. If

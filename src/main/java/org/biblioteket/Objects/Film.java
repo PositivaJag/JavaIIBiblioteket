@@ -1,10 +1,10 @@
 package org.biblioteket.Objects;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
  * Handles films and movies, extends Copy.
+ *
  * @author Jenni
  */
 public class Film extends Copy {
@@ -13,8 +13,8 @@ public class Film extends Copy {
     private String prodCountry;
     private ArrayList<String> directors;
     private ArrayList<String> actors;
-    
-    private enum AgeRating{
+
+    private enum AgeRating {
         BARNTILLÅTEN,
         FRÅN_7_ÅR,
         FRÅN_15_ÅR
@@ -22,6 +22,7 @@ public class Film extends Copy {
 
     /**
      * Constructor
+     *
      * @param ageRating
      * @param prodCountry
      * @param streckkod
@@ -33,12 +34,12 @@ public class Film extends Copy {
      * @param actors
      */
     public Film(String ageRating, String prodCountry, int streckkod,
-            String loanKategori, String placement, String objektID, String Titel, 
-            ArrayList<String> directors, ArrayList<String> actors){
-        
+            String loanKategori, String placement, String objektID, String Titel,
+            ArrayList<String> directors, ArrayList<String> actors) {
+
         //Set superclass values
         super(streckkod, objektID, loanKategori, placement);
-        
+
         //Set ageRating enum value
         setAngeRatingFromString(ageRating);
         this.prodCountry = prodCountry;
@@ -48,6 +49,7 @@ public class Film extends Copy {
 
     /**
      * Getter
+     *
      * @return ageRating
      */
     public AgeRating getAgeRating() {
@@ -56,6 +58,7 @@ public class Film extends Copy {
 
     /**
      * Getter
+     *
      * @return prodCountry
      */
     public String getProdCountry() {
@@ -64,27 +67,31 @@ public class Film extends Copy {
 
     /**
      * Setter
+     *
      * @param ageRating
      */
     public void setAgeRatingfromEnum(AgeRating ageRating) {
         this.ageRating = ageRating;
     }
-    
+
     /**
-     * Setter for when the input is a string. 
-     * @param ageRating 
+     * Setter for when the input is a string.
+     *
+     * @param ageRating
      */
-    private void setAngeRatingFromString (String ageRating){
-         if (ageRating.equalsIgnoreCase("Från 7 år"))
-                this.ageRating = AgeRating.FRÅN_7_ÅR;
-        else if (ageRating.equalsIgnoreCase("Barntillåten"))
-                this.ageRating = AgeRating.BARNTILLÅTEN;
-        else if (ageRating.equalsIgnoreCase("Från 15 år"))
-                this.ageRating = AgeRating.FRÅN_15_ÅR;
+    public final void setAngeRatingFromString(String ageRating) {
+        if (ageRating.equalsIgnoreCase("Från 7 år")) {
+            this.ageRating = AgeRating.FRÅN_7_ÅR;
+        } else if (ageRating.equalsIgnoreCase("Barntillåten")) {
+            this.ageRating = AgeRating.BARNTILLÅTEN;
+        } else if (ageRating.equalsIgnoreCase("Från 15 år")) {
+            this.ageRating = AgeRating.FRÅN_15_ÅR;
+        }
     }
 
     /**
      * Setter
+     *
      * @param prodCountry
      */
     public void setProdCountry(String prodCountry) {
@@ -93,6 +100,7 @@ public class Film extends Copy {
 
     /**
      * Getter
+     *
      * @return directors
      */
     public ArrayList<String> getDirectors() {
@@ -100,7 +108,8 @@ public class Film extends Copy {
     }
 
     /**
-     * Setter for the whole list of directors. 
+     * Setter for the whole list of directors.
+     *
      * @param directors
      */
     public void setDirectors(ArrayList<String> directors) {
@@ -108,7 +117,8 @@ public class Film extends Copy {
     }
 
     /**
-     * Adds a director to the list of directors. 
+     * Adds a director to the list of directors.
+     *
      * @param director
      */
     public void addDirector(String director) {
@@ -117,6 +127,7 @@ public class Film extends Copy {
 
     /**
      * Getter
+     *
      * @return actors
      */
     public ArrayList<String> getActors() {
@@ -124,7 +135,8 @@ public class Film extends Copy {
     }
 
     /**
-     * Setter for the whole list of actors. 
+     * Setter for the whole list of actors.
+     *
      * @param actors
      */
     public void setActors(ArrayList<String> actors) {
@@ -132,7 +144,8 @@ public class Film extends Copy {
     }
 
     /**
-     * Adds an actor to the list of directors. 
+     * Adds an actor to the list of directors.
+     *
      * @param actor
      */
     public void addActor(String actor) {
