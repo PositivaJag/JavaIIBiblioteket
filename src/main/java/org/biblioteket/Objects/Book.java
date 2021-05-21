@@ -1,23 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket.Objects;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
+ * Handles books, extends Copy
  *
  * @author Jenni
  */
-public class Book extends Copy{
-    
+public class Book extends Copy {
+
     private int ISBN;
-    private ArrayList<String> authors; 
+    private ArrayList<String> authors;
 
     /**
+     * Constructor
      *
      * @param ISBN
      * @param authors
@@ -26,24 +22,25 @@ public class Book extends Copy{
      * @param placement
      * @param ObjektID
      * @param Titel
-     * @throws SQLException
      */
-    public Book(int ISBN, ArrayList<String> authors, int streckkod, String loanKategori, String placement, 
-            String ObjektID, String Titel) throws SQLException {
-        super(streckkod,ObjektID, loanKategori, placement);
+    public Book(int ISBN, ArrayList<String> authors, int streckkod, String loanKategori, String placement,
+            String ObjektID, String Titel) {
+        super(streckkod, ObjektID, loanKategori, placement);
         this.ISBN = ISBN;
         this.authors = authors;
     }
 
     /**
+     * Getter
      *
-     * @return
+     * @return ISBN
      */
     public int getISBN() {
         return ISBN;
     }
 
     /**
+     * Setter
      *
      * @param ISBN
      */
@@ -52,27 +49,30 @@ public class Book extends Copy{
     }
 
     /**
+     * Getter
      *
-     * @return
+     * @return authors
      */
     public ArrayList<String> getAuthors() {
         return authors;
     }
 
     /**
+     * Setter
      *
      * @param authors
      */
     public void setAuthors(ArrayList<String> authors) {
         this.authors = authors;
     }
-    
+
     /**
+     * Adds author to list.
      *
      * @param author
      */
-    public void addAuthor(String author){
+    public void addAuthor(String author) {
         this.authors.add(author);
     }
-    
+
 }

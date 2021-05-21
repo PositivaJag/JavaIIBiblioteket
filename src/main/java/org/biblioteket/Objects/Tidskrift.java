@@ -1,23 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket.Objects;
 
 import java.sql.SQLException;
 import java.util.Date;
 
 /**
- *
+ * Handles Tidskrift.
  * @author Jenni
  */
-public class Tidning extends Copy{
+public class Tidskrift extends Copy{
+    
     Date magazineDate;
     int magazineNumber;
 
     /**
-     *
+     * Constructor
      * @param magazineDate
      * @param magazineNumber
      * @param streckkod
@@ -27,7 +23,7 @@ public class Tidning extends Copy{
      * @param Titel
      * @throws SQLException
      */
-    public Tidning(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, String objektID, String Titel) throws SQLException {
+    public Tidskrift(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, String objektID, String Titel) throws SQLException {
         super(streckkod, objektID, loanKategori, placement);
         this.magazineDate = magazineDate;
         this.magazineNumber = magazineNumber;

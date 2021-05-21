@@ -66,7 +66,7 @@ public class MainController {
                     //gets the data needed to create a Loantagare. 
                     //Not a splendid implementation, could do with an overhaul. 
                     String[] personDB = connection.getPersonData(mail);
-                    activeUser = new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]);
+                    activeUser = new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], PersonTyp.LOANTAGARE);
                     activeUserType = PersonTyp.LOANTAGARE;
                 }
             }

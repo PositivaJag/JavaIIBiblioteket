@@ -1,27 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket.Persons;
 
 import org.biblioteket.Database.DBConnection;
-import java.sql.SQLException;
 
 /**
- *
+ * Handles basic info about people that can log in to the library. 
  * @author Jenni
  */
 public class Person {
-    private String personID;
+    private final String personID;
     private String fName;
     private String lName;
     private String email;
     private String password;
-    private String personTyp;
+    private PersonTyp personTyp;
     
     /**
-     *
+     * Enum for type of logged in person, librarian or loaner. 
      */
     public enum PersonTyp{
         BIBLIOTEKARIE,
@@ -30,7 +24,7 @@ public class Person {
     }
 
     /**
-     *
+     * Constructor for inputing all info. 
      * @param personID
      * @param fName
      * @param lName
@@ -38,7 +32,8 @@ public class Person {
      * @param password
      * @param personTyp
      */
-    public Person(String personID, String fName, String lName, String email, String password, String personTyp) {
+    public Person(String personID, String fName, String lName, String email, 
+            String password, PersonTyp personTyp) {
         this.personID = personID;
         this.fName = fName;
         this.lName = lName;
@@ -48,22 +43,22 @@ public class Person {
     }
     
     /**
-     *
+     *Constructor with email as parameter. Gets the rest of the info from the DB. 
      * @param email
-
+     * 
      */
     public Person (String email){
         //Check connection to DB
         DBConnection connection = DBConnection.getInstance();
         //Get user data
         String[] personDB = connection.getPersonData(email);
+        //Set Person object values
         this.personID = personDB[0];
         this.fName = personDB[1];
         this.lName = personDB[2];
         this.email = email;
         this.password = personDB[4];
-        this.personTyp = personDB[5];
-        
+        setPersonTypFromString(personDB[5]);
     }
 
     /**
@@ -142,8 +137,30 @@ public class Person {
      *
      * @return
      */
-    public String getPersonTyp() {
+    public String getPersonTypAsString() {
+        return personTyp.toString();
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public PersonTyp getPersonTypAsEnum(){
         return personTyp;
+    }
+    
+    private void setPersonTypFromString(String personTyp){
+        
+        if (personTyp.equalsIgnoreCase("Bibliotekarie"))
+            this.personTyp = PersonTyp.BIBLIOTEKARIE;
+        else if (personTyp.equalsIgnoreCase("Låntagare"))
+            this.personTyp = PersonTyp.LOANTAGARE;
+        else
+            this.personTyp = PersonTyp.NONE;
+    }
+    
+    public void setPersonTypFromEnum(PersonTyp personTyp){
+        this.personTyp = personTyp;
     }
     
     
