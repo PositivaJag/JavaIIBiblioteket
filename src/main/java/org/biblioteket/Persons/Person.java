@@ -50,13 +50,11 @@ public class Person {
     /**
      *
      * @param email
-     * @throws SQLException
+
      */
-    public Person (String email) throws SQLException{
+    public Person (String email){
         //Check connection to DB
-        try{
         DBConnection connection = DBConnection.getInstance();
-        
         //Get user data
         String[] personDB = connection.getPersonData(email);
         this.personID = personDB[0];
@@ -65,10 +63,6 @@ public class Person {
         this.email = email;
         this.password = personDB[4];
         this.personTyp = personDB[5];
-        } 
-        catch(SQLException e){
-            
-        }
         
     }
 

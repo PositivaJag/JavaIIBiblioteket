@@ -58,11 +58,11 @@ public class MainController {
             //create loggin object if all is ok
             if (checkCredentials == LoginResult.LOGIN_OK) {
                 //If a librarian has logged in. 
-                if (connection.chechIfLibrarian(mail)) {
+                if (connection.chechIfLibrarian(mail) == PersonTyp.BIBLIOTEKARIE) {
                     activeLibrarian = new Person(mail);
                     activeUserType = PersonTyp.BIBLIOTEKARIE;
                 } //If a loantagare has logged in.
-                else {
+                else if (connection.chechIfLibrarian(mail) == PersonTyp.LOANTAGARE){
                     //gets the data needed to create a Loantagare. 
                     //Not a splendid implementation, could do with an overhaul. 
                     String[] personDB = connection.getPersonData(mail);
@@ -108,7 +108,7 @@ public class MainController {
             //Create objects,add to ArrayList resultat
             while (resultSet.next()) {
                 resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
-                        resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1))));
+                        resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1), resultSet.getString(3))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
