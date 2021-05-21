@@ -44,19 +44,14 @@ public class FrameWButtonsController{
      */
     @FXML
     void clickButtonLoan(ActionEvent event) {
-        try {
-            //Get an instance of Main Controller
-            mainController = MainController.getInstance();
-            //If personTyp == NONE, --> no one is logged in. 
-            if (mainController.getPersonTyp() == PersonTyp.NONE){
-                loadPopup("Login.fxml");
-            }
-            else    //If someone alread logged in
-                loadPage("Loan.fxml");       
-        } 
-        catch (SQLException ex) {
-           ex.printStackTrace();
+        //Get an instance of Main Controller
+        mainController = MainController.getInstance();
+        //If personTyp == NONE, --> no one is logged in.
+        if (mainController.getActiveUserType() == PersonTyp.NONE){
+            loadPopup("Login.fxml");
         }
+        else    //If someone alread logged in
+            loadPage("Loan.fxml");
     }
     
     /**
@@ -66,16 +61,10 @@ public class FrameWButtonsController{
      */
     @FXML
     void clickButtonLogout(ActionEvent event) {
-        try {
-            
-           if( MainController.getInstance().logout() == LoginResult.LOGOUT)
-           {
-               loadPage("Velcome.fxml");
-               setLogoutVisibility(false);
-           }
-            
-        } catch (SQLException ex) {
-           ex.printStackTrace();;
+        if( MainController.getInstance().logout() == LoginResult.LOGOUT)
+        {
+            loadPage("Velcome.fxml");
+            setLogoutVisibility(false);
         }
     }
 

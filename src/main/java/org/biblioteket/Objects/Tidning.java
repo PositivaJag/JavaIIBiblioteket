@@ -27,8 +27,8 @@ public class Tidning extends Copy{
      * @param Titel
      * @throws SQLException
      */
-    public Tidning(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, int ObjektID, String Titel) throws SQLException {
-        super(streckkod, loanKategori, placement);
+    public Tidning(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, String objektID, String Titel) throws SQLException {
+        super(streckkod, objektID, loanKategori, placement);
         this.magazineDate = magazineDate;
         this.magazineNumber = magazineNumber;
     }

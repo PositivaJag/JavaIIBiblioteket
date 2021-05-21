@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket;
 
 import org.biblioteket.Objects.Objekt;
@@ -19,11 +14,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
+ * Handles the GUI functionality for the Objekt list and search functions.
  *
  * @author Jenni
  */
 public class SearchObjectController {
-
 
     @FXML
     private TextField searchField;
@@ -31,69 +26,51 @@ public class SearchObjectController {
     private Button buttonSearch;
     @FXML
     private TableView searchTable;
-//    @FXML
-//    private TableColumn<?, ?> columnID;
-//    @FXML
-//    private TableColumn<?, ?> columnTitel;
-//    @FXML
-//    private TableColumn<?, ?> columnTyp;
-//    @FXML
-//    private TableColumn<?, ?> columnAuthor;
-//    @FXML
-//    private Button buttonExit;
-    
+
     private List<Objekt> result;
     private ObservableList<Objekt> objektList;
-    private MainController useCase;
-            
+    private MainController mainController;
+
     /**
-     *
-     * @throws Exception
+     * Initializes the TableView at the start of the GUI.
      */
-    public void initialize() throws Exception{
-        
+    public void initialize() throws Exception {
         getAllObjekts();
-        
-        
     }
-    
- 
-    private void getAllObjekts() throws SQLException, Exception{
+
+    /**
+     * Gets Objekt from db and displays them in TableView.
+     */
+    private void getAllObjekts() {
         //clear table
         searchTable.getColumns().clear();
-        
-        //Create observableList
+
+        //Get all Objekt´ from the db
         result = MainController.getInstance().getAllObjekts();
-        System.out.println(result.size());
+        //Create observableList to dispay Objekt in TableView
         objektList = FXCollections.observableList(result);
-        for (Objekt O : objektList)
-            System.out.println(O.getObjektID());
-        
- 
-        //Skapa tableColumns
-        TableColumn<Objekt, String>  column1 = new TableColumn<>("ObjektID");
+
+        //Create tableColumns
+        TableColumn<Objekt, String> column1 = new TableColumn<>("ObjektID");
         TableColumn<Objekt, String> column2 = new TableColumn<>("Titel");
         TableColumn<Objekt, String> column3 = new TableColumn<>("Typ");
         TableColumn<Objekt, String> column4 = new TableColumn<>("Författare");
-        
+
         column1.setCellValueFactory(new PropertyValueFactory<>("objektID"));
         column2.setCellValueFactory(new PropertyValueFactory<>("titel"));
         column3.setCellValueFactory(new PropertyValueFactory<>("type"));
-        column4.setCellValueFactory(new PropertyValueFactory<>("authors"));
-        
+        column4.setCellValueFactory(new PropertyValueFactory<>("artists"));
+
+        //Set TableView to read observableList.
         searchTable.getColumns().addAll(column1, column2, column3, column4);
         searchTable.setItems(objektList);
-        
-    } 
-            
-    @FXML
-    void clickButtonExit(ActionEvent event) {
-        System.exit(0);
     }
 
+    /**
+     * Handles button clicks for search button. 
+     * Not yet functional
+     */
     @FXML
     void clickButtonSearch(ActionEvent event) {
-        
     }
-
 }

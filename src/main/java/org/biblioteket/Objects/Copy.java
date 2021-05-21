@@ -13,11 +13,13 @@ import java.sql.SQLException;
 public class Copy{
     
     private int streckkod;
+    private String objektID;
     private String loanKategori;
     private String placement;
 
-    Copy(int streckkod, String loanKategori, String placement) throws SQLException {
+   public Copy(int streckkod, String objektID, String loanKategori, String placement) throws SQLException {
             this.streckkod = streckkod;
+            this.objektID = objektID;
             this.loanKategori = loanKategori;
             this.placement = placement;
     }
@@ -25,6 +27,7 @@ public class Copy{
     /**
      *
      * @param streckkod
+     * @param objektIDtxt
      * @param loanKategori
      * @param placement
      * @param objektID
@@ -32,9 +35,9 @@ public class Copy{
      * @throws SQLException
      * @throws Exception
      */
-    public Copy newCopy(int streckkod, String loanKategori, String placement, Objekt objektID) throws SQLException, Exception {
+    public Copy newCopy(int streckkod, String objektIDtxt, String loanKategori, String placement, Objekt objektID) throws SQLException, Exception {
         if (Objekt.checkInstance(objektID)){
-            return new Copy(streckkod, loanKategori, placement);
+            return new Copy(streckkod, objektIDtxt, loanKategori, placement);
         }
         else
             throw new Exception("Objektet "+objektID.getTitel()+"finns inte.");

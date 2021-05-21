@@ -24,20 +24,8 @@ public class Person {
      *
      */
     public enum PersonTyp{
-
-        /**
-         *
-         */
         BIBLIOTEKARIE,
-
-        /**
-         *
-         */
         LOANTAGARE, 
-
-        /**
-         *
-         */
         NONE
     }
 

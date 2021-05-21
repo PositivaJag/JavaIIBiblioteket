@@ -32,8 +32,8 @@ public class Film extends Copy{
      * @throws SQLException
      */
     public Film(String ageRating, String prodCountry, int streckkod, 
-            String loanKategori, String placement, int ObjektID, String Titel, ArrayList<String> directors, ArrayList<String> actors) throws SQLException {
-        super(streckkod, loanKategori, placement);
+            String loanKategori, String placement, String objektID, String Titel, ArrayList<String> directors, ArrayList<String> actors) throws SQLException {
+        super(streckkod, objektID, loanKategori, placement);
         this.ageRating = ageRating;
         this.prodCountry = prodCountry;
         this.directors = directors;

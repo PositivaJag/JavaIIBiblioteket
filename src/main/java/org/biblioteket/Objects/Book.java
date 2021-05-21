@@ -29,8 +29,8 @@ public class Book extends Copy{
      * @throws SQLException
      */
     public Book(int ISBN, ArrayList<String> authors, int streckkod, String loanKategori, String placement, 
-            int ObjektID, String Titel) throws SQLException {
-        super(streckkod, loanKategori, placement);
+            String ObjektID, String Titel) throws SQLException {
+        super(streckkod,ObjektID, loanKategori, placement);
         this.ISBN = ISBN;
         this.authors = authors;
     }

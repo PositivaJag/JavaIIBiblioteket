@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket.Database;
 
 import java.sql.Connection;
@@ -12,9 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
+ * Handles all communication with the DB
  * @author Jenni
  */
 
@@ -34,68 +31,52 @@ public class DBConnection {
     private boolean connectedToDB = false;
     
     /**
-     *
+     * Enum for checking login status. 
      */
     public enum LoginResult {
-
-        /**
-         *
-         */
         LOGIN_OK,
-
-        /**
-         *
-         */
         WRONG_PASSWORD,
-
-        /**
-         *
-         */
         NO_SUCH_USER,
-
-        /**
-         *
-         */
-        LOGOUT
+        LOGOUT,
+        SOMETHING_WENT_WRONG
     }
     
-    //Constructor of connection
-    private DBConnection(String url, String username, String password) throws SQLException {
-      // connect to database
-      connection = DriverManager.getConnection(url, username, password);
-
-      // create Statement to query database                             
-      statement = connection.createStatement(                           
-         ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-      // update database connection status
-      connectedToDB = true;         
-
-      // set query and execute it
-      //setQuery(query);
+    /**
+     * Constructor
+     * 
+     * @param url
+     * @param username
+     * @param password
+     */
+    private DBConnection(String url, String username, String password){
+        try {
+            // connect to database
+            connection = DriverManager.getConnection(url, username, password);
+////            // create Statement to query database
+////            statement = connection.createStatement(
+////                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+             //update database connection status
+                connectedToDB = true;
+//            
+//            // set query and execute it
+//            //setQuery(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
   } 
-    
-    //Singleton implementation
 
     /**
-     *
-     * @return
-     * @throws SQLException
+     * Singleton implementation. Check if there is an instance available. If
+     * yes, return it. If no, create one and return it.
+     * @return instance of DBConnection
      */
-    public static DBConnection getInstance() throws SQLException{
+    public static DBConnection getInstance(){
         if (instance == null){
             instance = new DBConnection(dbUrl, dbUserName, dbPassword);
         }
         return instance;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Statement getStatement() {
-        return statement;
-    }
 
     /**
      *

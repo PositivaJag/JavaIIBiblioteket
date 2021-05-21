@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket;
 
 import org.biblioteket.Database.DBConnection;
@@ -14,8 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.biblioteket.Objects.Copy;
 import org.biblioteket.Persons.Person.PersonTyp;
 
 /**
@@ -31,7 +25,7 @@ public class MainController {
 
     //Enum type of person that is logged in
     //Source of enum in Class Person
-    PersonTyp personTyp = PersonTyp.NONE;
+    PersonTyp activeUserType = PersonTyp.NONE;
 
     /**
      * Singleton implementation. Check if there is an instance available. If
@@ -42,12 +36,13 @@ public class MainController {
     public static MainController getInstance() {
         if (instance == null) {
             instance = new MainController();
-
         }
         return instance;
     }
 
     /**
+     * Checks mail and password with DB. If ok, creates an active user object
+     * (Person or Loantagare) and sets personTyp to BIBLIOTEKARIE or LOANTAGARE.
      *
      * @param mail adress used as user name.
      * @param password
@@ -55,9 +50,9 @@ public class MainController {
      */
     public LoginResult login(String mail, String password) {
         try {
-            //Connect to db
+            //Connect to DB
             DBConnection connection = DBConnection.getInstance();
-            //check loggin mail and password (returns enum)
+            //check loggin credentias with DB, mail and password (returns enum)
             LoginResult checkCredentials = connection.checkUserPassword(mail, password);
 
             //create loggin object if all is ok
@@ -65,14 +60,14 @@ public class MainController {
                 //If a librarian has logged in. 
                 if (connection.chechIfLibrarian(mail)) {
                     activeLibrarian = new Person(mail);
-                    personTyp = PersonTyp.BIBLIOTEKARIE;
+                    activeUserType = PersonTyp.BIBLIOTEKARIE;
                 } //If a loantagare has logged in.
                 else {
                     //gets the data needed to create a Loantagare. 
                     //Not a splendid implementation, could do with an overhaul. 
                     String[] personDB = connection.getPersonData(mail);
                     activeUser = new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]);
-                    personTyp = PersonTyp.LOANTAGARE;
+                    activeUserType = PersonTyp.LOANTAGARE;
                 }
             }
             return checkCredentials;
@@ -81,98 +76,92 @@ public class MainController {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
+        return LoginResult.SOMETHING_WENT_WRONG;
     }
-        
-        
-        /**
-         *
-         * @return
-         */
+
+    /**
+     * Makes sure that no one is logged in by settin activeUserType to NONE and
+     * activeUser/activeLibrarian to null.
+     *
+     * @return enum LoginResult.LOGOUT
+     */
     public LoginResult logout() {
-        personTyp = PersonTyp.NONE;
+        activeUserType = PersonTyp.NONE;
         activeUser = null;
         activeLibrarian = null;
         return LoginResult.LOGOUT;
     }
 
     /**
+     * Fetches all objects from DB, creates an ArrayList with Objekts and
+     * returns it.
      *
-     * @return @throws SQLException
-     * @throws Exception
+     * @return ArrayList
      */
-    public ArrayList<Objekt> getAllObjekts() throws SQLException, Exception {
-
+    public ArrayList<Objekt> getAllObjekts() {
+        ArrayList<Objekt> resultat = new ArrayList<>();
         try {
             //Connect to db
             DBConnection connection = DBConnection.getInstance();
             //Get Objekt data from DB
             ResultSet resultSet = connection.getAllObjectData();
-            //Create objects,add to resultat
-            ArrayList<Objekt> resultat = new ArrayList<>();
+            //Create objects,add to ArrayList resultat
             while (resultSet.next()) {
                 resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
                         resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1))));
             }
-            return resultat;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new Exception("Something went wrong in UseCase.createAllObjects()");
+        return resultat;
     }
 
     /**
+     * Creates all copies belonging to a certain Objekt. Not in use yet.
      *
      * @param objektID
-     * @return
-     * @throws SQLException
-     * @throws Exception
+     * @return List of Copy objects.
      */
-    public List<Objekt> createAllCopies(String objektID) throws SQLException, Exception {
-
+    public List<Copy> createAllCopies(String objektID) {
+        List<Copy> resultat = new ArrayList<>();
         try {
             //Connect to db
             DBConnection connection = DBConnection.getInstance();
             //Get Objekt data from DB
             ResultSet resultSet = connection.getAllCopiesData(Integer.parseInt(objektID));
             //Create objects,add to resultat
-            List<Objekt> resultat = new ArrayList<>();
             while (resultSet.next()) {
-                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        connection.getArtistsAsString(resultSet.getInt(1))));
+                resultat.add(new Copy(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4)));
             }
-            return resultat;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new Exception("Something went wrong in UseCase.createAllObjects()");
+        return resultat;
     }
 
     /**
-     *
-     * @return
+     * Getter for activeUserType
+     * @return PersonTyp
      */
-    public PersonTyp getPersonTyp() {
-        return personTyp;
+    public PersonTyp getActiveUserType() {
+        return activeUserType;
     }
 
     /**
-     *
-     * @return
+     * Getter for active Librarian.
+     * @return Person Objekt
      */
     public Person getActiveLibrarian() {
         return activeLibrarian;
     }
 
     /**
-     *
-     * @return
+     * Getter for active Loantagare
+     * @return Loantagare object
      */
     public Loantagare getActiveUser() {
         return activeUser;

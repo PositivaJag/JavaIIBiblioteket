@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket;
 
 import javafx.event.ActionEvent;
@@ -18,6 +13,7 @@ import java.sql.SQLException;
 import javafx.scene.Node;
 
 /**
+ * Handles the login pane.
  *
  * @author Jenni
  */
@@ -25,68 +21,66 @@ public class LoginController {
 
     @FXML
     private TextField txtEmail;
-
     @FXML
     private Button buttonLogin;
-
     @FXML
     private Label labelMessage;
-
     @FXML
     private PasswordField password;
 
-
+    /**
+     * Handles button clicks for the avbryt button. Closes the popup window.
+     */
     @FXML
     void pressButtonAvbryt(ActionEvent event) {
-        ((Node)(event.getSource())).getScene().getWindow().hide();
-
+        ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 
+    /**
+     * Handles button clicks on the login button Not fully functional.
+     */
     @FXML
-    void pressButtonLogin(ActionEvent event) throws SQLException {
-
+    void pressButtonLogin(ActionEvent event) {
+        //Get input from user. 
         String mail = txtEmail.getText();
         String pw = password.getText();
-        
+
         try {
-            //check if user is blank
+            //If user field is empty, send message to user. 
             if (mail.isEmpty()) {
                 labelMessage.setTextFill(Color.web("#FE0000"));
                 labelMessage.setText("Skriv in din mailadress");
-            } //check if password is empty
+            } //if password field is empty, send message to user. 
             else if (pw.isEmpty()) {
                 labelMessage.setTextFill(Color.web("#FE0000"));
                 labelMessage.setText("Skriv in ditt lösenord");
-                //check if mail and password is correct
-            } 
+            } //check if mail and password is correct
             else {
-                //Create instance of MainController
-                MainController useCase = MainController.getInstance();
+                //Get instance of MainController
+                MainController mainController = MainController.getInstance();
                 //Check if mail and password match
-                LoginResult logginCheck = useCase.login(mail, pw);
-                
+                LoginResult logginCheck = mainController.login(mail, pw);
+                //If User or Password is wrong, send message to user
                 if (logginCheck == LoginResult.NO_SUCH_USER || logginCheck == LoginResult.WRONG_PASSWORD) {
                     labelMessage.setTextFill(Color.web("#FE0000"));
-                    labelMessage.setText("Användarnamn eller lösenord är fel");
-
-                } 
-                //Login successfull
+                    labelMessage.setText("Användarnamn och/eller lösenord är fel");
+                } //If User and password is correct, login. 
                 else if (logginCheck == LoginResult.LOGIN_OK) {
-//                    labelMessage.setTextFill(Color.web("#008000"));
-//                    labelMessage.setText("Loggin!");
-//                    FrameWButtonsController FWBControll = new FrameWButtonsController();
-//                    FWBControll.setLogoutVisibility(true);
-                    ((Node)(event.getSource())).getScene().getWindow().hide();
-                }
+                    //Send message to FrameWButtonsController to
+                    //- continue to the next page
+                    //- show the logout button
+                    //This isnt working yet
+
+                    //Close the popup. 
+                    ((Node) (event.getSource())).getScene().getWindow().hide();
+                } //A precausion while I'm developing the application. 
                 else {
-                labelMessage.setTextFill(Color.web("#FE0000"));
-                labelMessage.setText("Något gick fel");
+                    labelMessage.setTextFill(Color.web("#FE0000"));
+                    labelMessage.setText("Något gick fel");
                 }
-                }
+            }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
-
     }
-
 }
