@@ -1,50 +1,44 @@
-/*
- */
 package org.biblioteket.Objects;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import org.biblioteket.MainController;
 
 
 
 /**
- *
+ * Handles Objekts. 
  * @author Jenni
  */
 public class Objekt {
     private String objektID;
     private String titel;
     private String type;
-//    private ArrayList<Integer> copies;
+//    private ArrayList<Integer> copies; Will be implemented later. 
     private String artists;
 
     /**
-     *
+     * Constructor
      * @param ObjektID
      * @param Titel
      * @param type
      * @param authors
      */
     public Objekt(String ObjektID, String Titel, String type, String authors) {
-//        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
         this.titel = Titel;
         this.type = type;
-        this.artists = authors;
-        
+        this.artists = authors;        
     }
 
     /**
-     *
-     * @return
+     * Getter
+     * @return objektID
      */
     public String getObjektID() {
         return objektID;
     }
 
     /**
-     *
+     * Setter
      * @param objectID
      */
     public void setObjektID(String objectID) {
@@ -52,57 +46,40 @@ public class Objekt {
     }
 
     /**
-     *
-     * @return
+     *Getter
+     * @return type
      */
     public String getType() {
         return type;
     }
 
     /**
-     *
+     *Setter
      * @param type
      */
     public void setType(String type) {
         this.type = type;
     }
 
-//    public ArrayList<Integer> getCopies() {
-//        return copies;
-//    }
-
-//    public void setCopies(ArrayList<Integer> copies) {
-//        this.copies = copies;
-//    }
-
     /**
-     *
-     * @return
+     * Getter
+     * @return artists
      */
-
     public String getArtists() {
         return artists;
     }
 
     /**
-     *
-     * @param authors
+     * Setter
+     * @param artists
      */
-    public void setArtists(String authors) {
-        this.artists = authors;
+    public void setArtists(String artists) {
+        this.artists = artists;
     }
 
-//    public void addCopy(int kopia){
-//        this.copies.add(kopia);
-//    }
-//    
-//    public void removeCopy(int kopia){
-//        this.copies.remove(kopia);
-//    }
-
     /**
-     *
-     * @return
+     * Getter
+     * @return titel
      */
     
     public String getTitel() {
@@ -110,20 +87,20 @@ public class Objekt {
     }
 
     /**
-     *
-     * @param Titel
+     * Setter
+     * @param titel
      */
-    public void setTitel(String Titel) {
-        this.titel = Titel;
+    public void setTitel(String titel) {
+        this.titel = titel;
     }
 
     /**
-     *
+     * Not in use at the moment. 
      * @param instance
      * @return
      * @throws SQLException
      */
-    public static Boolean checkInstance(Objekt instance) throws SQLException {
+    public Boolean checkInstance(Objekt instance) throws SQLException {
             return instance != null;
     }
     

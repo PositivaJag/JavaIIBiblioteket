@@ -53,7 +53,7 @@ public class MainController {
             //Connect to DB
             DBConnection connection = DBConnection.getInstance();
             //check loggin credentias with DB, mail and password (returns enum)
-            LoginResult checkCredentials = connection.checkUserPassword(mail, password);
+            LoginResult checkCredentials = connection.checkUserAndPassword(mail, password);
 
             //create loggin object if all is ok
             if (checkCredentials == LoginResult.LOGIN_OK) {
@@ -71,8 +71,6 @@ public class MainController {
                 }
             }
             return checkCredentials;
-        } catch (SQLException e) {
-            e.printStackTrace();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

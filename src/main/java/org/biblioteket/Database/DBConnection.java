@@ -9,7 +9,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.biblioteket.Persons.Person;
 import org.biblioteket.Persons.Person.PersonTyp;
 
 /**
@@ -54,14 +53,8 @@ public class DBConnection {
         try {
             // connect to database
             connection = DriverManager.getConnection(url, username, password);
-////            // create Statement to query database
-////            statement = connection.createStatement(
-////                    ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            //update database connection status
             connectedToDB = true;
-//            
-//            // set query and execute it
-//            //setQuery(query);
+            
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -175,9 +168,9 @@ public class DBConnection {
             getQuery(pState);
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return resultSet;
+           printSQLExcept(e);        
+    }
+      return resultSet; 
     }
 
     /**
@@ -232,7 +225,7 @@ public class DBConnection {
             getQuery(pState);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            printSQLExcept(e);
         }
 
         return resultSet;
@@ -266,7 +259,12 @@ public class DBConnection {
         return personTyp;
     }
 
-    private void getQuery(PreparedStatement pState) throws SQLException {
+    /**
+     * Checks if there is a connetion to the DB and runs a prepared statement. 
+     * Writes the result to the class variable resultSet
+     * @param pState
+     */
+    private void getQuery(PreparedStatement pState){
         //Check if we have contact with database
         if (connectedToDB == true) {
             try {
@@ -281,49 +279,46 @@ public class DBConnection {
     }
 
     /**
-     *
+     * Checks if email and password belongs to an account and if they are 
+     * correct. 
      * @param email
-     * @param pwordIn
-     * @return
-     * @throws Exception
+     * @param passwordIn
+     * @return LoginResult (enum)
      */
-    public LoginResult checkUserPassword(String email, String pwordIn) throws Exception {
-        try {
-            LoginResult result;
-
+    public LoginResult checkUserAndPassword(String email, String passwordIn){
+        
+        LoginResult result = LoginResult.LOGOUT;
+        
+        try {           
+            //get password where mail address == input address
             String SQL = "Select lösenord from person where eMail = ?";
             pState = connection.prepareStatement(SQL);
             pState.setString(1, email);
             getQuery(pState);
 
-            //check results
-            //0 = No user found
-            //1 = Password correct
-            //2 = Password not correct
-            //99 = Error
-            //Check if row exists
+            //If no row returned --> no such user. 
             if (!resultSet.next()) {
-                result = LoginResult.NO_SUCH_USER;
-            } else {
-                //System.out.println(resultSet.getString(1));
-                if (resultSet.getString(1).equals(pwordIn)) {
+                result = LoginResult.NO_SUCH_USER;            
+            } 
+            //if row returned --> user exists
+            else {
+                //if passwordIn == DB password --> Login ok
+                if (resultSet.getString(1).equals(passwordIn)) {
                     result = LoginResult.LOGIN_OK;
-                } else {
+                } 
+                //if passwordIn != DB password --> wrong password. 
+                else {
                     result = LoginResult.WRONG_PASSWORD;
                 }
             }
-
-            //System.out.println(result);
-            return result;
         } catch (SQLException e) {
             printSQLExcept(e);
         }
-        //System.out.println(99);  
-        throw new Exception("Unknown error");
+        return result;
     }
 
     /**
-     *
+     *Prints exception message. 
      * @param e
      */
     public void printSQLExcept(SQLException e) {
