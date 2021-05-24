@@ -61,6 +61,8 @@ public class MainController {
                 if (connection.chechIfLibrarian(mail) == PersonTyp.BIBLIOTEKARIE) {
                     activeLibrarian = new Person(mail);
                     activeUserType = PersonTyp.BIBLIOTEKARIE;
+                    System.out.println("Inloggad som "+ activeLibrarian.getfName() +" "+ 
+                        activeLibrarian.getlName() + ", "+activeUserType.toString());
                 } //If a loantagare has logged in.
                 else if (connection.chechIfLibrarian(mail) == PersonTyp.LOANTAGARE){
                     //gets the data needed to create a Loantagare. 
@@ -68,7 +70,10 @@ public class MainController {
                     String[] personDB = connection.getPersonData(mail);
                     activeUser = new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], PersonTyp.LOANTAGARE);
                     activeUserType = PersonTyp.LOANTAGARE;
+                    System.out.println("Inloggad som "+ activeUser.getfName() +" "+ 
+                        activeUser.getlName() + ", "+activeUserType.toString());
                 }
+                
             }
             return checkCredentials;
         } catch (Exception ex) {
@@ -87,6 +92,7 @@ public class MainController {
         activeUserType = PersonTyp.NONE;
         activeUser = null;
         activeLibrarian = null;
+        System.out.println("Utloggad");
         return LoginResult.LOGOUT;
     }
 

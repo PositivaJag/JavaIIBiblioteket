@@ -64,7 +64,8 @@ public class FrameWButtonsController{
         if( MainController.getInstance().logout() == LoginResult.LOGOUT)
         {
             loadPage("Velcome.fxml");
-            setLogoutVisibility(false);
+            //setLogoutVisibility(false);
+            
         }
     }
 
