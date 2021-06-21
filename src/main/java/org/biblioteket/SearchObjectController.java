@@ -5,8 +5,10 @@
  */
 package org.biblioteket;
 
+import java.sql.ResultSet;
 import org.biblioteket.Objects.Objekt;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +19,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.biblioteket.Database.DBConnection;
 
 /**
  *
@@ -48,18 +51,18 @@ public class SearchObjectController {
             
     public void initialize() throws Exception{
         
-        getAllObjekts();
+        getObjekts();
         
         
     }
     
  
-    private void getAllObjekts() throws SQLException, Exception{
+    private void getObjekts() throws SQLException, Exception{
         //clear table
         searchTable.getColumns().clear();
         
         //Create observableList
-        result = MainController.getInstance().getAllObjekts();
+        result = getAllObjekts();
         System.out.println(result.size());
         objektList = FXCollections.observableList(result);
         for (Objekt O : objektList)
@@ -91,5 +94,28 @@ public class SearchObjectController {
     void clickButtonSearch(ActionEvent event) {
         
     }
+    
+     public ArrayList<Objekt> getAllObjekts() throws SQLException, Exception {
+
+        try {
+            //Connect to db
+            DBConnection connection = DBConnection.getInstance();
+            //Get Objekt data from DB
+            ResultSet resultSet = connection.getAllObjectData();
+            //Create objects,add to resultat
+            ArrayList<Objekt> resultat = new ArrayList<>();
+            while (resultSet.next()) {
+                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
+                        resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1))));
+            }
+            return resultat;
+        } 
+        catch (SQLException e) {
+        } 
+        catch (Exception e) {
+        }
+        throw new Exception("Something went wrong in UseCase.createAllObjects()");
+    }
+    
 
 }
