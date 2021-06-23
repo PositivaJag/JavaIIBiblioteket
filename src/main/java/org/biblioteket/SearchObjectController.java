@@ -47,7 +47,7 @@ public class SearchObjectController {
     
     private List<Objekt> result;
     private ObservableList<Objekt> objektList;
-    private MainController useCase;
+    private MainControllerOLD useCase;
             
     public void initialize() throws Exception{
         

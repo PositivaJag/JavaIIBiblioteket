@@ -14,12 +14,16 @@ import java.sql.SQLException;
  */
 public class App extends Application {
 
+    static FrameWButtonsController mainControll;
+    
     @Override
-    public void start(Stage stage) throws IOException, SQLException {
-        
-//        try{
-        Parent root = 
-         FXMLLoader.load(getClass().getResource("FrameWButtons.fxml"));
+    public void start(Stage stage) throws Exception {
+    //Set up instance instead of using static load() method
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("FrameWButtons.fxml"));
+    Parent root = loader.load();
+
+    //Now we have access to getController() through the instance... don't forget the type cast
+    mainControll  = (FrameWButtonsController)loader.getController();
       
         Scene scene = new Scene(root);
         stage.setScene(scene);
@@ -37,4 +41,9 @@ public class App extends Application {
         launch(args);
     }
 
+    public static FrameWButtonsController getMainControll() {
+        return mainControll;
+    }
+
+    
 }

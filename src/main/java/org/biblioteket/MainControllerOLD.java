@@ -24,9 +24,9 @@ import org.biblioteket.FrameWButtonsController;
  *
  * @author Jenni
  */
-public class MainController{
+public class MainControllerOLD{
 
-    private static MainController instance;
+    private static MainControllerOLD instance;
 //    PersonTyp personTyp = PersonTyp.NONE; 
 //    Person activeLibrarian = null;
 //    Loantagare activeUser = null;
@@ -34,9 +34,9 @@ public class MainController{
    
 
     //Singleton implementation. 
-    public static MainController getInstance() throws SQLException {
+    public static MainControllerOLD getInstance() throws SQLException {
         if (instance == null) {
-            instance = new MainController();
+            instance = new MainControllerOLD();
             
         }
         

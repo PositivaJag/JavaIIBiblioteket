@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -34,14 +35,16 @@ public class FrameWButtonsController {
     public Button buttonLogout;
     @FXML
     private Button buttonHem;
+    @FXML
+    private Label labelInloggad;
 
     private Panel view;
-    private MainController mainController;
+    private MainControllerOLD mainController;
     private static LoginResult loginResult;
 
-    private static PersonTyp personTyp = PersonTyp.NONE;
-    private static Person activeLibrarian = null;
-    private static Loantagare activeUser = null;
+    private PersonTyp personTyp = PersonTyp.NONE;
+    private Person activeLibrarian = null;
+    private Loantagare activeUser = null;
 
     public void initialize() {
 
@@ -124,35 +127,40 @@ public class FrameWButtonsController {
         buttonLogout.setVisible(bool);
     }
 
-    public static PersonTyp getPersonTyp() {
+    public PersonTyp getPersonTyp() {
         return personTyp;
     }
 
-    public static Person getActiveLibrarian() {
+    public Person getActiveLibrarian() {
         return activeLibrarian;
     }
 
-    public static Loantagare getActiveUser() {
+    public Loantagare getActiveUser() {
         return activeUser;
     }
 
-    public static void setPersonTyp(PersonTyp personT) {
-        personTyp = personT;
+    public void setPersonTyp(PersonTyp personT) {
+        this.personTyp = personT;
     }
 
-    public static void setActiveLibrarian(Person activeLib) {
-        activeLibrarian = activeLib;
+    public void setActiveLibrarian(Person activeLib) {
+        this.activeLibrarian = activeLib;
     }
 
-    public static void setActiveUser(Loantagare activeU) {
-        activeUser = activeU;
+    public void setActiveUser(Loantagare activeU) {
+        this.activeUser = activeU;
     }
 
-    public static LoginResult logout() {
-        personTyp = PersonTyp.NONE;
-        activeUser = null;
-        activeLibrarian = null;
+    public LoginResult logout() {
+        this.personTyp = PersonTyp.NONE;
+        this.activeUser = null;
+        this.activeLibrarian = null;
         return LoginResult.LOGOUT;
     }
 
+    public void setLabelInloggad(String labelInloggad) {
+        this.labelInloggad.setText(labelInloggad);
+    }
+
+    
 }

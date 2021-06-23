@@ -99,7 +99,7 @@ public class LoginController {
     }
     
      public LoginResult login(String mail, String password) throws Exception {
-
+         FrameWButtonsController mainControll;
         try {
             //Connect to db
             DBConnection connection = DBConnection.getInstance();
@@ -107,31 +107,35 @@ public class LoginController {
             LoginResult pwCheck = connection.checkUserPassword(mail, password);
             
             //create loggin object if all is ok
-            if (pwCheck == LoginResult.LOGIN_OK) {
+            if (pwCheck == LoginResult.LOGIN_OK) {                
+                mainControll = App.getMainControll();
                 //Create librarian
 //                Class<? extends Class> FWBControll = FrameWButtonsController.class.getClass();
 //                FWBControll.getMethod(setLogoutVisibility());
                 if (connection.chechIfLibrarian(mail)) {
-                    FrameWButtonsController.setActiveLibrarian(new Person(mail));
+                    //System.out.println(mainControll.getActiveLibrarian().toString());
+                    mainControll.setActiveLibrarian(new Person(mail));
+                    System.out.println(mainControll.getActiveLibrarian().toString());
                     
 ////                    for (int i = 0; i < 6; i++) {
 ////                        System.out.println(activeLibrarian.toString());
 //   
 //                    }
-                     FrameWButtonsController.setPersonTyp(Person.PersonTyp.BIBLIOTEKARIE);
+                     mainControll.setPersonTyp(Person.PersonTyp.BIBLIOTEKARIE);
                     
                 } 
                 //Create loantagare
                 else {
                     String[] personDB = connection.getPersonData(mail);
-                    FrameWButtonsController.setActiveUser(new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]));
+                    mainControll.setActiveUser(new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]));
 
                     for (int i = 0; i < 6; i++) {
                         System.out.println(activeUser.toString());
                     }
-                    FrameWButtonsController.setPersonTyp(Person.PersonTyp.LOANTAGARE);
+                    mainControll.setPersonTyp(Person.PersonTyp.LOANTAGARE);
                 }
-            } 
+                mainControll.setLogoutVisibility(true);
+            }
             return pwCheck;
         }
         catch (SQLException e) {
