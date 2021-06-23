@@ -230,7 +230,7 @@ public class DBConnection {
             System.out.println("Ingen kontakt med databasen");
     }
     
-    public LoginResult checkUserPassword(String email, String pwordIn) throws Exception{
+    public LoginResult checkUserAndPassword(String email, String pwordIn) throws Exception{
         try{
             LoginResult result;
             

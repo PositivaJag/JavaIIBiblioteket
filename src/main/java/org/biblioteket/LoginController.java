@@ -19,6 +19,7 @@ import javafx.scene.Node;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Persons.Person;
 import org.biblioteket.Persons.Loantagare;
+import org.biblioteket.Persons.Person.PersonTyp;
 
 
 public class LoginController {
@@ -35,9 +36,9 @@ public class LoginController {
     @FXML
     private PasswordField password;
     
-    Person.PersonTyp personTyp = Person.PersonTyp.NONE; 
-    Person activeLibrarian = null;
-    Loantagare activeUser = null;
+//    Person.PersonTyp personTyp = Person.PersonTyp.NONE; 
+//    Person activeLibrarian = null;
+//    Loantagare activeUser = null;
 
 
     @FXML
@@ -80,9 +81,9 @@ public class LoginController {
                         labelMessage.setText("Användarnamn eller lösenord är fel");
                         break;
                     case LOGIN_OK:
-                        //                    labelMessage.setTextFill(Color.web("#008000"));
+                        //labelMessage.setTextFill(Color.web("#008000"));
 //                    labelMessage.setText("Loggin!");
-//                    FrameWButtonsController FWBControll = new FrameWButtonsController();
+//                    MainController FWBControll = new MainController();
 //                    FWBControll.setLogoutVisibility(true);
                         ((Node)(event.getSource())).getScene().getWindow().hide();
                         break;
@@ -99,49 +100,50 @@ public class LoginController {
     }
     
      public LoginResult login(String mail, String password) throws Exception {
-         FrameWButtonsController mainControll;
+         MainController mainControll;
         try {
             //Connect to db
             DBConnection connection = DBConnection.getInstance();
-            //check loggin mail and password (returns 0, 1, 2, 99)
-            LoginResult pwCheck = connection.checkUserPassword(mail, password);
+            
+            LoginResult checkUserPassw = connection.checkUserAndPassword(mail, password);
             
             //create loggin object if all is ok
-            if (pwCheck == LoginResult.LOGIN_OK) {                
-                mainControll = App.getMainControll();
-                //Create librarian
-//                Class<? extends Class> FWBControll = FrameWButtonsController.class.getClass();
-//                FWBControll.getMethod(setLogoutVisibility());
+            if (checkUserPassw == LoginResult.LOGIN_OK) {                
+                mainControll = App.getMainControll();             
                 if (connection.chechIfLibrarian(mail)) {
                     //System.out.println(mainControll.getActiveLibrarian().toString());
                     mainControll.setActiveLibrarian(new Person(mail));
-                    System.out.println(mainControll.getActiveLibrarian().toString());
-                    
-////                    for (int i = 0; i < 6; i++) {
-////                        System.out.println(activeLibrarian.toString());
-//   
-//                    }
-                     mainControll.setPersonTyp(Person.PersonTyp.BIBLIOTEKARIE);
-                    
+                    mainControll.setPersonTyp(Person.PersonTyp.BIBLIOTEKARIE);                   
                 } 
                 //Create loantagare
                 else {
                     String[] personDB = connection.getPersonData(mail);
                     mainControll.setActiveUser(new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]));
-
-                    for (int i = 0; i < 6; i++) {
-                        System.out.println(activeUser.toString());
-                    }
                     mainControll.setPersonTyp(Person.PersonTyp.LOANTAGARE);
+                    String label = mainControll.getActiveUser().getfName();
+                    mainControll.setLabelInloggad(label);
                 }
+                mainControll.setLabelInloggad(getActiveName(mainControll));
                 mainControll.setLogoutVisibility(true);
             }
-            return pwCheck;
+            return checkUserPassw;
         }
         catch (SQLException e) {
             System.out.println("error: "+e);
         }
         throw new Exception("Unknown error");
     }
-
+     
+     public String getActiveName(MainController mainControll){
+         String labelTxt = null;
+         if (mainControll.getPersonTyp() == PersonTyp.BIBLIOTEKARIE){
+             labelTxt = "Inloggad som:\n"+mainControll.getActiveLibrarian().getfName()+" "+mainControll.getActiveLibrarian().getlName();
+                    
+         }
+         else if (mainControll.getPersonTyp() == PersonTyp.LOANTAGARE){
+               labelTxt = "Inloggad som:\n"+mainControll.getActiveUser().getfName()+" "+mainControll.getActiveUser().getlName();
+         }
+             
+         return labelTxt;
+     }
 }

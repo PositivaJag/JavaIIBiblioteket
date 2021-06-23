@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.biblioteket;
+package OLD;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.paint.Color;
 import org.biblioteket.Persons.Person.PersonTyp;
-import org.biblioteket.FrameWButtonsController;
+import org.biblioteket.MainController;
 
 /**
  *
@@ -49,12 +49,12 @@ public class MainControllerOLD{
 //            //Connect to db
 //            DBConnection connection = DBConnection.getInstance();
 //            //check loggin mail and password (returns 0, 1, 2, 99)
-//            LoginResult pwCheck = connection.checkUserPassword(mail, password);
+//            LoginResult pwCheck = connection.checkUserAndPassword(mail, password);
 //            
 //            //create loggin object if all is ok
 //            if (pwCheck == LoginResult.LOGIN_OK) {
 //                //Create librarian
-////                Class<? extends Class> FWBControll = FrameWButtonsController.class.getClass();
+////                Class<? extends Class> FWBControll = MainController.class.getClass();
 ////                FWBControll.getMethod(setLogoutVisibility());
 //                if (connection.chechIfLibrarian(mail)) {
 //                    activeLibrarian = new Person(mail);

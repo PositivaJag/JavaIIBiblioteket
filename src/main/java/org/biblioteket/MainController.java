@@ -1,5 +1,6 @@
 package org.biblioteket;
 
+import OLD.MainControllerOLD;
 import java.awt.Panel;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -19,7 +20,7 @@ import org.biblioteket.Persons.Loantagare;
 import org.biblioteket.Persons.Person;
 import org.biblioteket.Persons.Person.PersonTyp;
 
-public class FrameWButtonsController {
+public class MainController {
 
     @FXML
     private BorderPane borderPane;
@@ -66,8 +67,9 @@ public class FrameWButtonsController {
     @FXML
     void clickButtonLogout(ActionEvent event) {
         if (logout() == LoginResult.LOGOUT) {
-            loadPage("Velcome.fxml");
+            loadPage("Home.fxml");
             setLogoutVisibility(false);
+            labelInloggad.setText("Utloggad");
         }
     }
 
@@ -79,8 +81,7 @@ public class FrameWButtonsController {
     @FXML
     void clickButtonHem(ActionEvent event) {
         try {
-            loadPage("Velcome.fxml");
-            buttonLogout.setDisable(true);
+            loadPage("Home.fxml");
         } catch (Exception e) {
             System.out.println(e.getCause().getClass());
         }
@@ -99,9 +100,9 @@ public class FrameWButtonsController {
             return true;
 
         } catch (IOException ex) {
-            System.out.println("Exception i klass FrameWButtonsController.java, i "
+            System.out.println("Exception i klass MainController.java, i "
                     + "metoden loadPage()");
-            Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
 
@@ -118,7 +119,7 @@ public class FrameWButtonsController {
             stage.show();
             return true;
         } catch (IOException ex) {
-            Logger.getLogger(FrameWButtonsController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
