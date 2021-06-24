@@ -12,6 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -139,10 +142,10 @@ public class DBConnection {
 
     }
     
-    public ResultSet getAllObjectData() throws Exception{
+    public ResultSet getObjectsData(String SQL) throws Exception{
         try {
             //Get objekt from DB
-            String SQL = "Select ObjektID, Titel, Typ from Objekt";
+            //String SQL = "Select ObjektID, Titel, Typ from Objekt";
             pState = connection.prepareStatement(SQL);
             getQuery(pState);
 
@@ -238,12 +241,6 @@ public class DBConnection {
             pState = connection.prepareStatement(SQL);
             pState.setString(1, email);
             getQuery(pState);
-            
-            //check results
-            //0 = No user found
-            //1 = Password correct
-            //2 = Password not correct
-            //99 = Error
 
             //Check if row exists
             if (!resultSet.next()){
@@ -271,6 +268,35 @@ public class DBConnection {
     
     public void printSQLExcept(SQLException e){
         System.out.println(e.getMessage());
+    }
+    
+    @SuppressWarnings("empty-statement")
+    public ArrayList<String> getObjektTypes(){
+        
+        ArrayList<String> types = new ArrayList();
+        
+        try {
+            String SQL = "select distinct typ from objekt;";
+            pState = connection.prepareStatement(SQL);
+            getQuery(pState);
+            
+            if (!resultSet.next()){
+                return types;
+            }
+            else{
+                 do {
+                    types.add(resultSet.getString(1));
+                    System.out.println(resultSet.getString(1));
+            }while (resultSet.next());
+            
+                 return types;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+         
     }
 
 }

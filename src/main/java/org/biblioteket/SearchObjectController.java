@@ -103,7 +103,7 @@ public class SearchObjectController {
             //Connect to db
             DBConnection connection = DBConnection.getInstance();
             //Get Objekt data from DB
-            ResultSet resultSet = connection.getAllObjectData();
+            ResultSet resultSet = connection.getObjectsData("Strig");
             //Create objects,add to resultat
             ArrayList<Objekt> resultat = new ArrayList<>();
             while (resultSet.next()) {

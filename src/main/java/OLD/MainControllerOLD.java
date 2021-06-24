@@ -99,7 +99,7 @@ public class MainControllerOLD{
 //            //Connect to db
 //            DBConnection connection = DBConnection.getInstance();
 //            //Get Objekt data from DB
-//            ResultSet resultSet = connection.getAllObjectData();
+//            ResultSet resultSet = connection.getObjectsData();
 //            //Create objects,add to resultat
 //            ArrayList<Objekt> resultat = new ArrayList<>();
 //            while (resultSet.next()) {
