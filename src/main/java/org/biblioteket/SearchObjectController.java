@@ -5,7 +5,6 @@
  */
 package org.biblioteket;
 
-import OLD.MainControllerOLD;
 import java.sql.ResultSet;
 import org.biblioteket.Objects.Objekt;
 import java.sql.SQLException;
@@ -16,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -35,6 +35,8 @@ public class SearchObjectController {
     private Button buttonSearch;
     @FXML
     private TableView searchTable;
+    @FXML
+    private Label labelNoHits;
 //    @FXML
 //    private TableColumn<?, ?> columnID;
 //    @FXML
@@ -48,7 +50,6 @@ public class SearchObjectController {
     
     private List<Objekt> result;
     private ObservableList<Objekt> objektList;
-    private MainControllerOLD useCase;
             
     public void initialize() throws Exception{
         

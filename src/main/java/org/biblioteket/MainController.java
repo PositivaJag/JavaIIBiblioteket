@@ -89,14 +89,14 @@ public class MainController {
 
     @FXML
     void klickButtonSearch(ActionEvent event) {
-        loadPage("SearchObject.fxml");
+        loadPage("Search.fxml");
     }
 
     private boolean loadPage(String fxml) {
 
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxml));
-            borderPane.setRight(root);
+            borderPane.setCenter(root);
             return true;
 
         } catch (IOException ex) {
