@@ -64,7 +64,7 @@ public class SearchObjectController {
         searchTable.getColumns().clear();
         
         //Create observableList
-        result = getAllObjekts();
+//        result = getAllObjekts();
         System.out.println(result.size());
         objektList = FXCollections.observableList(result);
         for (Objekt O : objektList)
@@ -97,27 +97,31 @@ public class SearchObjectController {
         
     }
     
-     public ArrayList<Objekt> getAllObjekts() throws SQLException, Exception {
-
-        try {
-            //Connect to db
-            DBConnection connection = DBConnection.getInstance();
-            //Get Objekt data from DB
-            ResultSet resultSet = connection.getObjectsData("Strig");
-            //Create objects,add to resultat
-            ArrayList<Objekt> resultat = new ArrayList<>();
-            while (resultSet.next()) {
-                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
-                        resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1))));
-            }
-            return resultat;
-        } 
-        catch (SQLException e) {
-        } 
-        catch (Exception e) {
-        }
-        throw new Exception("Something went wrong in UseCase.createAllObjects()");
-    }
-    
+//     public ArrayList<Objekt> getAllObjekts() throws SQLException, Exception {
+//
+//        try {
+//            //Connect to db
+//            DBConnection connection = DBConnection.getInstance();
+//            //Get Objekt data from DB
+//            ResultSet resultSet = connection.getObjectsData("Strig");
+//            //Create objects,add to resultat
+//            ArrayList<Objekt> resultat = new ArrayList<>();
+//            while (resultSet.next()) {
+//                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
+//                        resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1))));
+//            }
+//            return resultat;
+//        }   ArrayList<Objekt> resultat = new ArrayList<>();
+//            while (resultSet.next()) {
+//                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
+//                        resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1))));
+//            }
+//        catch (SQLException e) {
+//        } 
+//        catch (Exception e) {
+//        }
+//        throw new Exception("Something went wrong in UseCase.createAllObjects()");
+//    }
+//    
 
 }

@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.biblioteket.Objects.Objekt;
 
 /**
  *
@@ -28,7 +29,7 @@ public class DBConnection {
     private Statement statement;
     private PreparedStatement pState;
     private ResultSetMetaData metadata;
-    private ResultSet resultSet;
+//    private ResultSet resultSet;
     
     //Connection parameters
     private static final String dbUrl = "jdbc:mysql://localhost:3306/javaiibiblioteket";
@@ -86,7 +87,7 @@ public class DBConnection {
             String SQL = "Select * from person where eMail = ?";
             pState = connection.prepareStatement(SQL);
             pState.setString(1, email);
-            getQuery(pState);
+            ResultSet resultSet = getQuery(pState);
             
             resultSet.next();
             String id = Integer.toString(resultSet.getInt(1));
@@ -121,7 +122,7 @@ public class DBConnection {
             String SQL = "Select * from låntagare where personID = ?";
             pState = connection.prepareStatement(SQL);
             pState.setString(1, personID);
-            getQuery(pState);
+            ResultSet resultSet = getQuery(pState);
             
             resultSet.next();
             String id = Integer.toString(resultSet.getInt(1));
@@ -142,14 +143,20 @@ public class DBConnection {
 
     }
     
-    public ResultSet getObjectsData(String SQL) throws Exception{
+    public ArrayList<Objekt> getObjectsData(String SQL) throws Exception{
         try {
             //Get objekt from DB
             //String SQL = "Select ObjektID, Titel, Typ from Objekt";
             pState = connection.prepareStatement(SQL);
-            getQuery(pState);
-
-            return resultSet;
+            ResultSet resultSet = getQuery(pState);
+            
+            ArrayList<Objekt> result = new ArrayList<>();
+            while (resultSet.next()){
+                result.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
+                        resultSet.getString(2), resultSet.getString(3), getArtistsAsString(resultSet.getInt(1))));
+            }
+          
+            return result;
         } 
         catch (SQLException e) {
             e.printStackTrace();
@@ -166,11 +173,11 @@ public class DBConnection {
             String SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Författare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
-            getQuery(pState);
+            ResultSet resultSet = getQuery(pState);
             
             resultSet.next();
             authors = resultSet.getString(1);
-            System.out.println("Författare: " +authors);
+//            System.out.println("Författare: " +authors);
             return authors;
          }
          catch (SQLException e){
@@ -185,7 +192,7 @@ public class DBConnection {
             String SQL = "Select * from Kopia where ObjektID = ?";
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
-            getQuery(pState);
+            ResultSet resultSet = getQuery(pState);
 
             return resultSet;
         } 
@@ -203,7 +210,7 @@ public class DBConnection {
         String SQL = "Select PersonTyp from person where eMail = ?";
         pState = connection.prepareStatement(SQL);
         pState.setString(1, email);
-        getQuery(pState);
+        ResultSet resultSet = getQuery(pState);
         resultSet.next();
         //System.out.println(resultSet.getString(1));
         return (resultSet.getString(1).equals("Bibliotekarie"));
@@ -218,12 +225,13 @@ public class DBConnection {
     
      
      
-    private void getQuery(PreparedStatement pState) throws SQLException{
+    private ResultSet getQuery(PreparedStatement pState) throws SQLException{
         //Check if we have contact with database
         if (connectedToDB == true){            
             try {
-                resultSet = pState.executeQuery();
+                ResultSet resultSet = pState.executeQuery();
                 metadata = resultSet.getMetaData();
+                return resultSet;
             }
             catch(SQLException e){
                 printSQLExcept(e);
@@ -231,6 +239,7 @@ public class DBConnection {
         }
         else
             System.out.println("Ingen kontakt med databasen");
+            return null;
     }
     
     public LoginResult checkUserAndPassword(String email, String pwordIn) throws Exception{
@@ -240,7 +249,7 @@ public class DBConnection {
             String SQL = "Select lösenord from person where eMail = ?";
             pState = connection.prepareStatement(SQL);
             pState.setString(1, email);
-            getQuery(pState);
+            ResultSet resultSet = getQuery(pState);
 
             //Check if row exists
             if (!resultSet.next()){
@@ -270,7 +279,6 @@ public class DBConnection {
         System.out.println(e.getMessage());
     }
     
-    @SuppressWarnings("empty-statement")
     public ArrayList<String> getObjektTypes(){
         
         ArrayList<String> types = new ArrayList();
@@ -278,7 +286,7 @@ public class DBConnection {
         try {
             String SQL = "select distinct typ from objekt;";
             pState = connection.prepareStatement(SQL);
-            getQuery(pState);
+            ResultSet resultSet = getQuery(pState);
             
             if (!resultSet.next()){
                 return types;
