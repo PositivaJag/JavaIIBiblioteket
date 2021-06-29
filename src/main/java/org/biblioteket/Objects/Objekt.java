@@ -23,12 +23,13 @@ public class Objekt {
 
     
     
-     public Objekt(String ObjektID, String Titel, String type, String authors) {
+     public Objekt(String ObjektID, String Titel, String type, String creators, String sw) {
 //        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
         this.titel = Titel;
         this.type = type;
-        this.creators = authors;
+        this.creators = creators;
+        this.searchWords = sw;
         
     }
 
@@ -89,4 +90,5 @@ public class Objekt {
         return searchWords;
     }
     
+   
 }

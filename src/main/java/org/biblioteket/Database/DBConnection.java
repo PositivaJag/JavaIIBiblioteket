@@ -153,7 +153,9 @@ public class DBConnection {
             ArrayList<Objekt> result = new ArrayList<>();
             while (resultSet.next()){
                 result.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
-                        resultSet.getString(2), resultSet.getString(3), getCreatorsAsString(resultSet.getInt(1), resultSet.getString(3))));
+                        resultSet.getString(2), resultSet.getString(3), 
+                        getCreatorsAsString(resultSet.getInt(1), resultSet.getString(3)), 
+                        getSearchWordsAsString(resultSet.getInt(1))));
             }
           
             return result;
@@ -191,6 +193,37 @@ public class DBConnection {
              printSQLExcept(e);
          }
         return null;
+    }
+    
+    public String getSearchWordsAsString(int objektID){
+        String searchWords = "";
+        try {
+            String SQL = "select Ämnesord from klassificering k, objektklass ok, objekt o where k.KlassificeringID = ok.KategoriID and ok.ObjektID = o.ObjektID and o.ObjektID =? ;";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, objektID);
+            ResultSet resultSet = getQuery(pState);
+            
+            int nr = 0;
+            while (resultSet.next()){
+                if (nr == 3){
+                    searchWords += "\n";
+                    nr = 0;
+                }
+                else
+                    nr++;
+                
+                if (searchWords.equalsIgnoreCase(""))
+                    searchWords += resultSet.getString(1);
+                else
+                    searchWords += ", "+ resultSet.getString(1);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        System.out.println(searchWords);
+        return searchWords;
     }
 
      public ResultSet getAllCopiesData(int objektID) throws Exception {
