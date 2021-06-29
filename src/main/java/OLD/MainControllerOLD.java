@@ -104,7 +104,7 @@ public class MainControllerOLD{
 //            ArrayList<Objekt> resultat = new ArrayList<>();
 //            while (resultSet.next()) {
 //                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), resultSet.getString(2),
-//                        resultSet.getString(3), connection.getArtistsAsString(resultSet.getInt(1))));
+//                        resultSet.getString(3), connection.getCreatorsAsString(resultSet.getInt(1))));
 //            }
 //            return resultat;
 //        } 
@@ -127,12 +127,12 @@ public class MainControllerOLD{
             ResultSet resultSet = connection.getAllCopiesData(Integer.parseInt(objektID));
             //Create objects,add to resultat
             List<Objekt> resultat = new ArrayList<>();
-            while (resultSet.next()) {
-                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
-                        resultSet.getString(2),
-                        resultSet.getString(3), 
-                        connection.getArtistsAsString(resultSet.getInt(1))));
-            }
+//            while (resultSet.next()) {
+//                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
+//                        resultSet.getString(2),
+//                        resultSet.getString(3), 
+//                        connection.getCreatorsAsString(resultSet.getInt(1))));
+//            }
             return resultat;
         } 
         catch (SQLException e) {

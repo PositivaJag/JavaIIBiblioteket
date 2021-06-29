@@ -153,7 +153,7 @@ public class DBConnection {
             ArrayList<Objekt> result = new ArrayList<>();
             while (resultSet.next()){
                 result.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
-                        resultSet.getString(2), resultSet.getString(3), getArtistsAsString(resultSet.getInt(1))));
+                        resultSet.getString(2), resultSet.getString(3), getCreatorsAsString(resultSet.getInt(1), resultSet.getString(3))));
             }
           
             return result;
@@ -166,19 +166,26 @@ public class DBConnection {
 
     }
     
-    public String getArtistsAsString(int objektID) throws SQLException{
-        String authors;
+    public String getCreatorsAsString(int objektID, String type) throws SQLException{
+        String creators;
+        String SQL;
          try {
             //Get objekt from DB
-            String SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Författare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
+            if (type.equalsIgnoreCase("Bok"))
+                SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Skapare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
+            else if (type.equalsIgnoreCase("Film"))
+                SQL = "select group_concat(Concat(r.fNamn, ' ', r.eNamn, '\\n')) as Skapare from regisörAktör r, filmregisöraktör f, objekt o where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = o.ObjektID and o.ObjektID =  ? group by o.ObjektID;";
+            else 
+                return "";
+            
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
             ResultSet resultSet = getQuery(pState);
             
             resultSet.next();
-            authors = resultSet.getString(1);
+            creators = resultSet.getString(1);
 //            System.out.println("Författare: " +authors);
-            return authors;
+            return creators;
          }
          catch (SQLException e){
              printSQLExcept(e);

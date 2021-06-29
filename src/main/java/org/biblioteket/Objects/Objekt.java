@@ -17,7 +17,9 @@ public class Objekt {
     private String titel;
     private String type;
 //    private ArrayList<Integer> copies;
-    private String artists;
+    private String creators;
+    private String searchWords;
+    
 
     
     
@@ -26,7 +28,7 @@ public class Objekt {
         this.objektID = ObjektID;
         this.titel = Titel;
         this.type = type;
-        this.artists = authors;
+        this.creators = authors;
         
     }
 
@@ -55,12 +57,12 @@ public class Objekt {
 //        this.copies = copies;
 //    }
 
-    public String getArtists() {
-        return artists;
+    public String getCreators() {
+        return creators;
     }
 
-    public void setArtists(String authors) {
-        this.artists = authors;
+    public void setCreators(String authors) {
+        this.creators = authors;
     }
 
 //    public void addCopy(int kopia){
@@ -81,6 +83,10 @@ public class Objekt {
 
         public static Boolean checkInstance(Objekt instance) throws SQLException {
             return instance != null;
+    }
+
+    public String getSearchWords() {
+        return searchWords;
     }
     
 }
