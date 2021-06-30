@@ -118,32 +118,32 @@ public class MainControllerOLD{
 //    }
 //    
 
-    public List<Objekt> createAllCopies(String objektID) throws SQLException, Exception {
-        
-        try {
-            //Connect to db
-            DBConnection connection = DBConnection.getInstance();
-            //Get Objekt data from DB
-            ResultSet resultSet = connection.getAllCopiesData(Integer.parseInt(objektID));
-            //Create objects,add to resultat
-            List<Objekt> resultat = new ArrayList<>();
+//    public List<Objekt> createAllCopies(String objektID) throws SQLException, Exception {
+//        
+//        try {
+//            Connect to db
+//            DBConnection connection = DBConnection.getInstance();
+//            Get Objekt data from DB
+//            ResultSet resultSet = connection.getObjectCopies(Integer.parseInt(objektID));
+//            Create objects,add to resultat
+//            List<Objekt> resultat = new ArrayList<>();
 //            while (resultSet.next()) {
 //                resultat.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
 //                        resultSet.getString(2),
 //                        resultSet.getString(3), 
 //                        connection.getCreatorsAsString(resultSet.getInt(1))));
 //            }
-            return resultat;
-        } 
-        catch (SQLException e) {
-            e.printStackTrace();
-        } 
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        throw new Exception("Something went wrong in UseCase.createAllObjects()");
-}
-
+//            return resultat;
+//        } 
+//        catch (SQLException e) {
+//            e.printStackTrace();
+//        } 
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        throw new Exception("Something went wrong in UseCase.createAllObjects()");
+//}
+//
 //    public PersonTyp getPersonTyp() {
 //        return personTyp;
 //    }

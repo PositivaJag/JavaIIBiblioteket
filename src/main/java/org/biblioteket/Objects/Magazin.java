@@ -12,7 +12,7 @@ import java.util.Date;
  *
  * @author Jenni
  */
-public class Magazin extends Copy{
+public class Magazin extends Kopia{
     Date magazineDate;
     int magazineNumber;
 

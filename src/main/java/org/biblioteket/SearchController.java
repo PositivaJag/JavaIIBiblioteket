@@ -1,5 +1,6 @@
 package org.biblioteket;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,18 +11,21 @@ import static javafx.collections.FXCollections.observableList;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import static org.biblioteket.App.mainControll;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Objekt;
 
 public class SearchController {
-    
-    
 
     @FXML
     private TextField txtSearch;
@@ -34,7 +38,7 @@ public class SearchController {
 
     @FXML
     private ComboBox comboType;
-    
+
     @FXML
     private Button btnDetails;
 
@@ -42,19 +46,20 @@ public class SearchController {
     private ObservableList<String> objektTyp = FXCollections.observableArrayList("Alla");
     private ArrayList<Objekt> result;   //List of Objekts    
     private ObservableList<Objekt> observableResult;  //Observable list with Objekts. 
-    
+    private Objekt selectedObjekt;
+
     public void initialize() throws SQLException {
 
         setComboType();
         updateTableView(getObjekts());
     }
-    
+
     @FXML
     void pressDetalis(ActionEvent event) {
-        Objekt item = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
-        System.out.println(item.getTitel());
-        App.getMainControll().loadPopup("Kopia.fxml");
-
+        //Get selected item from list
+        selectedObjekt = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
+        //Create popup and save as correct object. 
+        loadPopupKopia();
     }
 
     @FXML
@@ -63,6 +68,7 @@ public class SearchController {
         updateTableView(result);
 
     }
+
     //Gets all the alternative types from the DB and makes it possible to choose 
     //them. 
     private void setComboType() throws SQLException {
@@ -70,38 +76,38 @@ public class SearchController {
         comboType.getItems().addAll(DBConnection.getInstance().getObjektTypes());
         comboType.setValue("Alla");
     }
-    
-     private void updateTableView(List<Objekt> result) {
+
+    private void updateTableView(List<Objekt> result) {
         //Clean table
         tblSearch.getColumns().clear();
-        
+
         //Create ObservableList from list of objects. 
         observableResult = observableList(result);
 //        for (int i = 0; i <observableResult.size(); i++){
 //            System.out.println(observableResult.get(i));
 //        }
         //Get felds from first Object. 
-         //Skapa tableColumns
-        TableColumn<Objekt, String>  colObjektID = new TableColumn<>("ObjektID");
+        //Skapa tableColumns
+        TableColumn<Objekt, String> colObjektID = new TableColumn<>("ObjektID");
         TableColumn<Objekt, String> colTitel = new TableColumn<>("Titel");
         TableColumn<Objekt, String> colTyp = new TableColumn<>("Typ");
         TableColumn<Objekt, String> colCreator = new TableColumn<>("Författare/artister");
         TableColumn<Objekt, String> colSearchWord = new TableColumn<>("Sökord");
-        
+
         colObjektID.setCellValueFactory(new PropertyValueFactory<>("objektID"));
         colTitel.setCellValueFactory(new PropertyValueFactory<>("titel"));
         colTyp.setCellValueFactory(new PropertyValueFactory<>("type"));
         colCreator.setCellValueFactory(new PropertyValueFactory<>("creators"));
         colSearchWord.setCellValueFactory(new PropertyValueFactory<>("searchWords"));
-        
+
         tblSearch.getColumns().addAll(colObjektID, colTitel, colTyp, colCreator, colSearchWord);
-         tblSearch.setItems(observableResult);
-         
+        tblSearch.setItems(observableResult);
+
         selectFirstEntry();
     }
 
     private ArrayList<Objekt> getObjekts() throws SQLException {
-        
+
         DBConnection connection = DBConnection.getInstance();
         try {
             String SQL;
@@ -112,28 +118,48 @@ public class SearchController {
                         + "Where Typ = '" + comboType.getValue() + "';";
             }
             System.out.println(SQL);
-            
+
             //gets an arraylist with objects
-           result= connection.getObjectsData(SQL);
-           
+            result = connection.getObjectsData(SQL);
 
 //            System.out.println(result.size());
 //            for (Objekt i : result){
 //                System.out.println(i.getTitel()+" "+i.getType());
 //            }
-           
         } catch (Exception ex) {
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
 
-   
-    
-     // select first item in TableView
+    // select first item in TableView
     private void selectFirstEntry() {
         tblSearch.getSelectionModel().selectFirst();
     }
-    
-    
+
+    public Objekt getSelectedObjekt() {
+        return selectedObjekt;
+    }
+
+    public boolean loadPopupKopia() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Kopia.fxml"));
+            Parent root = loader.load();
+            
+            //Now we have access to getController() through the instance... don't forget the type cast
+            KopiaController kopiaControll = (KopiaController) loader.getController();
+            kopiaControll.setSelectObjekt(selectedObjekt);
+            
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return true;
+            
+        } catch (IOException ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }

@@ -5,17 +5,24 @@
  */
 package org.biblioteket;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
+import org.biblioteket.Database.DBConnection;
+import org.biblioteket.Objects.Kopia;
+import org.biblioteket.Objects.Objekt;
 /**
  *
  * @author Jenni
  */
-public class KopiaController {
+public class KopiaController  {
     @FXML
     private Text lblTitel;
 
@@ -33,32 +40,45 @@ public class KopiaController {
 
     @FXML
     private Button btnClose;
-    
-    int ObjektID; 
+    private Objekt selectObjekt;
+    private ArrayList<Kopia> result;
 
     @FXML
     void pressBtnClose(ActionEvent event) {
-
+         ((Node)(event.getSource())).getScene().getWindow().hide();
     }
     
      public void initialize(){
          
-         updateTableView(getKopior());
+        try {
+            DBConnection instance = DBConnection.getInstance();
+            System.out.println(instance.isConnectedToDB());
+            int id = selectObjekt.getObjektID();
+            System.out.println("ID = "+id);
+            result = instance.getObjectCopies(id);
+          
+//         updateTableView(getKopior());
+        } catch (Exception ex) {
+            System.out.println("Fel i initialize i KopiaController");
+            Logger.getLogger(KopiaController.class.getName()).log(Level.SEVERE, null, ex);
+        }
          
      }
      
      private void updateTableView(){
          
      }
-     
-     private void getKopior(int ObjektID){
-         
-     }
 
-             
-    public void setObjektID(int ObjektID) {
-        this.ObjektID = ObjektID;
+
+    public Objekt getSelectObjekt() {
+        return selectObjekt;
     }
+
+    public void setSelectObjekt(Objekt selectObjekt) {
+        this.selectObjekt = selectObjekt;
+    }
+
+      
      
      
 

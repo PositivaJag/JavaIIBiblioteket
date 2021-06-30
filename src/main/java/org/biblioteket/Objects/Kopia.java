@@ -10,21 +10,21 @@ import java.sql.SQLException;
  *
  * @author Jenni
  */
-public class Copy{
+public class Kopia{
     
     private int streckkod;
     private String loanKategori;
     private String placement;
 
-    Copy(int streckkod, String loanKategori, String placement) throws SQLException {
+    public Kopia(int streckkod, String loanKategori, String placement) throws SQLException {
             this.streckkod = streckkod;
             this.loanKategori = loanKategori;
             this.placement = placement;
     }
     
-    public Copy newCopy(int streckkod, String loanKategori, String placement, Objekt objektID) throws SQLException, Exception {
+    public Kopia newCopy(int streckkod, String loanKategori, String placement, Objekt objektID) throws SQLException, Exception {
         if (Objekt.checkInstance(objektID)){
-            return new Copy(streckkod, loanKategori, placement);
+            return new Kopia(streckkod, loanKategori, placement);
         }
         else
             throw new Exception("Objektet "+objektID.getTitel()+"finns inte.");

@@ -13,7 +13,7 @@ import OLD.MainControllerOLD;
  * @author Jenni
  */
 public class Objekt {
-    private String objektID;
+    private int objektID;
     private String titel;
     private String type;
 //    private ArrayList<Integer> copies;
@@ -23,7 +23,7 @@ public class Objekt {
 
     
     
-     public Objekt(String ObjektID, String Titel, String type, String creators, String sw) {
+     public Objekt(int ObjektID, String Titel, String type, String creators, String sw) {
 //        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
         this.titel = Titel;
@@ -34,11 +34,11 @@ public class Objekt {
     }
 
 
-    public String getObjektID() {
+    public int getObjektID() {
         return objektID;
     }
 
-    public void setObjektID(String objectID) {
+    public void setObjektID(int objectID) {
         this.objektID = objectID;
     }
 

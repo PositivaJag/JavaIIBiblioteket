@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.biblioteket.Objects.Kopia;
 import org.biblioteket.Objects.Objekt;
 
 /**
@@ -157,7 +158,7 @@ public class DBConnection {
             
             ArrayList<Objekt> result = new ArrayList<>();
             while (resultSet.next()){
-                result.add(new Objekt(Integer.toString(resultSet.getInt(1)), 
+                result.add(new Objekt(resultSet.getInt(1), 
                         resultSet.getString(2), resultSet.getString(3), 
                         getCreatorsAsString(resultSet.getInt(1), resultSet.getString(3)), 
                         getSearchWordsAsString(resultSet.getInt(1))));
@@ -171,6 +172,35 @@ public class DBConnection {
         throw new Exception("Something went wroing in method getAllObjectData "
                 + "in Class DBConnection");
 
+    }
+    
+    public ArrayList<Kopia> getObjectCopies(int objektID){
+          try {
+            //Get objekt from DB
+            String SQL = "Select * from Kopia where ObjektID = ?";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, objektID );
+            ResultSet resultSet = getQuery(pState);
+
+            ArrayList<Kopia> result = new ArrayList<>();
+            while (resultSet.next()){
+                result.add(new Kopia(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+
+            }
+            System.out.println(objektID);
+            for(int i = 0; i<result.size();i++){
+                Kopia Cop = result.get(i);
+                System.out.println("Kopia " + (i+1));
+                 System.out.println(Cop.getStreckkod());
+                  System.out.println(Cop.getLoanKategori());
+                   System.out.println(Cop.getPlacement());
+            }
+            
+            return result;
+        } 
+        catch (SQLException e) {
+        }
+          return null;
     }
     
     public String getCreatorsAsString(int objektID, String type) throws SQLException{
@@ -231,23 +261,7 @@ public class DBConnection {
         return searchWords;
     }
 
-     public ResultSet getAllCopiesData(int objektID) throws Exception {
-          try {
-            //Get objekt from DB
-            String SQL = "Select * from Kopia where ObjektID = ?";
-            pState = connection.prepareStatement(SQL);
-            pState.setInt(1, objektID);
-            ResultSet resultSet = getQuery(pState);
-
-            return resultSet;
-        } 
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        throw new Exception("Something went wrong in method DBConnection.getAllCopiesData");
-
-        
-    }
+     
     
     public boolean chechIfLibrarian(String email) throws SQLException{
         

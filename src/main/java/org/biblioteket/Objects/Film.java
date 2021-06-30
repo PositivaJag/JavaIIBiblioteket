@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Jenni
  */
-public class Film extends Copy{
+public class Film extends Kopia{
     private String ageRating;
     private String prodCountry;
     private ArrayList<String> directors;

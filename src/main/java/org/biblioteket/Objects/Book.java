@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Jenni
  */
-public class Book extends Copy{
+public class Book extends Kopia{
     
     private int ISBN;
     private ArrayList<String> authors; 
