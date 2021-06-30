@@ -14,6 +14,5 @@
       <ComboBox fx:id="comboType" layoutX="322.0" layoutY="37.0" prefWidth="150.0" promptText="Alla" />
       <Label layoutX="322.0" layoutY="16.0" text="Välj typer av träffar att visa" />
       <TableView fx:id="tblSearch" layoutX="50.0" layoutY="85.0" prefHeight="400.0" prefWidth="618.0" />
-      <Button fx:id="btnDetails" layoutX="516.0" layoutY="41.0" mnemonicParsing="false" onAction="#pressDetalis" text="Visa detaljer" />
    </children>
 </AnchorPane>

@@ -33,8 +33,8 @@ public class SearchController {
     @FXML
     private ComboBox comboType;
     
-    @FXML
-    private Button btnDetails;
+//    @FXML
+//    private Button btnDetails;
 
     //List with types of objekts. 
     private ObservableList<String> objektTyp = FXCollections.observableArrayList("Alla");
@@ -47,12 +47,12 @@ public class SearchController {
         updateTableView(getObjekts());
     }
     
-    @FXML
-    void pressDetalis(ActionEvent event) {
-        Objekt item = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
-        System.out.println(item);
-
-    }
+//    @FXML
+//    void pressDetalis(ActionEvent event) {
+//        Objekt item = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
+//        System.out.println(item);
+//
+//    }
 
     @FXML
     void pressSearchBtn(ActionEvent event) throws SQLException {

@@ -89,7 +89,7 @@ public class MainController {
 
     @FXML
     void klickButtonSearch(ActionEvent event) {
-        loadPage("Search.fxml");
+        loadPage("SearchObject.fxml");
     }
 
     private boolean loadPage(String fxml) {
