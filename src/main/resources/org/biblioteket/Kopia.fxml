@@ -1,23 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.KopiaController">
    <children>
-      <Text fx:id="lblTitel" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Titel" textAlignment="CENTER" wrappingWidth="400.0">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Text>
-      <TableView fx:id="tblKopia" layoutX="107.0" layoutY="75.0" prefHeight="239.0" prefWidth="248.0" />
-      <Label fx:id="lblTyp" layoutX="46.0" layoutY="92.0" text="Typ" />
-      <Label fx:id="lblInfo2" layoutX="46.0" layoutY="130.0" text="Info 2" />
-      <Label fx:id="lblInfo3" layoutX="46.0" layoutY="183.0" text="Info 3" />
-      <Button layoutX="33.0" layoutY="329.0" mnemonicParsing="false" text="Stäng" />
+      <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="300.0" prefWidth="500.0">
+         <children>
+            <Text fx:id="lblTitel" strokeType="OUTSIDE" strokeWidth="0.0" text="Titel" textAlignment="CENTER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </Text>
+            <HBox alignment="CENTER">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label fx:id="lblTyp" text="Typ">
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="lblInfo2" text="Info 2">
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="lblInfo3" text="Info 3">
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <TableView fx:id="tblKopia" prefHeight="129.0" prefWidth="300.0" />
+               </children>
+            </HBox>
+            <VBox alignment="BOTTOM_RIGHT">
+               <children>
+                  <Button fx:id="btnClose" cancelButton="true" contentDisplay="CENTER" mnemonicParsing="false" onAction="#pressBtnClose" text="Stäng">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

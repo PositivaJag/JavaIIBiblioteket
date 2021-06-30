@@ -40,7 +40,7 @@ public class MainController {
     private Label labelInloggad;
 
     private Panel view;
-    private MainControllerOLD mainController;
+    private MainController mainController;
     private static LoginResult loginResult;
 
     private PersonTyp personTyp = PersonTyp.NONE;
@@ -89,7 +89,7 @@ public class MainController {
 
     @FXML
     void klickButtonSearch(ActionEvent event) {
-        loadPage("SearchObject.fxml");
+        loadPage("Search.fxml");
     }
 
     private boolean loadPage(String fxml) {
@@ -108,11 +108,11 @@ public class MainController {
 
     }
 
-    private boolean loadPopup(String fxml) {
+    public boolean loadPopup(String fxml) {
 
         try {
             Parent root
-                    = FXMLLoader.load(getClass().getResource("Login.fxml"));
+                    = FXMLLoader.load(getClass().getResource(fxml));
             Stage stage = new Stage();
             Scene popup = new Scene(root);
             stage.setScene(popup);

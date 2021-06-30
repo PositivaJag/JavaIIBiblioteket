@@ -61,9 +61,14 @@ public class DBConnection {
   } 
     
     //Singleton implementation
-    public static DBConnection getInstance() throws SQLException{
+    public static DBConnection getInstance(){
         if (instance == null){
-            instance = new DBConnection(dbUrl, dbUserName, dbPassword);
+            try {
+                instance = new DBConnection(dbUrl, dbUserName, dbPassword);
+            } catch (SQLException ex) {
+                System.out.println("Ingen databaskontakt är skapad");
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return instance;
     }

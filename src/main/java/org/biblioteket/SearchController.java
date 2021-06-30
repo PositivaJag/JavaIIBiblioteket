@@ -20,6 +20,8 @@ import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Objekt;
 
 public class SearchController {
+    
+    
 
     @FXML
     private TextField txtSearch;
@@ -33,12 +35,12 @@ public class SearchController {
     @FXML
     private ComboBox comboType;
     
-//    @FXML
-//    private Button btnDetails;
+    @FXML
+    private Button btnDetails;
 
     //List with types of objekts. 
     private ObservableList<String> objektTyp = FXCollections.observableArrayList("Alla");
-    private ArrayList<Objekt> result;      //List of Objekts    
+    private ArrayList<Objekt> result;   //List of Objekts    
     private ObservableList<Objekt> observableResult;  //Observable list with Objekts. 
     
     public void initialize() throws SQLException {
@@ -47,12 +49,13 @@ public class SearchController {
         updateTableView(getObjekts());
     }
     
-//    @FXML
-//    void pressDetalis(ActionEvent event) {
-//        Objekt item = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
-//        System.out.println(item);
-//
-//    }
+    @FXML
+    void pressDetalis(ActionEvent event) {
+        Objekt item = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
+        System.out.println(item.getTitel());
+        App.getMainControll().loadPopup("Kopia.fxml");
+
+    }
 
     @FXML
     void pressSearchBtn(ActionEvent event) throws SQLException {
@@ -131,4 +134,6 @@ public class SearchController {
     private void selectFirstEntry() {
         tblSearch.getSelectionModel().selectFirst();
     }
+    
+    
 }

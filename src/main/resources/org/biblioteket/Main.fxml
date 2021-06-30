@@ -50,7 +50,7 @@
             </AnchorPane>
          </left>
          <center>
-            <fx:include source="Home.fxml" BorderPane.alignment="TOP_CENTER" />
+            <fx:include source="Home.fxml" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
    </children>
