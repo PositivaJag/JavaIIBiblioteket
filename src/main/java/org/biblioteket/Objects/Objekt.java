@@ -32,6 +32,15 @@ public class Objekt {
         this.searchWords = sw;
         
     }
+     
+          public Objekt(int ObjektID, String Titel, String type) {
+//        this.copies = new ArrayList<>(5);
+        this.objektID = ObjektID;
+        this.titel = Titel;
+        this.type = type;
+
+        
+    }
 
 
     public int getObjektID() {
@@ -89,6 +98,8 @@ public class Objekt {
     public String getSearchWords() {
         return searchWords;
     }
+    
+    
     
    
 }

@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.biblioteket.Objects.Film;
 import org.biblioteket.Objects.Kopia;
 import org.biblioteket.Objects.Objekt;
 
@@ -176,7 +177,11 @@ public class DBConnection {
 
     }
     
-    public ArrayList<Kopia> getObjectCopies(int objektID){
+    public ArrayList<Kopia> getObjectCopies(int objektID, String type){
+        
+        if (type.equalsIgnoreCase("Film")){
+           getFilm(objektID);
+        }
           try {
             //Get objekt from DB
             String SQL = "Select * from Kopia where ObjektID = ?";
@@ -186,23 +191,42 @@ public class DBConnection {
 
             ArrayList<Kopia> result = new ArrayList<>();
             while (resultSet.next()){
-                result.add(new Kopia(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+                result.add(new Kopia(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4)));
 
             }
-            System.out.println(objektID);
-            for(int i = 0; i<result.size();i++){
-                Kopia Cop = result.get(i);
-                System.out.println("Kopia " + (i+1));
-                 System.out.println(Cop.getStreckkod());
-                  System.out.println(Cop.getLoanKategori());
-                   System.out.println(Cop.getPlacement());
-            }
+//            System.out.println(objektID);
+//            for(int i = 0; i<result.size();i++){
+//                Kopia Cop = result.get(i);
+//                System.out.println("Kopia " + (i+1));
+//                 System.out.println(Cop.getStreckkod());
+//                  System.out.println(Cop.getLoanKategori());
+//                   System.out.println(Cop.getPlacement());
             
+           
             return result;
         } 
         catch (SQLException e) {
         }
           return null;
+    }
+    
+    public Film getFilm(int objektID){
+        try {
+            String SQL = "select ObjektID, Titel, Typ, FilmÅldersbegr, FilmProdLand from Objekt where typ = 'Film' and  ObjektID = ?;";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, objektID );
+            ResultSet resultSet = getQuery(pState);
+            
+            resultSet.next();
+            
+            return new Film(resultSet.getInt(1), resultSet.getString(2), 
+                    resultSet.getString(3),getSearchWordsAsList(objektID), 
+                    resultSet.getString(4), resultSet.getString(5), 
+                    getDirectorsAsList(objektID), getActorsAsList(objektID));
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
     public String getCreatorsAsString(int objektID, String type) throws SQLException{
@@ -231,14 +255,47 @@ public class DBConnection {
          }
         return null;
     }
-    
-    public String getSearchWordsAsString(int objektID){
-        String searchWords = "";
+     public ArrayList<String> getStringsAsList(String SQL, int objektID){
         try {
-            String SQL = "select Ämnesord from klassificering k, objektklass ok, objekt o where k.KlassificeringID = ok.KategoriID and ok.ObjektID = o.ObjektID and o.ObjektID =? ;";
+            ResultSet resultSet = getStringsFromDB(SQL, objektID);
+            
+            ArrayList<String> words = new ArrayList<>();
+            while (resultSet.next()){
+                words.add(resultSet.getString(1));
+            }
+            System.out.println(words.toString());
+            return words;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+     
+      public ResultSet getStringsFromDB(String SQL, int objektID){
+        
+        try {
+            
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
             ResultSet resultSet = getQuery(pState);
+            return resultSet;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    } 
+    public ArrayList<String> getSearchWordsAsList(int objektID){
+        
+        String SQL = "select Ämnesord from klassificering k, objektklass ok, objekt o where k.KlassificeringID = ok.KategoriID and ok.ObjektID = o.ObjektID and o.ObjektID =? ;";
+        return getStringsAsList(SQL, objektID);
+    }
+    
+    public String getSearchWordsAsString(int objektID){
+        try {
+            String searchWords = "";
+            String SQL = "select Ämnesord from klassificering k, objektklass ok, objekt o where k.KlassificeringID = ok.KategoriID and ok.ObjektID = o.ObjektID and o.ObjektID =? ;";
+            ResultSet resultSet = getStringsFromDB(SQL, objektID);
             
             int nr = 0;
             while (resultSet.next()){
@@ -255,15 +312,23 @@ public class DBConnection {
                     searchWords += ", "+ resultSet.getString(1);
             }
             
+            System.out.println(searchWords);
+            return searchWords;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        System.out.println(searchWords);
-        return searchWords;
+        return null;
     }
 
-     
+    public ArrayList<String> getDirectorsAsList(int objektID){
+        String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Regissör from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = Reg';";
+        return getStringsAsList(SQL, objektID);
+    } 
+    
+    public ArrayList<String> getActorsAsList(int objektID){
+        String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Skådis from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = 'Akt';";
+        return getStringsAsList(SQL, objektID);
+    }
     
     public boolean chechIfLibrarian(String email) throws SQLException{
         

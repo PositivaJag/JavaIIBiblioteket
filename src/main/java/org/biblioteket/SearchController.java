@@ -6,9 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import static javafx.collections.FXCollections.observableList;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -69,8 +73,9 @@ public class SearchController {
 
     @FXML
     void pressSearchBtn(ActionEvent event) throws SQLException {
-        getObjekts();
+        getObjekts();      
         updateTableView(result);
+    addTextFilter(observableResult, txtSearch, tblSearch);
 
     }
 
@@ -109,6 +114,46 @@ public class SearchController {
         tblSearch.setItems(observableResult);
 
         selectFirstEntry();
+    }
+    public static <Objekt> void addTextFilter(ObservableList<Objekt> observList,
+        TextField txtSearch, TableView tblSearch) {
+
+    // skapa en lista med tabellens kolumner    
+    List<TableColumn<Objekt, ?>> columns = tblSearch.getColumns();
+
+    // Skapa en filtrerad lista baserat på ObservableList (allData)
+    FilteredList<Objekt> filteredData = new FilteredList<>(observList);
+    // Utan att gå in på alltför mycket detaljer som vi inte pratat om ...
+    // ... så skapar vi här en koppling mellan filterField och data i kolumnerna
+    filteredData.predicateProperty().bind(Bindings.createObjectBinding(() -> {
+        // läser av textfältet (och kontrollerarr om det är tomt)
+        String text = txtSearch.getText();
+
+        if (text == null || text.isEmpty()) {
+            return null;
+        }
+        // gör söksträngen till gemener
+        final String filterText = text.toLowerCase();
+
+        return o -> {
+            // går igenom alla kolumner
+            for (TableColumn<Objekt, ?> col : columns) {
+                ObservableValue<?> observable = col.getCellObservableValue(o);
+                if (observable != null) {
+                    // läser in värde ...
+                    Object value = observable.getValue();
+                    // och jämför med textfältets värde (lowercase)
+                    if (value != null && value.toString().toLowerCase().contains(filterText)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+    }, txtSearch.textProperty()));
+    SortedList<Objekt> sortedData = new SortedList<>(filteredData);
+    sortedData.comparatorProperty().bind(tblSearch.comparatorProperty());
+    tblSearch.setItems(sortedData);
     }
 
     private ArrayList<Objekt> getObjekts() throws SQLException {
@@ -175,11 +220,11 @@ public class SearchController {
    
     private void loadPopupKopia() {
         try {
-            if (kopiaRoot == null){
+//            if (kopiaRoot == null){
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Kopia.fxml"));
             kopiaRoot = loader.load();
             App.getMainControll().getSearchController().setKopiaController(loader.getController());
-            }
+//            }
             Stage stage = new Stage();
             Scene scene = new Scene(kopiaRoot);
             stage.setScene(scene);

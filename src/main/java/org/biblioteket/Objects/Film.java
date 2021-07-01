@@ -12,19 +12,21 @@ import java.util.ArrayList;
  *
  * @author Jenni
  */
-public class Film extends Kopia{
+public class Film extends Objekt{
     private String ageRating;
     private String prodCountry;
     private ArrayList<String> directors;
     private ArrayList<String> actors;
+    private ArrayList<Kopia> Kopior;
+    private ArrayList<String> SearchWords;
 
-    public Film(String ageRating, String prodCountry, int streckkod, 
-            String loanKategori, String placement, int ObjektID, String Titel, ArrayList<String> directors, ArrayList<String> actors) throws SQLException {
-        super(streckkod, loanKategori, placement);
+    public Film(int objektID, String title, String type, ArrayList<String> sw, String ageRating, String prodCountry, ArrayList<String> directors, ArrayList<String> actors ) throws SQLException {
+        super(objektID, title, type);
         this.ageRating = ageRating;
         this.prodCountry = prodCountry;
         this.directors = directors;
         this.actors = actors;
+        this.SearchWords = sw;
     }
 
     public String getAgeRating() {
@@ -65,6 +67,14 @@ public class Film extends Kopia{
     
     public void addActor(String actor){
         this.actors.add(actor);
+    }
+
+    public ArrayList<Kopia> getKopior() {
+        return Kopior;
+    }
+
+    public void setKopior(ArrayList<Kopia> Kopior) {
+        this.Kopior = Kopior;
     }
     
     
