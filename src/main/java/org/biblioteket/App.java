@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class App extends Application {
 
-    static MainController mainControll;
+    private static MainController mainControll;
     
     @Override
     public void start(Stage stage) throws Exception {

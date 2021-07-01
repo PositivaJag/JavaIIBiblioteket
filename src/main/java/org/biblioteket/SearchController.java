@@ -21,7 +21,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import static org.biblioteket.App.mainControll;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Objekt;
 
@@ -47,9 +46,15 @@ public class SearchController {
     private ArrayList<Objekt> result;   //List of Objekts    
     private ObservableList<Objekt> observableResult;  //Observable list with Objekts. 
     private Objekt selectedObjekt;
+    private KopiaController kopiaController;
+    private Parent kopiaRoot;
+    
+    
 
     public void initialize() throws SQLException {
-
+//        MainController mainControll = App.getMainControll();
+//        searchController = mainControll.getSearchController();
+//        System.out.println("Search controller: " +searchController.toString());
         setComboType();
         updateTableView(getObjekts());
     }
@@ -141,25 +146,54 @@ public class SearchController {
         return selectedObjekt;
     }
 
-    public boolean loadPopupKopia() {
+//    public boolean loadPopupKopia() {
 
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("Kopia.fxml"));
+//            Parent root = loader.load();
+//            
+//            //Now we have access to getController() through the instance... don't forget the type cast
+//            KopiaController kopiaControll = (KopiaController) loader.getController();
+//            kopiaControll.setSelectObjekt(selectedObjekt);
+//            
+//            Stage stage = new Stage();
+//            Scene scene = new Scene(root);
+//            stage.setScene(scene);
+//            stage.show();
+//            return true;
+//            
+//        } catch (IOException ex) {
+//            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return false;
+//    }
+
+    public KopiaController getKopiaController() {
+        return this.kopiaController;
+    }
+
+   
+    private void loadPopupKopia() {
         try {
+            if (kopiaRoot == null){
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Kopia.fxml"));
-            Parent root = loader.load();
-            
-            //Now we have access to getController() through the instance... don't forget the type cast
-            KopiaController kopiaControll = (KopiaController) loader.getController();
-            kopiaControll.setSelectObjekt(selectedObjekt);
-            
+            kopiaRoot = loader.load();
+            App.getMainControll().getSearchController().setKopiaController(loader.getController());
+            }
             Stage stage = new Stage();
-            Scene scene = new Scene(root);
+            Scene scene = new Scene(kopiaRoot);
             stage.setScene(scene);
             stage.show();
-            return true;
-            
         } catch (IOException ex) {
+            System.out.println("Fel i "+this.toString());
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
     }
+
+    public void setKopiaController(KopiaController kopiaController) {
+        this.kopiaController = kopiaController;
+    }
+
+
+    
 }

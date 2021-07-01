@@ -1,6 +1,5 @@
 package org.biblioteket;
 
-import OLD.MainControllerOLD;
 import java.awt.Panel;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -40,12 +39,13 @@ public class MainController {
     private Label labelInloggad;
 
     private Panel view;
-    private MainController mainController;
-    private static LoginResult loginResult;
 
     private PersonTyp personTyp = PersonTyp.NONE;
     private Person activeLibrarian = null;
     private Loantagare activeUser = null;
+    private SearchController searchController;
+
+    private Parent searchRoot;
 
     public void initialize() {
 
@@ -89,7 +89,7 @@ public class MainController {
 
     @FXML
     void klickButtonSearch(ActionEvent event) {
-        loadPage("Search.fxml");
+        loadPageSearch();
     }
 
     private boolean loadPage(String fxml) {
@@ -108,20 +108,43 @@ public class MainController {
 
     }
 
-    public boolean loadPopup(String fxml) {
+    private boolean loadPageSearch() {
 
         try {
-            Parent root
-                    = FXMLLoader.load(getClass().getResource(fxml));
-            Stage stage = new Stage();
-            Scene popup = new Scene(root);
-            stage.setScene(popup);
-            stage.show();
+            System.out.println("searchRoot = " + searchRoot);
+            if (searchRoot == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("Search.fxml"));
+                searchRoot = loader.load();
+                App.getMainControll().setSearchController(loader.getController());
+//            System.out.println(MainController.searchController);
+            }
+            borderPane.setCenter(searchRoot);
             return true;
+
         } catch (IOException ex) {
+            System.out.println("Exception i klass MainController.java, i "
+                    + "metoden loadPage()");
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+
+    }
+
+    public boolean loadPopup(String fxml) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return true;
+
+        } catch (IOException ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     public void setLogoutVisibility(Boolean bool) {
@@ -163,5 +186,12 @@ public class MainController {
         this.labelInloggad.setText(labelInloggad);
     }
 
-    
+    public SearchController getSearchController() {
+        return searchController;
+    }
+
+    private void setSearchController(SearchController searchController) {
+        this.searchController = searchController;
+    }
+
 }

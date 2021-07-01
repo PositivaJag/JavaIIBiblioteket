@@ -42,18 +42,17 @@ public class KopiaController  {
     private Button btnClose;
     private Objekt selectObjekt;
     private ArrayList<Kopia> result;
-
     @FXML
     void pressBtnClose(ActionEvent event) {
          ((Node)(event.getSource())).getScene().getWindow().hide();
+    
     }
     
      public void initialize(){
          
         try {
-            DBConnection instance = DBConnection.getInstance();
-            System.out.println(instance.isConnectedToDB());
-            int id = selectObjekt.getObjektID();
+         DBConnection instance = DBConnection.getInstance();
+           int id = App.getMainControll().getSearchController().getSelectedObjekt().getObjektID();
             System.out.println("ID = "+id);
             result = instance.getObjectCopies(id);
           
@@ -63,9 +62,12 @@ public class KopiaController  {
             Logger.getLogger(KopiaController.class.getName()).log(Level.SEVERE, null, ex);
         }
          
-     }
+}
      
      private void updateTableView(){
+         
+         tblKopia.getColumns().clear();
+         
          
      }
 

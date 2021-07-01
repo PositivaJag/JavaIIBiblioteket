@@ -66,11 +66,13 @@ public class DBConnection {
         if (instance == null){
             try {
                 instance = new DBConnection(dbUrl, dbUserName, dbPassword);
+                System.out.println("Databaskontakt skapad");
             } catch (SQLException ex) {
                 System.out.println("Ingen databaskontakt är skapad");
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        System.out.println("Databaskontakt: "+instance.toString());
         return instance;
     }
 
