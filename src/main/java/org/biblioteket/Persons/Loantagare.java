@@ -32,7 +32,7 @@ public class Loantagare extends Person{
         try{
             DBConnection connection = DBConnection.getInstance();
              
-            String[] loantagareDB = connection.getLoantagareData(personID);
+            String[] loantagareDB = connection.getLoantagareDataAsList(personID);
         this.telNr = loantagareDB[1];
         this.gatuAdress = loantagareDB[2];
         this.postNr = loantagareDB[3];

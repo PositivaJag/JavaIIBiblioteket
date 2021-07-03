@@ -7,10 +7,13 @@ package org.biblioteket;
 
 import org.biblioteket.Database.DBConnection;
 import java.sql.*;
+import java.util.ArrayList;
 import org.biblioteket.Objects.Bok;
 
 //import javafx.embed.swing.SwingNode;
 import org.biblioteket.Objects.Film;
+import org.biblioteket.Objects.Objekt;
+import org.biblioteket.Objects.Objekt.Type;
 import org.biblioteket.Objects.Tidskrift;
 
 
@@ -25,8 +28,12 @@ public class DatabasTestMain {
        DBConnection instance = DBConnection.getInstance();
        int ObjektID = 3;
        
-//       Bok bok = instance.getBok(ObjektID);
-        Tidskrift tidskrift  =  instance.getTidskrift(ObjektID);
+       Objekt k = new Objekt(1, "Kalle", Type.Bok, "", "");
+       ArrayList<?> list = instance.getObjectCopies(k, Type.Bok);
+       
+       }
+//       Bok bok = instance.getBokFromDB(ObjektID);
+//        Tidskrift tidskrift  =  instance.getTidskriftFromDB(ObjektID);
 //       film.printFilm();
        
       
@@ -57,4 +64,4 @@ public class DatabasTestMain {
 //        }
 //    }
 //}
-    }
+    

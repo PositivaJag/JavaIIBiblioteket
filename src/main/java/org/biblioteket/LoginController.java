@@ -117,7 +117,7 @@ public class LoginController {
                 } 
                 //Create loantagare
                 else {
-                    String[] personDB = connection.getPersonData(mail);
+                    String[] personDB = connection.getPersonDataAsList(mail);
                     mainControll.setActiveUser(new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]));
                     mainControll.setPersonTyp(Person.PersonTyp.LOANTAGARE);
                     String label = mainControll.getActiveUser().getfName();

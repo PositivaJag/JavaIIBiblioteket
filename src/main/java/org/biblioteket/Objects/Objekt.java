@@ -22,14 +22,15 @@ public class Objekt {
     private int objektID;
     private String titel;
     private  Type type;
-//    private ArrayList<Integer> copies;
+    private ArrayList<Integer> copies;
     private String creators;
     private String searchWords;
     
     
 
     
-     public Objekt(int ObjektID, String Titel, Type type, String creators, String sw) {
+     public Objekt(int ObjektID, String Titel, Type type, String creators, 
+             String sw) {
 //        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
         this.titel = Titel;
@@ -109,13 +110,13 @@ public class Objekt {
         DBConnection connection = DBConnection.getInstance();
         
         if (this.type == Type.Bok){
-        return connection.getBok(this.objektID);
+        return connection.getBokFromDB(this.objektID);
     }
         else if (this.type == Type.Film){
-            return connection.getFilm(this.objektID);
+            return connection.getFilmFromDB(this.objektID);
         }
         else if (this.type == Type.Tidskrift){
-            return connection.getTidskrift(this.objektID);
+            return connection.getTidskriftFromDB(this.objektID);
         }
         else{
             return null;
@@ -124,6 +125,14 @@ public class Objekt {
     
     public String printInfo(){
          return "Denna funktion är inte klar i Objekt.";
+    }
+
+    public ArrayList<Integer> getCopies() {
+        return copies;
+    }
+
+    public void setCopies(ArrayList<Integer> copies) {
+        this.copies = copies;
     }
        
 }

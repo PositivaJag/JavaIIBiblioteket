@@ -170,7 +170,7 @@ public class SearchController {
             System.out.println(SQL);
 
             //gets an arraylist with objects
-            result = connection.getObjectsData(SQL);
+            result = connection.getObjektsFromDB(SQL);
 
 //            System.out.println(result.size());
 //            for (Objekt i : result){

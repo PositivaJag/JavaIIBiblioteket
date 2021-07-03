@@ -6,6 +6,7 @@
 package org.biblioteket.Objects;
 import org.biblioteket.Objects.Objekt;
 import java.sql.SQLException;
+import java.util.Date;
 /**
  *
  * @author Jenni
@@ -16,26 +17,30 @@ public class Kopia{
          AVAILABLE,
          ON_LOAN
     }
-    
     private int streckkod;
+    private int objektID;
     private String loanKategori;
     private String placement;
     private AccessKopia access;
+    private Date returnLatest;
 
-    public Kopia(int streckkod, String loanKategori, String placement, AccessKopia access) throws SQLException {
+    public Kopia(int streckkod, int objektID, String loanKategori, 
+            String placement, AccessKopia access, Date returnDate) throws SQLException {
             this.streckkod = streckkod;
+            this.objektID = objektID;
             this.loanKategori = loanKategori;
             this.placement = placement;
             this.access = access;
+            this.returnLatest = returnDate;
     }
     
-    public Kopia newCopy(int streckkod, String loanKategori, String placement, AccessKopia access, Objekt objektID) throws SQLException, Exception {
-        if (Objekt.checkInstance(objektID)){
-            return new Kopia(streckkod, loanKategori, placement, access);
-        }
-        else
-            throw new Exception("Objektet "+objektID.getTitel()+"finns inte.");
-    }
+//    public Kopia newCopy(int streckkod, String loanKategori, String placement, AccessKopia access, Objekt objektID) throws SQLException, Exception {
+//        if (Objekt.checkInstance(objektID)){
+//            return new Kopia(streckkod, loanKategori, placement, access);
+//        }
+//        else
+//            throw new Exception("Objektet "+objektID.getTitel()+"finns inte.");
+//    }
         
     public int getStreckkod() {
         return streckkod;

@@ -25,11 +25,13 @@ import javafx.scene.text.Text;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Kopia;
 import org.biblioteket.Objects.Objekt;
+
 /**
  *
  * @author Jenni
  */
-public class KopiaController  {
+public class KopiaController {
+
     @FXML
     private Text lblTitel;
 
@@ -47,44 +49,43 @@ public class KopiaController  {
 
     @FXML
     private Button btnClose;
-    
+
     private Objekt selectObjekt;
     private ArrayList<Kopia> result;
     private ObservableList<Kopia> observableResult;
-    
+
     @FXML
     void pressBtnClose(ActionEvent event) {
-         ((Node)(event.getSource())).getScene().getWindow().hide();
-    
+        ((Node) (event.getSource())).getScene().getWindow().hide();
+
     }
-    
-     public void initialize(){
-         
+
+    public void initialize() {
+
         try {
-         DBConnection instance = DBConnection.getInstance();
-           selectObjekt = App.getMainControll().getSearchController().getSelectedObjekt();
-           int id = selectObjekt.getObjektID();
-            System.out.println("ID = "+id);
-//            updateTableView(instance.getObjectCopies(id, selectObjekt.getType()));
-//            updateDetailsView(selectObjekt);
-            
-          
+            DBConnection instance = DBConnection.getInstance();
+            selectObjekt = App.getMainControll().getSearchController().getSelectedObjekt();
+            int id = selectObjekt.getObjektID();
+            System.out.println("ID = " + id);
+            updateTableView(instance.getObjectCopies(selectObjekt, selectObjekt.getType()));
+            updateDetailsView(selectObjekt);
+
 //         updateTableView(getKopior());
         } catch (Exception ex) {
             System.out.println("Fel i initialize i KopiaController");
             Logger.getLogger(KopiaController.class.getName()).log(Level.SEVERE, null, ex);
         }
-         
-}
-     
-     private void updateTableView(List<Kopia> result){
-         
-         tblKopia.getColumns().clear();
-         observableResult = observableList(result);
-         
-         Field[] fields = result.get(0).getClass().getDeclaredFields();
+
+    }
+
+    private void updateTableView(List<Kopia> result) {
+
+        tblKopia.getColumns().clear();
+        observableResult = observableList(result);
+
+        Field[] fields = result.get(0).getClass().getDeclaredFields();
         //System.out.println(fields);
-        
+
         // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
         for (Field field : fields) {
             System.out.println(field);
@@ -92,10 +93,9 @@ public class KopiaController  {
             column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
             tblKopia.getColumns().add(column);
         }
-         tblKopia.setItems(observableResult);
-         
-     }
+        tblKopia.setItems(observableResult);
 
+    }
 
     public Objekt getSelectObjekt() {
         return selectObjekt;
@@ -110,10 +110,4 @@ public class KopiaController  {
         lblTyp.setText(Objekt.getType().toString());
     }
 
-      
-     
-     
-
 }
-    
-
