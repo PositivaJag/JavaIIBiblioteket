@@ -158,8 +158,7 @@ public class DBConnection {
     
     public ArrayList<Objekt> getObjectsData(String SQL) throws Exception{
         try {
-            //Get objekt from DB
-            //String SQL = "Select ObjektID, Titel, Typ from Objekt";
+            
             pState = connection.prepareStatement(SQL);
             ResultSet resultSet = getQuery(pState);
             
@@ -510,6 +509,7 @@ public class DBConnection {
         return null;
          
     }
+    
     
    
 }

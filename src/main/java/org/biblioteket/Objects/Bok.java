@@ -5,8 +5,10 @@
  */
 package org.biblioteket.Objects;
 
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import org.biblioteket.Database.DBConnection;
 
 /**
  *
@@ -48,5 +50,12 @@ public class Bok extends Objekt{
         this.authors.add(author);
     }
 
+    public ArrayList<String> getSearchWordsAsList() {
+        return SearchWords;
+    }
     
+    public String getSearchWordsAsString(){
+        return DBConnection.getInstance().getSearchWordsAsString(super.getObjektID());
+    }
+
 }

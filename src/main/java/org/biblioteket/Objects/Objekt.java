@@ -5,6 +5,7 @@ package org.biblioteket.Objects;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import OLD.MainControllerOLD;
+import org.biblioteket.Database.DBConnection;
 
 
 
@@ -104,7 +105,25 @@ public class Objekt {
         return searchWords;
     }
     
+    public Objekt getSubclassObject(){
+        DBConnection connection = DBConnection.getInstance();
+        
+        if (this.type == Type.Bok){
+        return connection.getBok(this.objektID);
+    }
+        else if (this.type == Type.Film){
+            return connection.getFilm(this.objektID);
+        }
+        else if (this.type == Type.Tidskrift){
+            return connection.getTidskrift(this.objektID);
+        }
+        else{
+            return null;
+        }
+    }
     
-    
-   
+    public String printInfo(){
+         return "Denna funktion är inte klar i Objekt.";
+    }
+       
 }
