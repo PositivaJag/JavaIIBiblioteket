@@ -13,17 +13,22 @@ import OLD.MainControllerOLD;
  * @author Jenni
  */
 public class Objekt {
+    
+    public enum Type{
+        Bok, Film, Tidskrift
+    }
+    
     private int objektID;
     private String titel;
-    private String type;
+    private  Type type;
 //    private ArrayList<Integer> copies;
     private String creators;
     private String searchWords;
     
+    
 
     
-    
-     public Objekt(int ObjektID, String Titel, String type, String creators, String sw) {
+     public Objekt(int ObjektID, String Titel, Type type, String creators, String sw) {
 //        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
         this.titel = Titel;
@@ -33,7 +38,7 @@ public class Objekt {
         
     }
      
-          public Objekt(int ObjektID, String Titel, String type) {
+          public Objekt(int ObjektID, String Titel, Type type) {
 //        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
         this.titel = Titel;
@@ -51,11 +56,11 @@ public class Objekt {
         this.objektID = objectID;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
 

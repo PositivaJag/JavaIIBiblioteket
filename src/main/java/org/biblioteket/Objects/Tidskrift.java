@@ -6,20 +6,26 @@
 package org.biblioteket.Objects;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  *
  * @author Jenni
  */
-public class Magazin extends Kopia{
+public class Tidskrift extends Objekt{
     Date magazineDate;
     int magazineNumber;
+    private ArrayList<Kopia> Kopior;
+    private ArrayList<String> SearchWords;
+    
 
-    public Magazin(Date magazineDate, int magazineNumber, int streckkod, String loanKategori, String placement, int ObjektID, String Titel) throws SQLException {
-        super(streckkod, loanKategori, placement);
+    public Tidskrift(int objektID, String title, Type type, Date magazineDate, 
+            int magazineNumber, ArrayList<String> sw) throws SQLException {
+        super(objektID, title, type);
         this.magazineDate = magazineDate;
         this.magazineNumber = magazineNumber;
+        this.SearchWords = sw;
     }
 
     public Date getMagazineDate() {

@@ -6,25 +6,12 @@
 package org.biblioteket;
 
 import org.biblioteket.Database.DBConnection;
-import java.sql.Connection; 
-import java.sql.PreparedStatement; 
-import java.sql.ResultSet;
 import java.sql.*;
+import org.biblioteket.Objects.Bok;
 
 //import javafx.embed.swing.SwingNode;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.RowFilter;           
-import javax.swing.table.TableModel;    
-import javax.swing.table.TableRowSorter;
+import org.biblioteket.Objects.Film;
+import org.biblioteket.Objects.Tidskrift;
 
 
 /**
@@ -35,9 +22,14 @@ public class DatabasTestMain {
     
     public static void main(String[] args)throws SQLException{
         
-       DBConnection DB = DBConnection.getInstance();
-        
-        System.out.println(DB.isConnectedToDB());
+       DBConnection instance = DBConnection.getInstance();
+       int ObjektID = 3;
+       
+//       Bok bok = instance.getBok(ObjektID);
+        Tidskrift tidskrift  =  instance.getTidskrift(ObjektID);
+//       film.printFilm();
+       
+      
         
     }
 //        try{  

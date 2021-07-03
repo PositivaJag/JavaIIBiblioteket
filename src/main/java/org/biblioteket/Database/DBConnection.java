@@ -13,11 +13,15 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Film;
-import org.biblioteket.Objects.Kopia;
 import org.biblioteket.Objects.Objekt;
+import org.biblioteket.Objects.Objekt.Type;
+import org.biblioteket.Objects.Tidskrift;
+
 
 /**
  *
@@ -161,10 +165,13 @@ public class DBConnection {
             
             ArrayList<Objekt> result = new ArrayList<>();
             while (resultSet.next()){
-                result.add(new Objekt(resultSet.getInt(1), 
-                        resultSet.getString(2), resultSet.getString(3), 
-                        getCreatorsAsString(resultSet.getInt(1), resultSet.getString(3)), 
-                        getSearchWordsAsString(resultSet.getInt(1))));
+                int objektID = resultSet.getInt(1);
+                String title =  resultSet.getString(2);
+                Type type = Type.valueOf(resultSet.getString(3));
+                String creators =  getCreatorsAsString(objektID, type);
+                String sw = getSearchWordsAsString(objektID);
+                
+                result.add(new Objekt(objektID, title, type, creators, sw));
             }
           
             return result;
@@ -177,23 +184,21 @@ public class DBConnection {
 
     }
     
-    public ArrayList<Kopia> getObjectCopies(int objektID, String type){
+//    public ArrayList<Kopia> getObjectCopies(int objektID, String type){
         
-        if (type.equalsIgnoreCase("Film")){
-           getFilm(objektID);
-        }
-          try {
-            //Get objekt from DB
-            String SQL = "Select * from Kopia where ObjektID = ?";
-            pState = connection.prepareStatement(SQL);
-            pState.setInt(1, objektID );
-            ResultSet resultSet = getQuery(pState);
-
-            ArrayList<Kopia> result = new ArrayList<>();
-            while (resultSet.next()){
-                result.add(new Kopia(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4)));
-
-            }
+        
+//          try {
+//            //Get objekt from DB
+//            String SQL = "Select * from Kopia where ObjektID = ?";
+//            pState = connection.prepareStatement(SQL);
+//            pState.setInt(1, objektID );
+//            ResultSet resultSet = getQuery(pState);
+//
+//            ArrayList<Kopia> result = new ArrayList<>();
+//            while (resultSet.next()){
+//                result.add(new Kopia(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4)));
+//
+//            }
 //            System.out.println(objektID);
 //            for(int i = 0; i<result.size();i++){
 //                Kopia Cop = result.get(i);
@@ -201,13 +206,28 @@ public class DBConnection {
 //                 System.out.println(Cop.getStreckkod());
 //                  System.out.println(Cop.getLoanKategori());
 //                   System.out.println(Cop.getPlacement());
-            
-           
-            return result;
-        } 
-        catch (SQLException e) {
+//            
+//           
+//            return result;
+//        } 
+//        catch (SQLException e) {
+//        }
+//          return null;
+//    }
+    
+    public Object getObjectSubclass(int objektID, String type){
+        //Get Objekt subclass info
+        if (type.equalsIgnoreCase("Film")){
+           return getFilm(objektID);
         }
-          return null;
+//        else if (type.equalsIgnoreCase("Bok")){
+//            return getBok(objektID);
+//        }
+//        else if (type.equalsIgnoreCase("Tidskrift")){
+//           return getTidskrift(obejktID);
+//        }
+        else
+            return null;
     }
     
     public Film getFilm(int objektID){
@@ -217,26 +237,79 @@ public class DBConnection {
             pState.setInt(1, objektID );
             ResultSet resultSet = getQuery(pState);
             
+
             resultSet.next();
+            String title = resultSet.getString(2);
+            ArrayList<String> sw = getSearchWordsAsList(objektID);
+            String ageRating = resultSet.getString(4);
+            String prodCountry = resultSet.getString(5); 
+            ArrayList<String> directors =  getDirectorsAsList(objektID);
+            ArrayList<String> actors = getActorsAsList(objektID) ;
             
-            return new Film(resultSet.getInt(1), resultSet.getString(2), 
-                    resultSet.getString(3),getSearchWordsAsList(objektID), 
-                    resultSet.getString(4), resultSet.getString(5), 
-                    getDirectorsAsList(objektID), getActorsAsList(objektID));
+            System.out.println(title +" "+ sw +" "+ ageRating +" "+ directors +" "+ actors);
+            
+            
+            return new Film(objektID, title, Type.Film, sw, ageRating, prodCountry,
+                    directors, actors);
+            
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
     
-    public String getCreatorsAsString(int objektID, String type) throws SQLException{
+     public Bok getBok(int objektID){
+        try {
+            String SQL = "select titel, BokISBN from Objekt where ObjektID = ?;";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, objektID );
+            ResultSet resultSet = getQuery(pState);
+            
+
+            resultSet.next();
+            String title = resultSet.getString(1);
+            int ISBN = resultSet.getInt(2);
+            ArrayList<String> authors = getAuthorsAsList(objektID);
+            ArrayList<String> sw = getSearchWordsAsList(objektID);
+            
+            
+            return new Bok(objektID, title, Type.Bok, ISBN,authors, sw);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+      public Tidskrift getTidskrift(int objektID){
+        try {
+            String SQL = "Select Titel, TidskriftDatum, Tidskriftnr from objekt where ObjektId = ?;";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, objektID );
+            ResultSet resultSet = getQuery(pState);
+            
+            resultSet.next();
+            String title = resultSet.getString(1);
+            Date datum = resultSet.getDate(2);
+            int nummer = resultSet.getInt(3);
+            ArrayList<String> sw = getSearchWordsAsList(objektID);
+            
+            return new Tidskrift(objektID, title, Type.Tidskrift, datum, nummer, sw);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+      
+    public String getCreatorsAsString(int objektID, Type type) throws SQLException{
         String creators;
         String SQL;
          try {
             //Get objekt from DB
-            if (type.equalsIgnoreCase("Bok"))
+            if (type == (type.Bok))
                 SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Skapare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
-            else if (type.equalsIgnoreCase("Film"))
+            else if (type == (type.Film))
                 SQL = "select group_concat(Concat(r.fNamn, ' ', r.eNamn, '\\n')) as Skapare from regisörAktör r, filmregisöraktör f, objekt o where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = o.ObjektID and o.ObjektID =  ? group by o.ObjektID;";
             else 
                 return "";
@@ -321,12 +394,17 @@ public class DBConnection {
     }
 
     public ArrayList<String> getDirectorsAsList(int objektID){
-        String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Regissör from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = Reg';";
+        String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Regissör from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = 'Reg';";
         return getStringsAsList(SQL, objektID);
     } 
     
     public ArrayList<String> getActorsAsList(int objektID){
         String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Skådis from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = 'Akt';";
+        return getStringsAsList(SQL, objektID);
+    }
+    
+     public ArrayList<String> getAuthorsAsList(int objektID){
+        String SQL = "select concat(f.fNamn, ' ', f.eNamn) as Författare from författare f, bokförfattare b where f.FörfattareID = b.FörfattareID and b.ObjektID = ?;";
         return getStringsAsList(SQL, objektID);
     }
     
@@ -432,5 +510,6 @@ public class DBConnection {
         return null;
          
     }
-
+    
+   
 }

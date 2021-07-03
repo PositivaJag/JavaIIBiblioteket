@@ -20,7 +20,8 @@ public class Film extends Objekt{
     private ArrayList<Kopia> Kopior;
     private ArrayList<String> SearchWords;
 
-    public Film(int objektID, String title, String type, ArrayList<String> sw, String ageRating, String prodCountry, ArrayList<String> directors, ArrayList<String> actors ) throws SQLException {
+    public Film(int objektID, String title, Type type, ArrayList<String> sw, 
+            String ageRating, String prodCountry, ArrayList<String> directors, ArrayList<String> actors ) throws SQLException {
         super(objektID, title, type);
         this.ageRating = ageRating;
         this.prodCountry = prodCountry;
@@ -77,6 +78,21 @@ public class Film extends Objekt{
         this.Kopior = Kopior;
     }
     
+
+
+    public void printFilm(){
+        System.out.println(super.getObjektID());
+        System.out.println(super.getTitel());
+        System.out.println(super.getType());
+        System.out.println(this.ageRating);
+        System.out.println(this.prodCountry);
+        System.out.println(this.directors);
+        System.out.println(this.actors);
+        System.out.println(this.SearchWords);
+        System.out.println(this.Kopior);
+        System.out.println();
+        
+    }
     
     
     

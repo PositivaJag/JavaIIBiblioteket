@@ -65,8 +65,8 @@ public class KopiaController  {
            selectObjekt = App.getMainControll().getSearchController().getSelectedObjekt();
            int id = selectObjekt.getObjektID();
             System.out.println("ID = "+id);
-            updateTableView(instance.getObjectCopies(id, selectObjekt.getType()));
-            updateDetailsView(selectObjekt);
+//            updateTableView(instance.getObjectCopies(id, selectObjekt.getType()));
+//            updateDetailsView(selectObjekt);
             
           
 //         updateTableView(getKopior());
@@ -107,7 +107,7 @@ public class KopiaController  {
 
     private void updateDetailsView(Objekt Objekt) {
         lblTitel.setText(Objekt.getTitel());
-        lblTyp.setText(Objekt.getType());
+        lblTyp.setText(Objekt.getType().toString());
     }
 
       

@@ -12,19 +12,26 @@ import java.sql.SQLException;
  */
 public class Kopia{
     
+     public enum AccessKopia {
+         AVAILABLE,
+         ON_LOAN
+    }
+    
     private int streckkod;
     private String loanKategori;
     private String placement;
+    private AccessKopia access;
 
-    public Kopia(int streckkod, String loanKategori, String placement) throws SQLException {
+    public Kopia(int streckkod, String loanKategori, String placement, AccessKopia access) throws SQLException {
             this.streckkod = streckkod;
             this.loanKategori = loanKategori;
             this.placement = placement;
+            this.access = access;
     }
     
-    public Kopia newCopy(int streckkod, String loanKategori, String placement, Objekt objektID) throws SQLException, Exception {
+    public Kopia newCopy(int streckkod, String loanKategori, String placement, AccessKopia access, Objekt objektID) throws SQLException, Exception {
         if (Objekt.checkInstance(objektID)){
-            return new Kopia(streckkod, loanKategori, placement);
+            return new Kopia(streckkod, loanKategori, placement, access);
         }
         else
             throw new Exception("Objektet "+objektID.getTitel()+"finns inte.");
