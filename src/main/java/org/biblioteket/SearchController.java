@@ -46,13 +46,12 @@ public class SearchController {
 
     @FXML
     private Button btnDetails;
-    
-     @FXML
+
+    @FXML
     private Button btnUpdateObjekt;
 
     @FXML
     private Button btnNyttObjekt;
-
 
     //List with types of objekts. 
     private ObservableList<String> objektTyp = FXCollections.observableArrayList("Alla");
@@ -62,26 +61,17 @@ public class SearchController {
     private KopiaController kopiaController;
     private SearchController searchController;
     private Parent kopiaRoot;
-    
-    
 
     public void initialize() throws SQLException {
-//        MainController mainControll = App.getMainControll();
-//        searchController = mainControll.getSearchController();
-//        System.out.println("Search controller: " +searchController.toString());
-
-        //Check if a librarian is logged in. 
-        //If true, make buttons visible. 
-        if (App.getMainControll().getPersonTyp() == PersonTyp.BIBLIOTEKARIE){
-             setbtnNyttObjektVisibility(true);
-             setbtnUpdateObjektVisibility(true);
-        }
-        else{
-             setbtnNyttObjektVisibility(false);
-             setbtnUpdateObjektVisibility(false);
+        if (App.getMainControll().getPersonTyp() == PersonTyp.BIBLIOTEKARIE) {
+            setbtnNyttObjektVisibility(true);
+            setbtnUpdateObjektVisibility(true);
+        } else {
+            setbtnNyttObjektVisibility(false);
+            setbtnUpdateObjektVisibility(false);
         }
         setComboType();
-        
+
         updateTableView(getObjekts());
     }
 
@@ -95,13 +85,12 @@ public class SearchController {
 
     @FXML
     void pressSearchBtn(ActionEvent event) throws SQLException {
-        getObjekts();      
+        getObjekts();
         updateTableView(result);
-    addTextFilter(observableResult, txtSearch, tblSearch);
+        addTextFilter(observableResult, txtSearch, tblSearch);
 
     }
-    
-    
+
     @FXML
     void pressNyttObjekt(ActionEvent event) {
 
@@ -148,45 +137,46 @@ public class SearchController {
 
         selectFirstEntry();
     }
+
     public static <Objekt> void addTextFilter(ObservableList<Objekt> observList,
-        TextField txtSearch, TableView tblSearch) {
+            TextField txtSearch, TableView tblSearch) {
 
-    // skapa en lista med tabellens kolumner    
-    List<TableColumn<Objekt, ?>> columns = tblSearch.getColumns();
+        // skapa en lista med tabellens kolumner    
+        List<TableColumn<Objekt, ?>> columns = tblSearch.getColumns();
 
-    // Skapa en filtrerad lista baserat på ObservableList (allData)
-    FilteredList<Objekt> filteredData = new FilteredList<>(observList);
-    // Utan att gå in på alltför mycket detaljer som vi inte pratat om ...
-    // ... så skapar vi här en koppling mellan filterField och data i kolumnerna
-    filteredData.predicateProperty().bind(Bindings.createObjectBinding(() -> {
-        // läser av textfältet (och kontrollerarr om det är tomt)
-        String text = txtSearch.getText();
+        // Skapa en filtrerad lista baserat på ObservableList (allData)
+        FilteredList<Objekt> filteredData = new FilteredList<>(observList);
+        // Utan att gå in på alltför mycket detaljer som vi inte pratat om ...
+        // ... så skapar vi här en koppling mellan filterField och data i kolumnerna
+        filteredData.predicateProperty().bind(Bindings.createObjectBinding(() -> {
+            // läser av textfältet (och kontrollerarr om det är tomt)
+            String text = txtSearch.getText();
 
-        if (text == null || text.isEmpty()) {
-            return null;
-        }
-        // gör söksträngen till gemener
-        final String filterText = text.toLowerCase();
+            if (text == null || text.isEmpty()) {
+                return null;
+            }
+            // gör söksträngen till gemener
+            final String filterText = text.toLowerCase();
 
-        return o -> {
-            // går igenom alla kolumner
-            for (TableColumn<Objekt, ?> col : columns) {
-                ObservableValue<?> observable = col.getCellObservableValue(o);
-                if (observable != null) {
-                    // läser in värde ...
-                    Object value = observable.getValue();
-                    // och jämför med textfältets värde (lowercase)
-                    if (value != null && value.toString().toLowerCase().contains(filterText)) {
-                        return true;
+            return o -> {
+                // går igenom alla kolumner
+                for (TableColumn<Objekt, ?> col : columns) {
+                    ObservableValue<?> observable = col.getCellObservableValue(o);
+                    if (observable != null) {
+                        // läser in värde ...
+                        Object value = observable.getValue();
+                        // och jämför med textfältets värde (lowercase)
+                        if (value != null && value.toString().toLowerCase().contains(filterText)) {
+                            return true;
+                        }
                     }
                 }
-            }
-            return false;
-        };
-    }, txtSearch.textProperty()));
-    SortedList<Objekt> sortedData = new SortedList<>(filteredData);
-    sortedData.comparatorProperty().bind(tblSearch.comparatorProperty());
-    tblSearch.setItems(sortedData);
+                return false;
+            };
+        }, txtSearch.textProperty()));
+        SortedList<Objekt> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(tblSearch.comparatorProperty());
+        tblSearch.setItems(sortedData);
     }
 
     private ArrayList<Objekt> getObjekts() throws SQLException {
@@ -225,7 +215,6 @@ public class SearchController {
     }
 
 //    public boolean loadPopupKopia() {
-
 //        try {
 //            FXMLLoader loader = new FXMLLoader(getClass().getResource("Kopia.fxml"));
 //            Parent root = loader.load();
@@ -245,12 +234,10 @@ public class SearchController {
 //        }
 //        return false;
 //    }
-
     public KopiaController getKopiaController() {
         return this.kopiaController;
     }
 
-   
     private void loadPopupKopia() {
         try {
 //            if (kopiaRoot == null){
@@ -263,7 +250,7 @@ public class SearchController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException ex) {
-            System.out.println("Fel i "+this.toString());
+            System.out.println("Fel i " + this.toString());
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -272,19 +259,19 @@ public class SearchController {
         this.kopiaController = kopiaController;
     }
 
-public void setbtnUpdateObjektVisibility(Boolean bool){
-    btnUpdateObjekt.setVisible(bool);
-}
-public void setLibrarianButtonsVisibility(){
-    Boolean bool = App.getMainControll().checkIfLibrarianLoggedIn();
-         setbtnUpdateObjektVisibility(bool);
-         setbtnNyttObjektVisibility(bool);
-        
-         
-}    
+    public void setbtnUpdateObjektVisibility(Boolean bool) {
+        btnUpdateObjekt.setVisible(bool);
+    }
 
-public void setbtnNyttObjektVisibility(Boolean bool){
-    btnNyttObjekt.setVisible(bool);
-}
+    public void setLibrarianButtonsVisibility() {
+        Boolean bool = App.getMainControll().checkIfLibrarianLoggedIn();
+        setbtnUpdateObjektVisibility(bool);
+        setbtnNyttObjektVisibility(bool);
+
+    }
+
+    public void setbtnNyttObjektVisibility(Boolean bool) {
+        btnNyttObjekt.setVisible(bool);
+    }
 
 }

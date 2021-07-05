@@ -354,6 +354,23 @@ public class DBConnection {
         }
         return null;
     }
+    
+    public ArrayList<String> getStringsAsList(String SQL) {
+        try {
+            ResultSet resultSet = getResultSetFromDB(SQL);
+
+            ArrayList<String> words = new ArrayList<>();
+            while (resultSet.next()) {
+                words.add(resultSet.getString(1));
+            }
+            System.out.println(words.toString());
+            return words;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
 
     public ResultSet getResultSetFromDB(String SQL, int objektID) {
 
@@ -361,6 +378,20 @@ public class DBConnection {
 
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
+            ResultSet resultSet = getQuery(pState);
+            return resultSet;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+        public ResultSet getResultSetFromDB(String SQL) {
+
+        try {
+
+            pState = connection.prepareStatement(SQL);
             ResultSet resultSet = getQuery(pState);
             return resultSet;
 
@@ -529,5 +560,20 @@ public class DBConnection {
             return AccessKopia.AVAILABLE;
         }
     }
+    
+    public ArrayList<String> getAllAuthors(){
+        String SQL = "select concat(fNamn, ' ', eNamn) as authors from Författare;";
+       return getStringsAsList(SQL);
+
+    }
+    
+    public ArrayList<String> getAllSearchWords(){
+        String SQL = "select Ämnesord as seachWords from klassificering;";
+       return getStringsAsList(SQL);
+    }
+    
+    
+    
+    
 
 }
