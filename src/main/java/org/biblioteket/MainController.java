@@ -35,6 +35,8 @@ public class MainController {
     public Button buttonLogout;
     @FXML
     private Button buttonHem;
+    @FXML 
+    private Button buttonLogin;
     @FXML
     private Label labelInloggad;
 
@@ -63,12 +65,18 @@ public class MainController {
         loadPage("Loan.fxml");
 
     }
-
+    @FXML 
+    void clickButtonLogin (ActionEvent event){
+        
+        
+    }
+    
     @FXML
     void clickButtonLogout(ActionEvent event) {
         if (logout() == LoginResult.LOGOUT) {
             loadPage("Home.fxml");
             setLogoutVisibility(false);
+            setLoginVisibility(true);
             labelInloggad.setText("Utloggad");
         }
     }
@@ -112,6 +120,7 @@ public class MainController {
 
         try {
             System.out.println("searchRoot = " + searchRoot);
+            //If no search has been done. 
             if (searchRoot == null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Search.fxml"));
                 searchRoot = loader.load();
@@ -119,6 +128,7 @@ public class MainController {
 //            System.out.println(MainController.searchController);
             }
             borderPane.setCenter(searchRoot);
+            searchController.setLibrarianButtonsVisibility();
             return true;
 
         } catch (IOException ex) {
@@ -149,6 +159,9 @@ public class MainController {
 
     public void setLogoutVisibility(Boolean bool) {
         buttonLogout.setVisible(bool);
+    }
+    public void setLoginVisibility(Boolean bool){
+        buttonLogin.setVisible(bool);
     }
 
     public PersonTyp getPersonTyp() {
@@ -192,6 +205,13 @@ public class MainController {
 
     private void setSearchController(SearchController searchController) {
         this.searchController = searchController;
+    }
+    
+    public boolean checkIfLibrarianLoggedIn(){
+        if (personTyp == PersonTyp.BIBLIOTEKARIE)
+            return true;
+        else
+            return false;
     }
 
 }

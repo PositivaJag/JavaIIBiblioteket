@@ -71,4 +71,16 @@ public class Kopia{
 //            Integer.toString(this.streckkod), this.loanKategori, this.placement };
 //        return c;    
 //    }
+
+    public int getObjektID() {
+        return objektID;
+    }
+
+    public AccessKopia getAccess() {
+        return access;
+    }
+
+    public Date getReturnLatest() {
+        return returnLatest;
+    }
 }

@@ -56,7 +56,20 @@
             <TableView fx:id="tblSearch" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="330.0" prefWidth="530.0" />
             <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="btnDetails" mnemonicParsing="false" onAction="#pressDetalis" text="Se detaljer" />
+                  <Button fx:id="btnUpdateObjekt" mnemonicParsing="false" onAction="#pressUpdateObjekt" text="Uppdatera objekt">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnNyttObjekt" mnemonicParsing="false" onAction="#pressNyttObjekt" text="Nytt objekt">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnDetails" mnemonicParsing="false" onAction="#pressDetalis" text="Se detaljer">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin></Button>
                </children>
                <VBox.margin>
                   <Insets top="10.0" />

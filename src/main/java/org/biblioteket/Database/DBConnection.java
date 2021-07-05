@@ -43,7 +43,6 @@ public class DBConnection {
     private static final String dbPassword = "B0b1gny";
     private boolean connectedToDB = false;
 
-   
     public enum LoginResult {
         LOGIN_OK,
         WRONG_PASSWORD,
@@ -141,7 +140,7 @@ public class DBConnection {
 
             LoantagareData = new String[]{id, telNr, adress, postnr, loantagarKategori};
             return LoantagareData;
-            
+
         } catch (SQLException e) {
             printSQLExcept(e);
         }
@@ -176,7 +175,7 @@ public class DBConnection {
 
     }
 
-    public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type){
+    public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type) {
 
         try {
             int objektID = Objekt.getObjektID();
@@ -186,25 +185,39 @@ public class DBConnection {
             ResultSet resultSet = getResultSetFromDB(SQL, objektID);
 
             ArrayList<Kopia> result = new ArrayList<>();
-            while (resultSet.next()){
+
+            //Check if there are any copies of the book. 
+            if (resultSet.next() == false) {
+                return result;
+            }
+
+            do {
                 int streckkod = resultSet.getInt(1);
                 String loanKategori = resultSet.getString(2);
                 String placement = resultSet.getString(3);
+                AccessKopia access = AccessKopia.AVAILABLE;
+                Date returnLatest = null;
+
                 ResultSet loanResultSet = getKopiaLoanInformation(streckkod);
-                loanResultSet.next();
-                AccessKopia access = getKopiaAccess(loanResultSet.getDate(4));
-                Date returnLatest = loanResultSet.getDate(3);
-                
-                result.add(new Kopia(streckkod, objektID, loanKategori, 
+                if (loanResultSet.next()) {
+                    access = getKopiaAccess(loanResultSet.getDate(4));
+                }
+
+                if (access == AccessKopia.ON_LOAN) {
+                    returnLatest = loanResultSet.getDate(3);
+                }
+
+                result.add(new Kopia(streckkod, objektID, loanKategori,
                         placement, access, returnLatest));
 
-            }
+            } while (resultSet.next());
+
             return result;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-            }
+    }
 //    public Object getObjectSubclass(int objektID, String type) {
 //        //Get Objekt subclass info
 //        if (type.equalsIgnoreCase("Film")) {
@@ -220,7 +233,6 @@ public class DBConnection {
 //        }
 //    }
 
-       
 //    public Object getObjectSubclass(int objektID, String type) {
 //        //Get Objekt subclass info
 //        if (type.equalsIgnoreCase("Film")) {
@@ -235,7 +247,6 @@ public class DBConnection {
 //            return null;
 //        }
 //    }
-
     public Film getFilmFromDB(int objektID) {
         try {
             String SQL = "select ObjektID, Titel, Typ, FilmÅldersbegr, FilmProdLand from Objekt where typ = 'Film' and  ObjektID = ?;";
@@ -409,14 +420,13 @@ public class DBConnection {
         String SQL = "select concat(f.fNamn, ' ', f.eNamn) as Författare from författare f, bokförfattare b where f.FörfattareID = b.FörfattareID and b.ObjektID = ?;";
         return getStringsAsList(SQL, objektID);
     }
-    
-     private ResultSet getKopiaLoanInformation(int streckkod) {
-         String access;
-         String SQL = "select * from lån where Datumlån = (select max(DatumLån) from lån where streckkod = ?);";
-         return getResultSetFromDB(SQL, streckkod );
-       
-    }
 
+    private ResultSet getKopiaLoanInformation(int streckkod) {
+        String access;
+        String SQL = "select * from lån where Datumlån = (select max(DatumLån) from lån where streckkod = ?);";
+        return getResultSetFromDB(SQL, streckkod);
+
+    }
 
     public boolean chechIfLibrarian(String email) throws SQLException {
 
@@ -510,13 +520,14 @@ public class DBConnection {
         return null;
 
     }
-    
-    private AccessKopia getKopiaAccess(Date returnDate){
-        
-        if (returnDate == null)
+
+    private AccessKopia getKopiaAccess(Date returnDate) {
+
+        if (returnDate == null) {
             return AccessKopia.ON_LOAN;
-        else
+        } else {
             return AccessKopia.AVAILABLE;
+        }
     }
 
 }

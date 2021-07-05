@@ -27,6 +27,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Objekt;
+import org.biblioteket.Persons.Person;
+import org.biblioteket.Persons.Person.PersonTyp;
 
 public class SearchController {
 
@@ -44,6 +46,13 @@ public class SearchController {
 
     @FXML
     private Button btnDetails;
+    
+     @FXML
+    private Button btnUpdateObjekt;
+
+    @FXML
+    private Button btnNyttObjekt;
+
 
     //List with types of objekts. 
     private ObservableList<String> objektTyp = FXCollections.observableArrayList("Alla");
@@ -51,6 +60,7 @@ public class SearchController {
     private ObservableList<Objekt> observableResult;  //Observable list with Objekts. 
     private Objekt selectedObjekt;
     private KopiaController kopiaController;
+    private SearchController searchController;
     private Parent kopiaRoot;
     
     
@@ -59,7 +69,19 @@ public class SearchController {
 //        MainController mainControll = App.getMainControll();
 //        searchController = mainControll.getSearchController();
 //        System.out.println("Search controller: " +searchController.toString());
+
+        //Check if a librarian is logged in. 
+        //If true, make buttons visible. 
+        if (App.getMainControll().getPersonTyp() == PersonTyp.BIBLIOTEKARIE){
+             setbtnNyttObjektVisibility(true);
+             setbtnUpdateObjektVisibility(true);
+        }
+        else{
+             setbtnNyttObjektVisibility(false);
+             setbtnUpdateObjektVisibility(false);
+        }
         setComboType();
+        
         updateTableView(getObjekts());
     }
 
@@ -76,6 +98,17 @@ public class SearchController {
         getObjekts();      
         updateTableView(result);
     addTextFilter(observableResult, txtSearch, tblSearch);
+
+    }
+    
+    
+    @FXML
+    void pressNyttObjekt(ActionEvent event) {
+
+    }
+
+    @FXML
+    void pressUpdateObjekt(ActionEvent event) {
 
     }
 
@@ -239,6 +272,19 @@ public class SearchController {
         this.kopiaController = kopiaController;
     }
 
+public void setbtnUpdateObjektVisibility(Boolean bool){
+    btnUpdateObjekt.setVisible(bool);
+}
+public void setLibrarianButtonsVisibility(){
+    Boolean bool = App.getMainControll().checkIfLibrarianLoggedIn();
+         setbtnUpdateObjektVisibility(bool);
+         setbtnNyttObjektVisibility(bool);
+        
+         
+}    
 
-    
+public void setbtnNyttObjektVisibility(Boolean bool){
+    btnNyttObjekt.setVisible(bool);
+}
+
 }

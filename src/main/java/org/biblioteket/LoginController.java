@@ -113,7 +113,8 @@ public class LoginController {
                 if (connection.chechIfLibrarian(mail)) {
                     //System.out.println(mainControll.getActiveLibrarian().toString());
                     mainControll.setActiveLibrarian(new Person(mail));
-                    mainControll.setPersonTyp(Person.PersonTyp.BIBLIOTEKARIE);                   
+                    mainControll.setPersonTyp(Person.PersonTyp.BIBLIOTEKARIE);
+                    
                 } 
                 //Create loantagare
                 else {
@@ -125,6 +126,7 @@ public class LoginController {
                 }
                 mainControll.setLabelInloggad(getActiveName(mainControll));
                 mainControll.setLogoutVisibility(true);
+                mainControll.setLoginVisibility(false);
             }
             return checkUserPassw;
         }

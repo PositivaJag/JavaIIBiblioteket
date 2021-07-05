@@ -67,7 +67,8 @@ public class KopiaController {
             selectObjekt = App.getMainControll().getSearchController().getSelectedObjekt();
             int id = selectObjekt.getObjektID();
             System.out.println("ID = " + id);
-            updateTableView(instance.getObjectCopies(selectObjekt, selectObjekt.getType()));
+            ArrayList<Kopia> Copies = instance.getObjectCopies(selectObjekt, selectObjekt.getType());
+            updateTableView(Copies);
             updateDetailsView(selectObjekt);
 
 //         updateTableView(getKopior());
