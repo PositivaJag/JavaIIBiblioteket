@@ -572,7 +572,20 @@ public class DBConnection {
        return getStringsAsList(SQL);
     }
     
-    
+    public void newBok(String titel, int ISBN ){
+        
+        try {
+            String SQL = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
+            pState = connection.prepareStatement(SQL);
+
+            pState.setString(1, titel);
+            pState.setInt(2,ISBN);
+            pState.execute();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     
 

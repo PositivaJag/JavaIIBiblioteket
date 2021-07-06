@@ -17,7 +17,7 @@ public class Util {
     public static String listToString(ArrayList<String> list){
         String string = "";
         for (int i = 0; i < list.size(); i++){
-            string += list.get(i)+"\n";
+            string += list.get(i)+"; ";
         }
         return string;
     }
