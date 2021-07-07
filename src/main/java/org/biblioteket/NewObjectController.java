@@ -6,6 +6,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -27,8 +29,8 @@ public class NewObjectController {
 
     @FXML
     private Button btnRemoveSearchWords;
-    
-        @FXML
+
+    @FXML
     private Button btnRemoveAuthor;
 
     @FXML
@@ -48,59 +50,93 @@ public class NewObjectController {
 
     @FXML
     private Label lblSearchWord;
-    
-        @FXML
+
+    @FXML
     private Button btnCreate;
 
-    
+    @FXML
+    private Label lblWarning;
+
     //Lists of all the authors/words
     private ArrayList<String> authorsList;
     private ArrayList<String> swList;
     //Lists of selected authors/words
     private ArrayList<String> selectAuthors = new ArrayList<>();
     private ArrayList<String> selectSearchWords = new ArrayList<>();
+    private ArrayList<Integer> allISBN = new ArrayList<>();
     DBConnection connection;
+    
+    
 
-    public void initialize(){
-       connection = DBConnection.getInstance();
-       
-       authorsList = connection.getAllAuthors();
-       Collections.sort(authorsList);
-       comboAuthors.getItems().addAll(authorsList);
-       
-       swList = connection.getAllSearchWords();
-       Collections.sort(swList);
-       comboSearchWords.getItems().addAll(swList);
-      
-       txtISBN.textProperty().addListener(new ChangeListener<String>() {
-    @Override
-    public void changed(ObservableValue<? extends String> observable, String oldValue, 
-        String newValue) {
-        if (!newValue.matches("\\d*")) {
-            txtISBN.setText(newValue.replaceAll("[^\\d]", ""));
-        }
-    }
-});
-       
+    public void initialize() {
+        connection = DBConnection.getInstance();
+
+        authorsList = connection.getAllAuthors();
+        Collections.sort(authorsList);
+        comboAuthors.getItems().addAll(authorsList);
+
+        swList = connection.getAllSearchWords();
+        Collections.sort(swList);
+        comboSearchWords.getItems().addAll(swList);
+
+        allISBN = connection.getAllISBN();
+
+        txtISBN.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    txtISBN.setText(newValue.replaceAll("[^\\d]", ""));
+
+                }
+                if (allISBN.contains(Integer.parseInt(txtISBN.getText()))) {
+                    lblWarning.setText("ISBN finns redan");
+                    btnCreate.setDisable(true);
+                } else if (!(allISBN.contains(Integer.parseInt(txtISBN.getText())))) {
+                    lblWarning.setText("");
+                    btnCreate.setDisable(false);
+                }
+
+            }
+        });
+        
+        ChangeListener<String> allFieldsListener = ((observable, oldValue, newValue) -> {
+            if (txtTitle.getText() == null 
+                    || txtTitle.getText().equals("")
+                    || txtISBN.getText() == null 
+                    || txtISBN.getText().equals("") 
+                    || selectSearchWords.isEmpty()
+                    || selectAuthors.isEmpty()){
+                btnCreate.setDisable(true);
+            }
+            else
+                btnCreate.setDisable(false);
+        });
+        
+        txtTitle.textProperty().addListener(allFieldsListener);
+        txtISBN.textProperty().addListener(allFieldsListener);
+        lblAuthor.textProperty().addListener(allFieldsListener);
+        lblSearchWord.textProperty().addListener(allFieldsListener);
+        
     }
     
+
+
     @FXML
     void checkIfISBNExists(ActionEvent event) {
 
     }
-
 //    @FXML
 //    void selectAuthorFromList(ActionEvent event) {
 //        String value = comboAuthors.getValue().toString();
 //        authorsList.add(value);
 //        txtAutors.setText(ListToString(authorsList));
-
 //    }
 
-     @FXML
+    @FXML
     void pressAddSearchWord(ActionEvent event) {
         comboWordToText(comboSearchWords, selectSearchWords, lblSearchWord);
-      
+
     }
 
     @FXML
@@ -115,10 +151,11 @@ public class NewObjectController {
 
     @FXML
     void pressRemoveSearchWord(ActionEvent event) {
+        comboRemoveWordFromText(comboSearchWords, selectSearchWords, lblSearchWord);
 
     }
 
-        @FXML
+    @FXML
     void pressCreate(ActionEvent event) {
         newBok();
 
@@ -135,33 +172,50 @@ public class NewObjectController {
 //        }
 //        return output;
 //    }
-
-
-private void comboWordToText(ComboBox selectedWord, ArrayList<String> list, Label text){
-      String word = selectedWord.getValue().toString();
-        if (word != null){
-            if (list.contains(word)){
-                System.out.println(word +" aldready in selectSearchWords");
-            }
-            else{
+    private void comboWordToText(ComboBox selectedWord, ArrayList<String> list, Label text) {
+        String word = selectedWord.getValue().toString();
+        if (word != null) {
+            if (list.contains(word)) {
+                System.out.println(word + " aldready in selectSearchWords");
+            } else {
                 list.add(word);
             }
         }
         text.setText(Util.listToString(list));
 
-}
+    }
 
     private void comboRemoveWordFromText(ComboBox selectedWord, ArrayList<String> list, Label text) {
         String word = selectedWord.getValue().toString();
-         if (word != null){
-            if (list.contains(word)){
+        if (word != null) {
+            if (list.contains(word)) {
                 list.remove(word);
             }
+        }
+        text.setText(Util.listToString(list));
     }
-         text.setText(Util.listToString(list));
-    }
-    
-    private void newBok(){
+
+    private void newBok() {
+        
         connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()));
+        int returnObjektID = 0;
+        Alert alert = new Alert(AlertType.INFORMATION);
+        if (returnObjektID != -1)
+            alert.setContentText("Objekt "+returnObjektID+" skapades");
+        else{
+            alert.setAlertType(AlertType.ERROR);
+            alert.setContentText("Något gick fel.\nObjektet skapades inte");
+        }
+            
+        
+        
+    }
+
+    public void setDisableBtnCreate(Boolean bool) {
+        this.btnCreate.setDisable(bool);
+    }
+
+    public void setTextLblWarning(String text) {
+        this.lblWarning.setText(text);
     }
 }

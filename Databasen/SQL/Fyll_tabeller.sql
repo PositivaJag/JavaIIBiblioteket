@@ -29,7 +29,7 @@ select * from regisöraktör;
 
 
 INSERT INTO `javaiibiblioteket`.`klassificering`
-(`Ämnesord`,`KlassificeringTyp`)
+(`Ämnesord`,`KlassificeringTypobjektklass`)
 VALUES("Thriller", "Allmän"),
 ("Skogsbruk", "Allmän"),
 ("Fantasy", "Allmän"),
@@ -148,19 +148,48 @@ select * from låntagare;
 
 INSERT INTO `javaiibiblioteket`.`lån`
 (`DatumLån`,`ReturSenast`,`DatumRetur`,`streckkod`,`Låntagare`)
+VALUES;;
+select * from författare f, bokförfattare b, objekt o, where f.FörfattareID = b.FörfattareID and b.ObjektID = o.ObjektID;
+
+select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\n')) as Författare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = 5 group by o.ObjektID;
+
+select * from objekt;
+
+
+
+INSERT INTO `javaiibiblioteket`.`lån`
+(`DatumLån`, `ReturSenast`, `streckkod`, `Låntagare`)
 VALUES
+("2021-07-03", "2021-08-03", 111225, 11),
+("2021-06-06", "2021-07-06", 112230, 12),
+("2021-05-05", "2021-06-05", 111225, 13),
+("2021-03-03", "2021-04-03", 112231, 15);
+
+
+SELECT GROUP_CONCAT(column1) FROM... WHERE... GROUP BY column1 ;;
+
+select Concat(f.fNamn, ' ', f.eNamn, '\\n') as Författare 
+from författare f, bokförfattare b, objekt o 
+where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID;
+
+select * from kopia; 
+select * from person;
+
+select * from objekt where Typ = Film;
+
+select distinct typ from objekt;
+
+
+select * from författare;
+
+select * from objekt where typ = "bok";
+
+
+
+select BokISBN from Objekt where typ = 'Bok';
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
+Select ObjektID from Objekt where BokISBN = 123456;

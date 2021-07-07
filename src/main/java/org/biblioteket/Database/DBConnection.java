@@ -355,6 +355,9 @@ public class DBConnection {
         return null;
     }
     
+
+    
+    
     public ArrayList<String> getStringsAsList(String SQL) {
         try {
             ResultSet resultSet = getResultSetFromDB(SQL);
@@ -362,6 +365,22 @@ public class DBConnection {
             ArrayList<String> words = new ArrayList<>();
             while (resultSet.next()) {
                 words.add(resultSet.getString(1));
+            }
+            System.out.println(words.toString());
+            return words;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+         public ArrayList<Integer> getIntsAsList(String SQL) {
+        try {
+            ResultSet resultSet = getResultSetFromDB(SQL);
+
+            ArrayList<Integer> words = new ArrayList<>();
+            while (resultSet.next()) {
+                words.add(resultSet.getInt(1));
             }
             System.out.println(words.toString());
             return words;
@@ -572,7 +591,12 @@ public class DBConnection {
        return getStringsAsList(SQL);
     }
     
-    public void newBok(String titel, int ISBN ){
+    public ArrayList<Integer> getAllISBN(){
+        String SQL = "select BokISBN from Objekt where typ = 'Bok';";
+        return getIntsAsList(SQL);
+    }
+    
+    public int newBok(String titel, int ISBN ){
         
         try {
             String SQL = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
@@ -582,10 +606,22 @@ public class DBConnection {
             pState.setInt(2,ISBN);
             pState.execute();
             
+            String SQL2 = "Select ObjektID from Objekt where BokISBN = ?;";
+            pState = connection.prepareStatement(SQL);
+            
+             pState.setInt(1, ISBN);
+             ResultSet resultSet = getQuery(pState);
+             
+             if (resultSet.next())
+             return resultSet.getInt(1);
+            
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return -1;
     }
+    
+
     
     
 
