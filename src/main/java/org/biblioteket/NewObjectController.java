@@ -197,8 +197,8 @@ public class NewObjectController {
 
     private void newBok() {
         
-        connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()));
-        int returnObjektID = 0;
+        int returnObjektID = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText(), selectAuthors, selectSearchWords));
+        
         Alert alert = new Alert(AlertType.INFORMATION);
         if (returnObjektID != -1)
             alert.setContentText("Objekt "+returnObjektID+" skapades");
@@ -206,6 +206,7 @@ public class NewObjectController {
             alert.setAlertType(AlertType.ERROR);
             alert.setContentText("Något gick fel.\nObjektet skapades inte");
         }
+        alert.show();
             
         
         

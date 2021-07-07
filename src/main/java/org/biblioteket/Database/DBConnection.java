@@ -54,6 +54,7 @@ public class DBConnection {
     private DBConnection(String url, String username, String password) throws SQLException {
         // connect to database
         connection = DriverManager.getConnection(url, username, password);
+        connection.setAutoCommit(false);
 
         // create Statement to query database                             
         statement = connection.createStatement(
@@ -596,18 +597,26 @@ public class DBConnection {
         return getIntsAsList(SQL);
     }
     
-    public int newBok(String titel, int ISBN ){
+    public int newBok(String titel, int ISBN, ArrayList<String> authors, ArrayList<String> searchWords ){
+        
         
         try {
-            String SQL = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
-            pState = connection.prepareStatement(SQL);
+            //Insert book
+            String SQLBok = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
+            pState = connection.prepareStatement(SQLBok);
 
             pState.setString(1, titel);
             pState.setInt(2,ISBN);
-            pState.execute();
+            pState.executeUpdate();
+            
+            //Insert Autors
+            for (int i = 0; i < authors.size(); i++){  
+            int authorID = getAuthorID(authors.get(i));
+            String SQLauthor = "INSERT INTO bokförfattare (FörfattareID, ObjektID)VALUES (
+                    }
             
             String SQL2 = "Select ObjektID from Objekt where BokISBN = ?;";
-            pState = connection.prepareStatement(SQL);
+            pState = connection.prepareStatement(SQL2);
             
              pState.setInt(1, ISBN);
              ResultSet resultSet = getQuery(pState);
@@ -621,7 +630,10 @@ public class DBConnection {
         return -1;
     }
     
-
+private int getAuthorID(String name){
+    String SQL = "select författareID from (select FörfattareID, concat(fNamn, ' ', eNamn) as namn from Författare) as T where T.namn = ?;";
+    return getIntsAsList(SQL).get(0);
+}
     
     
 

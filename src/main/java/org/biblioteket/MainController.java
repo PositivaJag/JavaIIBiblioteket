@@ -67,7 +67,7 @@ public class MainController {
     }
     @FXML 
     void clickButtonLogin (ActionEvent event){
-        
+        loadPopup("Login.fxml");
         
     }
     

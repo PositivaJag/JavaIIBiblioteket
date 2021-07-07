@@ -19,11 +19,11 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
     //Set up instance instead of using static load() method
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("NewObject.fxml"));
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("Main.fxml"));
     Parent root = loader.load();
 
-    //Now we have access to getController() through the instance... don't forget the type cast
-    //mainControll  = (MainController)loader.getController();
+//    Now we have access to getController() through the instance... don't forget the type cast
+    mainControll  = (MainController)loader.getController();
       
         Scene scene = new Scene(root);
         stage.setScene(scene);

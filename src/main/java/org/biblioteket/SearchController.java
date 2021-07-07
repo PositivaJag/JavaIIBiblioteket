@@ -93,11 +93,12 @@ public class SearchController {
 
     @FXML
     void pressNyttObjekt(ActionEvent event) {
-
+        loadPopup("NewObject.fxml");
     }
 
     @FXML
     void pressUpdateObjekt(ActionEvent event) {
+        
 
     }
 
@@ -253,6 +254,23 @@ public class SearchController {
             System.out.println("Fel i " + this.toString());
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private Boolean loadPopup(String fxml) {
+         try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return true;
+
+        } catch (IOException ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     public void setKopiaController(KopiaController kopiaController) {
