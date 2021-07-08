@@ -197,7 +197,7 @@ public class NewObjectController {
 
     private void newBok() {
         
-        int returnObjektID = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText(), selectAuthors, selectSearchWords));
+        int returnObjektID = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()), selectAuthors, selectSearchWords);
         
         Alert alert = new Alert(AlertType.INFORMATION);
         if (returnObjektID != -1)

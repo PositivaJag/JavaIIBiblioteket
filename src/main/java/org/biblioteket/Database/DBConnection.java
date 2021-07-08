@@ -355,10 +355,7 @@ public class DBConnection {
         }
         return null;
     }
-    
 
-    
-    
     public ArrayList<String> getStringsAsList(String SQL) {
         try {
             ResultSet resultSet = getResultSetFromDB(SQL);
@@ -374,8 +371,8 @@ public class DBConnection {
         }
         return null;
     }
-    
-         public ArrayList<Integer> getIntsAsList(String SQL) {
+
+    public ArrayList<Integer> getIntsAsList(String SQL) {
         try {
             ResultSet resultSet = getResultSetFromDB(SQL);
 
@@ -390,7 +387,6 @@ public class DBConnection {
         }
         return null;
     }
-    
 
     public ResultSet getResultSetFromDB(String SQL, int objektID) {
 
@@ -406,8 +402,8 @@ public class DBConnection {
         }
         return null;
     }
-    
-        public ResultSet getResultSetFromDB(String SQL) {
+
+    public ResultSet getResultSetFromDB(String SQL) {
 
         try {
 
@@ -580,61 +576,143 @@ public class DBConnection {
             return AccessKopia.AVAILABLE;
         }
     }
-    
-    public ArrayList<String> getAllAuthors(){
+
+    public ArrayList<String> getAllAuthors() {
         String SQL = "select concat(fNamn, ' ', eNamn) as authors from Författare;";
-       return getStringsAsList(SQL);
+        return getStringsAsList(SQL);
 
     }
-    
-    public ArrayList<String> getAllSearchWords(){
+
+    public ArrayList<String> getAllSearchWords() {
         String SQL = "select Ämnesord as seachWords from klassificering;";
-       return getStringsAsList(SQL);
+        return getStringsAsList(SQL);
     }
-    
-    public ArrayList<Integer> getAllISBN(){
+
+    public ArrayList<Integer> getAllISBN() {
         String SQL = "select BokISBN from Objekt where typ = 'Bok';";
         return getIntsAsList(SQL);
     }
-    
-    public int newBok(String titel, int ISBN, ArrayList<String> authors, ArrayList<String> searchWords ){
-        
-        
-        try {
-            //Insert book
-            String SQLBok = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
-            pState = connection.prepareStatement(SQLBok);
 
-            pState.setString(1, titel);
-            pState.setInt(2,ISBN);
-            pState.executeUpdate();
-            
+    public int newBok(String title, int ISBN, ArrayList<String> authors, ArrayList<String> searchWords)  {
+ 
+        try {
+            insertBok(title, ISBN);
+            //Check that the book was added
+            int objektID = getObjektIDFromISBN(ISBN);
             //Insert Autors
-            for (int i = 0; i < authors.size(); i++){  
-            int authorID = getAuthorID(authors.get(i));
-            String SQLauthor = "INSERT INTO bokförfattare (FörfattareID, ObjektID)VALUES (
-                    }
+            insertBokAuthors(authors, objektID);
+            //Insert SearchWords
+            insertBokSearchWords(searchWords, objektID);
+            connection.commit();
+            return objektID;
             
-            String SQL2 = "Select ObjektID from Objekt where BokISBN = ?;";
-            pState = connection.prepareStatement(SQL2);
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+                System.out.println("Misslyckades att spara objekt.\nRollback Ok.");
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex1) {
+                System.out.println("Misslyckades att spara objekt.\nRollback ej ok.");
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            }
             
-             pState.setInt(1, ISBN);
-             ResultSet resultSet = getQuery(pState);
-             
-             if (resultSet.next())
-             return resultSet.getInt(1);
+        }
+        
+       return -1;
+    }
+
+    private int getAuthorID(String name) {
+        try {
+            String SQL = "select författareID from (select FörfattareID, concat(fNamn, ' ', eNamn) as namn from Författare) as T where T.namn = ?;";
+            pState = connection.prepareStatement(SQL);
+            pState.setString(1, name);
+            ResultSet resultSet = getQuery(pState);
+            resultSet.next();
+            int authorID = resultSet.getInt(1);
+            return authorID;
             
+        } catch (SQLException ex) {
+            System.out.println("Kunde inte hitta författare "+name+".");
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+
+    private int getSearchWordID(String sw) {
+        try {
+            String SQL = "select KlassificeringID from klassificering where Ämnesord = ?;";
+            pState = connection.prepareStatement(SQL);
+            pState.setString(1, sw);
+            ResultSet resultSet = getQuery(pState);
+            resultSet.next();
+            int swID = resultSet.getInt(1);
+            return swID;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+               System.out.println("Kunde inte hitta sökord "+sw+".");
+        }
+        
+        return -1;
+    }
+
+    private int getObjektIDFromISBN(int ISBN) {
+        try {
+            String SQL = "Select ObjektID from Objekt where BokISBN = ?;";
+            pState = connection.prepareStatement(SQL);
+
+            pState.setInt(1, ISBN);
+            ResultSet resultSet = getQuery(pState);
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return -1;
     }
-    
-private int getAuthorID(String name){
-    String SQL = "select författareID from (select FörfattareID, concat(fNamn, ' ', eNamn) as namn from Författare) as T where T.namn = ?;";
-    return getIntsAsList(SQL).get(0);
-}
-    
-    
 
+    private void insertBok(String title, int ISBN) throws SQLException {
+       
+            String SQLBok = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
+            pState = connection.prepareStatement(SQLBok);
+            pState.setString(1, title);
+            pState.setInt(2, ISBN);
+            pState.executeUpdate();
+       
+    }
+
+    public void insertBokAuthors(ArrayList<String> authors, int objektID) throws SQLException {
+
+        for (int i = 0; i < authors.size(); i++) {
+           
+                int authorID = getAuthorID(authors.get(i));
+
+                String SQL = "INSERT INTO bokförfattare (FörfattareID, ObjektID)VALUES (?, ?);";
+                pState = connection.prepareStatement(SQL);
+
+                pState.setInt(1, authorID);
+                pState.setInt(2, objektID);
+                pState.executeUpdate();
+          
+
+        }
+    }
+
+    public void insertBokSearchWords(ArrayList<String> searchWords, int objektID) throws SQLException {
+
+        for (int i = 0; i < searchWords.size(); i++) {
+           
+                int swID = getSearchWordID(searchWords.get(i));
+                
+                String SQL = "INSERT INTO objektklass (ObjektID, KategoriID)VALUES (?, ?);";
+                pState = connection.prepareStatement(SQL);
+                pState.setInt(1, objektID);
+                pState.setInt(2, swID);
+                pState.executeUpdate();
+                
+           
+
+        }
+    }
 }
