@@ -30,19 +30,20 @@ import org.biblioteket.Objects.Tidskrift;
  */
 public class DBConnection {
 
+    //Database parameters
+    private static String dbUrl = "jdbc:mysql://localhost:3306/javaiibiblioteket";
+    private static String dbUserName = "root";
+    private static String dbPassword = "B0b1gny";
+    private boolean connectedToDB = false;
+
+    //Connection parameters
     private static DBConnection instance;
-    private Connection connection;
+    private final Connection connection;
     private Statement statement;
     private PreparedStatement pState;
     private ResultSetMetaData metadata;
-//    private ResultSet resultSet;
 
-    //Connection parameters
-    private static final String dbUrl = "jdbc:mysql://localhost:3306/javaiibiblioteket";
-    private static final String dbUserName = "root";
-    private static final String dbPassword = "B0b1gny";
-    private boolean connectedToDB = false;
-
+    //Enum for login
     public enum LoginResult {
         LOGIN_OK,
         WRONG_PASSWORD,
@@ -50,24 +51,20 @@ public class DBConnection {
         LOGOUT
     }
 
-    //Constructor of connection
+//Constructor of connection
     private DBConnection(String url, String username, String password) throws SQLException {
         // connect to database
         connection = DriverManager.getConnection(url, username, password);
         connection.setAutoCommit(false);
-
         // create Statement to query database                             
         statement = connection.createStatement(
                 ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
         // update database connection status
         connectedToDB = true;
-
-        // set query and execute it
-        //setQuery(query);
     }
 
-    //Singleton implementation
+
+//General database SQL functions. 
     public static DBConnection getInstance() {
         if (instance == null) {
             try {
@@ -82,15 +79,135 @@ public class DBConnection {
         return instance;
     }
 
-    public Statement getStatement() {
-        return statement;
-    }
-
     public boolean isConnectedToDB() {
         return connectedToDB;
     }
 
-    public String[] getPersonDataAsList(String email) throws SQLException {
+    private ResultSet getQuery(PreparedStatement pState) {
+        //Check if we have contact with database
+        if (connectedToDB == true) {
+            try {
+                ResultSet resultSet = pState.executeQuery();
+                metadata = resultSet.getMetaData();
+                return resultSet;
+            } catch (SQLException e) {
+                System.out.println("Något gick fel i getQuery i DBConnection.java");
+            }
+        } else {
+            System.out.println("Ingen kontakt med databasen");
+        }
+        return null;
+    }
+
+    public ResultSet getResultSetFromDB(String SQL, int objektID) {
+
+        try {
+
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, objektID);
+            ResultSet resultSet = getQuery(pState);
+            return resultSet;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public ResultSet getResultSetFromDB(String SQL) {
+
+        try {
+
+            pState = connection.prepareStatement(SQL);
+            ResultSet resultSet = getQuery(pState);
+            return resultSet;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public ArrayList<String> getStringsAsList(String SQL, int objektID) {
+        try {
+            ResultSet resultSet = getResultSetFromDB(SQL, objektID);
+
+            ArrayList<String> words = new ArrayList<>();
+            while (resultSet.next()) {
+                words.add(resultSet.getString(1));
+            }
+            System.out.println(words.toString());
+            return words;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public ArrayList<String> getStringsAsList(String SQL) {
+        try {
+            ResultSet resultSet = getResultSetFromDB(SQL);
+
+            ArrayList<String> words = new ArrayList<>();
+            while (resultSet.next()) {
+                words.add(resultSet.getString(1));
+            }
+            System.out.println(words.toString());
+            return words;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public ArrayList<Integer> getIntsAsList(String SQL) {
+        try {
+            ResultSet resultSet = getResultSetFromDB(SQL);
+
+            ArrayList<Integer> words = new ArrayList<>();
+            while (resultSet.next()) {
+                words.add(resultSet.getInt(1));
+            }
+            System.out.println(words.toString());
+            return words;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+//Users
+    public LoginResult checkUserAndPassword(String email, String pwordIn) {
+        try {
+            LoginResult result;
+
+            String SQL = "Select lösenord from person where eMail = ?";
+            pState = connection.prepareStatement(SQL);
+            pState.setString(1, email);
+            ResultSet resultSet = getQuery(pState);
+
+            //Check if row exists
+            if (!resultSet.next()) {
+                result = LoginResult.NO_SUCH_USER;
+            } else {
+                //System.out.println(resultSet.getString(1));
+                if (resultSet.getString(1).equals(pwordIn)) {
+                    result = LoginResult.LOGIN_OK;
+                } else {
+                    result = LoginResult.WRONG_PASSWORD;
+                }
+            }
+
+            //System.out.println(result);
+            return result;
+        } catch (SQLException e) {
+            System.out.println("Något gick fel i checkUserAnPassword i DBConnection.java");
+        }
+        //System.out.println(99);  
+        return null;
+    }
+    
+    public String[] getPersonDataAsList(String email) {
 
         String[] userData = new String[0];
 
@@ -115,7 +232,7 @@ public class DBConnection {
             return userData;
 
         } catch (SQLException e) {
-            printSQLExcept(e);
+            System.out.println("Något gick fel i getPersonDataAsLlist i DBConnection.java");
         }
 
         return userData;
@@ -143,14 +260,31 @@ public class DBConnection {
             return LoantagareData;
 
         } catch (SQLException e) {
-            printSQLExcept(e);
+            System.out.println("Något gick fel i GetLoantagareDataAsList i DBConnection.java");;
         }
 
         return LoantagareData;
 
     }
 
-    public ArrayList<Objekt> getObjektsFromDB(String SQL) throws Exception {
+    public boolean chechIfLibrarian(String email) {
+
+        try {
+            String SQL = "Select PersonTyp from person where eMail = ?";
+            pState = connection.prepareStatement(SQL);
+            pState.setString(1, email);
+            ResultSet resultSet = getQuery(pState);
+            resultSet.next();
+            //System.out.println(resultSet.getString(1));
+            return (resultSet.getString(1).equals("Bibliotekarie"));
+        } catch (SQLException e) {
+            System.out.println("Något gick fel i checkIfLibrarian i DBConnection.java");
+            return false;
+        }
+    }
+
+    //Objekts and copies
+    public ArrayList<Objekt> getObjektsFromDB(String SQL) {
         try {
 
             pState = connection.prepareStatement(SQL);
@@ -171,83 +305,10 @@ public class DBConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        throw new Exception("Something went wroing in method getAllObjectData "
-                + "in Class DBConnection");
-
-    }
-
-    public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type) {
-
-        try {
-            int objektID = Objekt.getObjektID();
-            //Get objekt from DB
-            String SQL = "Select streckkod, lånekategori, placering from Kopia where ObjektID = ?";
-
-            ResultSet resultSet = getResultSetFromDB(SQL, objektID);
-
-            ArrayList<Kopia> result = new ArrayList<>();
-
-            //Check if there are any copies of the book. 
-            if (resultSet.next() == false) {
-                return result;
-            }
-
-            do {
-                int streckkod = resultSet.getInt(1);
-                String loanKategori = resultSet.getString(2);
-                String placement = resultSet.getString(3);
-                AccessKopia access = AccessKopia.AVAILABLE;
-                Date returnLatest = null;
-
-                ResultSet loanResultSet = getKopiaLoanInformation(streckkod);
-                if (loanResultSet.next()) {
-                    access = getKopiaAccess(loanResultSet.getDate(4));
-                }
-
-                if (access == AccessKopia.ON_LOAN) {
-                    returnLatest = loanResultSet.getDate(3);
-                }
-
-                result.add(new Kopia(streckkod, objektID, loanKategori,
-                        placement, access, returnLatest));
-
-            } while (resultSet.next());
-
-            return result;
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
         return null;
-    }
-//    public Object getObjectSubclass(int objektID, String type) {
-//        //Get Objekt subclass info
-//        if (type.equalsIgnoreCase("Film")) {
-//            return getFilmFromDB(objektID);
-//        } //        else if (type.equalsIgnoreCase("Bok")){
-//        //            return getBokFromDB(objektID);
-//        //        }
-//        //        else if (type.equalsIgnoreCase("Tidskrift")){
-//        //           return getTidskriftFromDB(obejktID);
-//        //        }
-//        else {
-//            return null;
-//        }
-//    }
 
-//    public Object getObjectSubclass(int objektID, String type) {
-//        //Get Objekt subclass info
-//        if (type.equalsIgnoreCase("Film")) {
-//            return getFilmFromDB(objektID);
-//        } //        else if (type.equalsIgnoreCase("Bok")){
-//        //            return getBokFromDB(objektID);
-//        //        }
-//        //        else if (type.equalsIgnoreCase("Tidskrift")){
-//        //           return getTidskriftFromDB(obejktID);
-//        //        }
-//        else {
-//            return null;
-//        }
-//    }
+    }
+
     public Film getFilmFromDB(int objektID) {
         try {
             String SQL = "select ObjektID, Titel, Typ, FilmÅldersbegr, FilmProdLand from Objekt where typ = 'Film' and  ObjektID = ?;";
@@ -316,105 +377,75 @@ public class DBConnection {
         return null;
     }
 
-    public String getCreatorsAsString(int objektID, Type type) throws SQLException {
-        String creators;
-        String SQL;
+    public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type) {
+
         try {
+            int objektID = Objekt.getObjektID();
             //Get objekt from DB
-            if (type == (type.Bok)) {
-                SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Skapare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
-            } else if (type == (type.Film)) {
-                SQL = "select group_concat(Concat(r.fNamn, ' ', r.eNamn, '\\n')) as Skapare from regisörAktör r, filmregisöraktör f, objekt o where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = o.ObjektID and o.ObjektID =  ? group by o.ObjektID;";
+            String SQL = "Select streckkod, lånekategori, placering from Kopia where ObjektID = ?";
+
+            ResultSet resultSet = getResultSetFromDB(SQL, objektID);
+
+            ArrayList<Kopia> result = new ArrayList<>();
+
+            //Check if there are any copies of the book. 
+            if (resultSet.next() == false) {
+                return result;
+            }
+
+            do {
+                int streckkod = resultSet.getInt(1);
+                String loanKategori = resultSet.getString(2);
+                String placement = resultSet.getString(3);
+                AccessKopia access = AccessKopia.AVAILABLE;
+                Date returnLatest = null;
+
+                ResultSet loanResultSet = getKopiaLoanInformation(streckkod);
+                if (loanResultSet.next()) {
+                    access = getKopiaAccess(loanResultSet.getDate(4));
+                }
+
+                if (access == AccessKopia.ON_LOAN) {
+                    returnLatest = loanResultSet.getDate(3);
+                }
+
+                result.add(new Kopia(streckkod, objektID, loanKategori,
+                        placement, access, returnLatest));
+
+            } while (resultSet.next());
+
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public ArrayList<String> getObjektTypes() {
+
+        ArrayList<String> types = new ArrayList();
+
+        try {
+            String SQL = "select distinct typ from objekt;";
+            pState = connection.prepareStatement(SQL);
+            ResultSet resultSet = getQuery(pState);
+
+            if (!resultSet.next()) {
+                return types;
             } else {
-                return "";
+                do {
+                    types.add(resultSet.getString(1));
+                    System.out.println(resultSet.getString(1));
+                } while (resultSet.next());
+
+                return types;
             }
 
-            ResultSet resultSet = getResultSetFromDB(SQL, objektID);
-            resultSet.next();
-            creators = resultSet.getString(1);
-//            System.out.println("Författare: " +authors);
-            return creators;
-        } catch (SQLException e) {
-            printSQLExcept(e);
-        }
-        return null;
-    }
-
-    public ArrayList<String> getStringsAsList(String SQL, int objektID) {
-        try {
-            ResultSet resultSet = getResultSetFromDB(SQL, objektID);
-
-            ArrayList<String> words = new ArrayList<>();
-            while (resultSet.next()) {
-                words.add(resultSet.getString(1));
-            }
-            System.out.println(words.toString());
-            return words;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-    }
 
-    public ArrayList<String> getStringsAsList(String SQL) {
-        try {
-            ResultSet resultSet = getResultSetFromDB(SQL);
-
-            ArrayList<String> words = new ArrayList<>();
-            while (resultSet.next()) {
-                words.add(resultSet.getString(1));
-            }
-            System.out.println(words.toString());
-            return words;
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public ArrayList<Integer> getIntsAsList(String SQL) {
-        try {
-            ResultSet resultSet = getResultSetFromDB(SQL);
-
-            ArrayList<Integer> words = new ArrayList<>();
-            while (resultSet.next()) {
-                words.add(resultSet.getInt(1));
-            }
-            System.out.println(words.toString());
-            return words;
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public ResultSet getResultSetFromDB(String SQL, int objektID) {
-
-        try {
-
-            pState = connection.prepareStatement(SQL);
-            pState.setInt(1, objektID);
-            ResultSet resultSet = getQuery(pState);
-            return resultSet;
-
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public ResultSet getResultSetFromDB(String SQL) {
-
-        try {
-
-            pState = connection.prepareStatement(SQL);
-            ResultSet resultSet = getQuery(pState);
-            return resultSet;
-
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
     }
 
     public ArrayList<String> getSearchWordsAsList(int objektID) {
@@ -452,10 +483,35 @@ public class DBConnection {
         }
         return null;
     }
+    
+    public String getCreatorsAsString(int objektID, Type type) {
+        String creators;
+        String SQL;
+        try {
+            if (null == type) {
+                return "";
+            } else //Get objekt from DB
+            {
+                switch (type) {
+                    case Bok:
+                        SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Skapare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
+                        break;
+                    case Film:
+                        SQL = "select group_concat(Concat(r.fNamn, ' ', r.eNamn, '\\n')) as Skapare from regisörAktör r, filmregisöraktör f, objekt o where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = o.ObjektID and o.ObjektID =  ? group by o.ObjektID;";
+                        break;
+                    default:
+                        return "";
+                }
+            }
 
-    public ArrayList<String> getDirectorsAsList(int objektID) {
-        String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Regissör from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = 'Reg';";
-        return getStringsAsList(SQL, objektID);
+            ResultSet resultSet = getResultSetFromDB(SQL, objektID);
+            resultSet.next();
+            creators = resultSet.getString(1);
+            return creators;
+        } catch (SQLException e) {
+            System.out.println("Något gick fel i getCreatorsAsString i DBConnection.java");;
+        }
+        return null;
     }
 
     public ArrayList<String> getActorsAsList(int objektID) {
@@ -468,103 +524,15 @@ public class DBConnection {
         return getStringsAsList(SQL, objektID);
     }
 
+    public ArrayList<String> getDirectorsAsList(int objektID) {
+        String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Regissör from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = 'Reg';";
+        return getStringsAsList(SQL, objektID);
+    }
+
     private ResultSet getKopiaLoanInformation(int streckkod) {
         String access;
         String SQL = "select * from lån where Datumlån = (select max(DatumLån) from lån where streckkod = ?);";
         return getResultSetFromDB(SQL, streckkod);
-
-    }
-
-    public boolean chechIfLibrarian(String email) throws SQLException {
-
-        try {
-            String SQL = "Select PersonTyp from person where eMail = ?";
-            pState = connection.prepareStatement(SQL);
-            pState.setString(1, email);
-            ResultSet resultSet = getQuery(pState);
-            resultSet.next();
-            //System.out.println(resultSet.getString(1));
-            return (resultSet.getString(1).equals("Bibliotekarie"));
-        } catch (SQLException e) {
-            printSQLExcept(e);
-            return false;
-        }
-    }
-
-    private ResultSet getQuery(PreparedStatement pState) throws SQLException {
-        //Check if we have contact with database
-        if (connectedToDB == true) {
-            try {
-                ResultSet resultSet = pState.executeQuery();
-                metadata = resultSet.getMetaData();
-                return resultSet;
-            } catch (SQLException e) {
-                printSQLExcept(e);
-            }
-        } else {
-            System.out.println("Ingen kontakt med databasen");
-        }
-        return null;
-    }
-
-    public LoginResult checkUserAndPassword(String email, String pwordIn) throws Exception {
-        try {
-            LoginResult result;
-
-            String SQL = "Select lösenord from person where eMail = ?";
-            pState = connection.prepareStatement(SQL);
-            pState.setString(1, email);
-            ResultSet resultSet = getQuery(pState);
-
-            //Check if row exists
-            if (!resultSet.next()) {
-                result = LoginResult.NO_SUCH_USER;
-            } else {
-                //System.out.println(resultSet.getString(1));
-                if (resultSet.getString(1).equals(pwordIn)) {
-                    result = LoginResult.LOGIN_OK;
-                } else {
-                    result = LoginResult.WRONG_PASSWORD;
-                }
-            }
-
-            //System.out.println(result);
-            return result;
-        } catch (SQLException e) {
-            printSQLExcept(e);
-        }
-        //System.out.println(99);  
-        throw new Exception("Unknown error");
-    }
-
-    public void printSQLExcept(SQLException e) {
-        System.out.println(e.getMessage());
-    }
-
-    public ArrayList<String> getObjektTypes() {
-
-        ArrayList<String> types = new ArrayList();
-
-        try {
-            String SQL = "select distinct typ from objekt;";
-            pState = connection.prepareStatement(SQL);
-            ResultSet resultSet = getQuery(pState);
-
-            if (!resultSet.next()) {
-                return types;
-            } else {
-                do {
-                    types.add(resultSet.getString(1));
-                    System.out.println(resultSet.getString(1));
-                } while (resultSet.next());
-
-                return types;
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
 
     }
 
@@ -577,24 +545,9 @@ public class DBConnection {
         }
     }
 
-    public ArrayList<String> getAllAuthors() {
-        String SQL = "select concat(fNamn, ' ', eNamn) as authors from Författare;";
-        return getStringsAsList(SQL);
+    //Create new
+    public int newBok(String title, int ISBN, ArrayList<String> authors, ArrayList<String> searchWords) {
 
-    }
-
-    public ArrayList<String> getAllSearchWords() {
-        String SQL = "select Ämnesord as seachWords from klassificering;";
-        return getStringsAsList(SQL);
-    }
-
-    public ArrayList<Integer> getAllISBN() {
-        String SQL = "select BokISBN from Objekt where typ = 'Bok';";
-        return getIntsAsList(SQL);
-    }
-
-    public int newBok(String title, int ISBN, ArrayList<String> authors, ArrayList<String> searchWords)  {
- 
         try {
             insertBok(title, ISBN);
             //Check that the book was added
@@ -605,7 +558,7 @@ public class DBConnection {
             insertBokSearchWords(searchWords, objektID);
             connection.commit();
             return objektID;
-            
+
         } catch (SQLException ex) {
             try {
                 connection.rollback();
@@ -615,10 +568,57 @@ public class DBConnection {
                 System.out.println("Misslyckades att spara objekt.\nRollback ej ok.");
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
             }
-            
+
         }
-        
-       return -1;
+
+        return -1;
+    }
+
+    private void insertBok(String title, int ISBN) throws SQLException {
+
+        String SQLBok = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
+        pState = connection.prepareStatement(SQLBok);
+        pState.setString(1, title);
+        pState.setInt(2, ISBN);
+        pState.executeUpdate();
+
+    }
+
+    public void insertBokAuthors(ArrayList<String> authors, int objektID) throws SQLException {
+
+        for (int i = 0; i < authors.size(); i++) {
+
+            int authorID = getAuthorID(authors.get(i));
+
+            String SQL = "INSERT INTO bokförfattare (FörfattareID, ObjektID)VALUES (?, ?);";
+            pState = connection.prepareStatement(SQL);
+
+            pState.setInt(1, authorID);
+            pState.setInt(2, objektID);
+            pState.executeUpdate();
+
+        }
+    }
+
+    public void insertBokSearchWords(ArrayList<String> searchWords, int objektID) throws SQLException {
+
+        for (int i = 0; i < searchWords.size(); i++) {
+
+            int swID = getSearchWordID(searchWords.get(i));
+
+            String SQL = "INSERT INTO objektklass (ObjektID, KategoriID)VALUES (?, ?);";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, objektID);
+            pState.setInt(2, swID);
+            pState.executeUpdate();
+
+        }
+    }
+
+    public ArrayList<String> getAllAuthors() {
+        String SQL = "select concat(fNamn, ' ', eNamn) as authors from Författare;";
+        return getStringsAsList(SQL);
+
     }
 
     private int getAuthorID(String name) {
@@ -630,12 +630,17 @@ public class DBConnection {
             resultSet.next();
             int authorID = resultSet.getInt(1);
             return authorID;
-            
+
         } catch (SQLException ex) {
-            System.out.println("Kunde inte hitta författare "+name+".");
+            System.out.println("Kunde inte hitta författare " + name + ".");
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return -1;
+    }
+
+    public ArrayList<String> getAllSearchWords() {
+        String SQL = "select Ämnesord as seachWords from klassificering;";
+        return getStringsAsList(SQL);
     }
 
     private int getSearchWordID(String sw) {
@@ -649,10 +654,15 @@ public class DBConnection {
             return swID;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-               System.out.println("Kunde inte hitta sökord "+sw+".");
+            System.out.println("Kunde inte hitta sökord " + sw + ".");
         }
-        
+
         return -1;
+    }
+
+    public ArrayList<Integer> getAllISBN() {
+        String SQL = "select BokISBN from Objekt where typ = 'Bok';";
+        return getIntsAsList(SQL);
     }
 
     private int getObjektIDFromISBN(int ISBN) {
@@ -672,47 +682,4 @@ public class DBConnection {
         return -1;
     }
 
-    private void insertBok(String title, int ISBN) throws SQLException {
-       
-            String SQLBok = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
-            pState = connection.prepareStatement(SQLBok);
-            pState.setString(1, title);
-            pState.setInt(2, ISBN);
-            pState.executeUpdate();
-       
-    }
-
-    public void insertBokAuthors(ArrayList<String> authors, int objektID) throws SQLException {
-
-        for (int i = 0; i < authors.size(); i++) {
-           
-                int authorID = getAuthorID(authors.get(i));
-
-                String SQL = "INSERT INTO bokförfattare (FörfattareID, ObjektID)VALUES (?, ?);";
-                pState = connection.prepareStatement(SQL);
-
-                pState.setInt(1, authorID);
-                pState.setInt(2, objektID);
-                pState.executeUpdate();
-          
-
-        }
-    }
-
-    public void insertBokSearchWords(ArrayList<String> searchWords, int objektID) throws SQLException {
-
-        for (int i = 0; i < searchWords.size(); i++) {
-           
-                int swID = getSearchWordID(searchWords.get(i));
-                
-                String SQL = "INSERT INTO objektklass (ObjektID, KategoriID)VALUES (?, ?);";
-                pState = connection.prepareStatement(SQL);
-                pState.setInt(1, objektID);
-                pState.setInt(2, swID);
-                pState.executeUpdate();
-                
-           
-
-        }
-    }
 }

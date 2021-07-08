@@ -37,9 +37,7 @@ public class Person {
     
     public Person (String email) throws SQLException{
         //Check connection to DB
-        try{
         DBConnection connection = DBConnection.getInstance();
-        
         //Get user data
         String[] personDB = connection.getPersonDataAsList(email);
         this.personID = personDB[0];
@@ -48,10 +46,6 @@ public class Person {
         this.email = email;
         this.password = personDB[4];
         this.personTyp = personDB[5];
-        } 
-        catch(SQLException e){
-            
-        }
         
     }
 

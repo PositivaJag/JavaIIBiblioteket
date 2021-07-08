@@ -1,6 +1,5 @@
 package org.biblioteket;
 
-import java.awt.Panel;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +20,7 @@ import org.biblioteket.Persons.Person.PersonTyp;
 
 public class MainController {
 
+    //FXML variables
     @FXML
     private BorderPane borderPane;
     @FXML
@@ -35,22 +35,28 @@ public class MainController {
     public Button buttonLogout;
     @FXML
     private Button buttonHem;
-    @FXML 
+    @FXML
     private Button buttonLogin;
     @FXML
     private Label labelInloggad;
 
-    private Panel view;
-
+    //Other variables
+    //Loantakers and librarians
     private PersonTyp personTyp = PersonTyp.NONE;
     private Person activeLibrarian = null;
     private Loantagare activeUser = null;
-    private SearchController searchController;
 
-    private Parent searchRoot;
+    private SearchController searchController;
+    private Parent searchRoot;  //Makes sure the same window opens every time
 
     public void initialize() {
 
+    }
+
+    //FXML functions
+    @FXML
+    void klickButtonSearch(ActionEvent event) {
+        loadPageSearch();
     }
 
     @FXML
@@ -64,21 +70,6 @@ public class MainController {
         }
         loadPage("Loan.fxml");
 
-    }
-    @FXML 
-    void clickButtonLogin (ActionEvent event){
-        loadPopup("Login.fxml");
-        
-    }
-    
-    @FXML
-    void clickButtonLogout(ActionEvent event) {
-        if (logout() == LoginResult.LOGOUT) {
-            loadPage("Home.fxml");
-            setLogoutVisibility(false);
-            setLoginVisibility(true);
-            labelInloggad.setText("Utloggad");
-        }
     }
 
     @FXML
@@ -96,10 +87,22 @@ public class MainController {
     }
 
     @FXML
-    void klickButtonSearch(ActionEvent event) {
-        loadPageSearch();
+    void clickButtonLogin(ActionEvent event) {
+        loadPopup("Login.fxml");
+
     }
 
+    @FXML
+    void clickButtonLogout(ActionEvent event) {
+        if (logout() == LoginResult.LOGOUT) {
+            loadPage("Home.fxml");
+            setLogoutVisibility(false);
+            setLoginVisibility(true);
+            labelInloggad.setText("Utloggad");
+        }
+    }
+
+    //Load pages
     private boolean loadPage(String fxml) {
 
         try {
@@ -157,13 +160,36 @@ public class MainController {
         return false;
     }
 
+//Set FXML values    
     public void setLogoutVisibility(Boolean bool) {
         buttonLogout.setVisible(bool);
     }
-    public void setLoginVisibility(Boolean bool){
+
+    public void setLoginVisibility(Boolean bool) {
         buttonLogin.setVisible(bool);
     }
 
+    public void setLabelInloggad(String labelInloggad) {
+        this.labelInloggad.setText(labelInloggad);
+    }
+
+    //Övriga
+    public LoginResult logout() {
+        this.personTyp = PersonTyp.NONE;
+        this.activeUser = null;
+        this.activeLibrarian = null;
+        return LoginResult.LOGOUT;
+    }
+
+    public boolean checkIfLibrarianLoggedIn() {
+        if (personTyp == PersonTyp.BIBLIOTEKARIE) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+//Getters
     public PersonTyp getPersonTyp() {
         return personTyp;
     }
@@ -176,6 +202,11 @@ public class MainController {
         return activeUser;
     }
 
+    public SearchController getSearchController() {
+        return searchController;
+    }
+
+//Setters
     public void setPersonTyp(PersonTyp personT) {
         this.personTyp = personT;
     }
@@ -188,30 +219,8 @@ public class MainController {
         this.activeUser = activeU;
     }
 
-    public LoginResult logout() {
-        this.personTyp = PersonTyp.NONE;
-        this.activeUser = null;
-        this.activeLibrarian = null;
-        return LoginResult.LOGOUT;
-    }
-
-    public void setLabelInloggad(String labelInloggad) {
-        this.labelInloggad.setText(labelInloggad);
-    }
-
-    public SearchController getSearchController() {
-        return searchController;
-    }
-
     private void setSearchController(SearchController searchController) {
         this.searchController = searchController;
-    }
-    
-    public boolean checkIfLibrarianLoggedIn(){
-        if (personTyp == PersonTyp.BIBLIOTEKARIE)
-            return true;
-        else
-            return false;
     }
 
 }

@@ -12,61 +12,47 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 import org.biblioteket.Database.DBConnection;
-import org.biblioteket.Objects.Objekt;
 
-public class NewObjectController {
-
-    @FXML
-    private Text lblTitel;
+public class NewObjektController {
 
     @FXML
     private TextField txtTitle;
-
     @FXML
     private TextField txtISBN;
-
     @FXML
     private Button btnRemoveSearchWords;
-
     @FXML
     private Button btnRemoveAuthor;
-
     @FXML
     private ComboBox comboSearchWords;
-
     @FXML
     private Button btnAddSearchWords;
-
     @FXML
     private ComboBox comboAuthors;
-
     @FXML
     private Button btnAddAuthor;
-
     @FXML
     private Label lblAuthor;
-
     @FXML
     private Label lblSearchWord;
-
     @FXML
     private Button btnCreate;
-
     @FXML
     private Label lblWarning;
 
     //Lists of all the authors/words
     private ArrayList<String> authorsList;
     private ArrayList<String> swList;
+    
     //Lists of selected authors/words
-    private ArrayList<String> selectAuthors = new ArrayList<>();
-    private ArrayList<String> selectSearchWords = new ArrayList<>();
+    private final ArrayList<String> selectAuthors = new ArrayList<>();
+    private final ArrayList<String> selectSearchWords = new ArrayList<>();
+    
+    //List of all ISBN
     private ArrayList<Integer> allISBN = new ArrayList<>();
+    
     DBConnection connection;
-    
-    
 
     public void initialize() {
         connection = DBConnection.getInstance();
@@ -120,81 +106,34 @@ public class NewObjectController {
         
     }
     
-
-
-    @FXML
-    void checkIfISBNExists(ActionEvent event) {
-
-    }
-//    @FXML
-//    void selectAuthorFromList(ActionEvent event) {
-//        String value = comboAuthors.getValue().toString();
-//        authorsList.add(value);
-//        txtAutors.setText(ListToString(authorsList));
-//    }
-
-    @FXML
-    void pressAddSearchWord(ActionEvent event) {
-        comboWordToText(comboSearchWords, selectSearchWords, lblSearchWord);
-
-    }
-
-    @FXML
+    //FXML functions
+     @FXML
     void pressAddAuthor(ActionEvent event) {
-        comboWordToText(comboAuthors, selectAuthors, lblAuthor);
+        addComboWordToList(comboAuthors, selectAuthors, lblAuthor);
     }
 
     @FXML
     void pressRemoveAuthor(ActionEvent event) {
-        comboRemoveWordFromText(comboAuthors, selectAuthors, lblAuthor);
+        removeComboWordFromList(comboAuthors, selectAuthors, lblAuthor);
+    }
+
+    @FXML
+    void pressAddSearchWord(ActionEvent event) {
+        addComboWordToList(comboSearchWords, selectSearchWords, lblSearchWord);
+
     }
 
     @FXML
     void pressRemoveSearchWord(ActionEvent event) {
-        comboRemoveWordFromText(comboSearchWords, selectSearchWords, lblSearchWord);
-
+        removeComboWordFromList(comboSearchWords, selectSearchWords, lblSearchWord);
     }
 
     @FXML
     void pressCreate(ActionEvent event) {
         newBok();
-
     }
-
-//    private String ListToString(ArrayList<String> list) {
-//        String output = "";
-//        for (int i = 0; i < list.size(); i++) {
-//            if (output == "") {
-//                output += list.get(i);
-//            } else {
-//                output += ", " + list.get(i);
-//            }
-//        }
-//        return output;
-//    }
-    private void comboWordToText(ComboBox selectedWord, ArrayList<String> list, Label text) {
-        String word = selectedWord.getValue().toString();
-        if (word != null) {
-            if (list.contains(word)) {
-                System.out.println(word + " aldready in selectSearchWords");
-            } else {
-                list.add(word);
-            }
-        }
-        text.setText(Util.listToString(list));
-
-    }
-
-    private void comboRemoveWordFromText(ComboBox selectedWord, ArrayList<String> list, Label text) {
-        String word = selectedWord.getValue().toString();
-        if (word != null) {
-            if (list.contains(word)) {
-                list.remove(word);
-            }
-        }
-        text.setText(Util.listToString(list));
-    }
-
+    
+    //Insert/update functions
     private void newBok() {
         
         int returnObjektID = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()), selectAuthors, selectSearchWords);
@@ -211,7 +150,31 @@ public class NewObjectController {
         
         
     }
+    
+    //Other functions
+    private void addComboWordToList(ComboBox selectedWord, ArrayList<String> list, Label text) {
+        String word = selectedWord.getValue().toString();
+        if (word != null) {
+            if (list.contains(word)) {
+                System.out.println(word + " aldready in selectSearchWords");
+            } else {
+                list.add(word);
+            }
+        }
+        text.setText(Util.listToString(list));
+    }
 
+    private void removeComboWordFromList(ComboBox selectedWord, ArrayList<String> list, Label text) {
+        String word = selectedWord.getValue().toString();
+        if (word != null) {
+            if (list.contains(word)) {
+                list.remove(word);
+            }
+        }
+        text.setText(Util.listToString(list));
+    }
+
+    //Setters
     public void setDisableBtnCreate(Boolean bool) {
         this.btnCreate.setDisable(bool);
     }

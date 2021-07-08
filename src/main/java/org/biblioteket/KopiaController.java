@@ -32,33 +32,23 @@ import org.biblioteket.Objects.Objekt;
  */
 public class KopiaController {
 
+    //FXML variables
     @FXML
     private Text lblTitel;
-
     @FXML
     private Label lblTyp;
-
     @FXML
     private Label lblInfo2;
-
     @FXML
     private Label lblInfo3;
-
     @FXML
     private TableView tblKopia;
-
     @FXML
     private Button btnClose;
 
+    //Other variables
     private Objekt selectObjekt;
-    private ArrayList<Kopia> result;
     private ObservableList<Kopia> observableResult;
-
-    @FXML
-    void pressBtnClose(ActionEvent event) {
-        ((Node) (event.getSource())).getScene().getWindow().hide();
-
-    }
 
     public void initialize() {
 
@@ -78,7 +68,14 @@ public class KopiaController {
         }
 
     }
-
+    
+     //FXML functions
+    @FXML
+    void pressBtnClose(ActionEvent event) {
+        ((Node) (event.getSource())).getScene().getWindow().hide();
+    }
+    
+    //Table functions
     private void updateTableView(List<Kopia> result) {
 
         tblKopia.getColumns().clear();
@@ -102,13 +99,14 @@ public class KopiaController {
         return selectObjekt;
     }
 
-    public void setSelectObjekt(Objekt selectObjekt) {
-        this.selectObjekt = selectObjekt;
-    }
-
-    private void updateDetailsView(Objekt Objekt) {
+    //Other functions
+      private void updateDetailsView(Objekt Objekt) {
         lblTitel.setText(Objekt.getTitel());
         lblTyp.setText(Objekt.getType().toString());
     }
-
+      
+    //Setters
+    public void setSelectObjekt(Objekt selectObjekt) {
+        this.selectObjekt = selectObjekt;
+    }
 }

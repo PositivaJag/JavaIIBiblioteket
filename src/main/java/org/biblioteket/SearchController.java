@@ -27,42 +27,38 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Objekt;
-import org.biblioteket.Persons.Person;
 import org.biblioteket.Persons.Person.PersonTyp;
 
 public class SearchController {
 
+    //FXML variables
     @FXML
     private TextField txtSearch;
-
     @FXML
     private Button btnSearch;
-
     @FXML
     private TableView tblSearch;
-
     @FXML
     private ComboBox comboType;
-
     @FXML
     private Button btnDetails;
-
     @FXML
     private Button btnUpdateObjekt;
-
     @FXML
     private Button btnNyttObjekt;
 
+    //Other variables
     //List with types of objekts. 
     private ObservableList<String> objektTyp = FXCollections.observableArrayList("Alla");
     private ArrayList<Objekt> result;   //List of Objekts    
     private ObservableList<Objekt> observableResult;  //Observable list with Objekts. 
+
     private Objekt selectedObjekt;
-    private KopiaController kopiaController;
+    private KopiaController kopiaController;    //Controller object
     private SearchController searchController;
     private Parent kopiaRoot;
 
-    public void initialize() throws SQLException {
+    public void initialize() {
         if (App.getMainControll().getPersonTyp() == PersonTyp.BIBLIOTEKARIE) {
             setbtnNyttObjektVisibility(true);
             setbtnUpdateObjektVisibility(true);
@@ -71,8 +67,24 @@ public class SearchController {
             setbtnUpdateObjektVisibility(false);
         }
         setComboType();
-
         updateTableView(getObjekts());
+    }
+
+    //FXML functions
+    @FXML
+    void pressSearchBtn(ActionEvent event) {
+        getObjekts();
+        updateTableView(result);
+        addTextFilter(observableResult, txtSearch, tblSearch);
+    }
+
+    @FXML
+    void pressUpdateObjekt(ActionEvent event) {
+    }
+
+    @FXML
+    void pressNyttObjekt(ActionEvent event) {
+        loadPopup("NewObjekt.fxml");
     }
 
     @FXML
@@ -83,33 +95,57 @@ public class SearchController {
         loadPopupKopia();
     }
 
-    @FXML
-    void pressSearchBtn(ActionEvent event) throws SQLException {
-        getObjekts();
-        updateTableView(result);
-        addTextFilter(observableResult, txtSearch, tblSearch);
-
+    //Load pages
+    private void loadPopupKopia() {
+        try {
+//            if (kopiaRoot == null){
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Kopia.fxml"));
+            kopiaRoot = loader.load();
+            App.getMainControll().getSearchController().setKopiaController(loader.getController());
+//            }
+            Stage stage = new Stage();
+            Scene scene = new Scene(kopiaRoot);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println("Fel i " + this.toString());
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    @FXML
-    void pressNyttObjekt(ActionEvent event) {
-        loadPopup("NewObject.fxml");
+    private Boolean loadPopup(String fxml) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return true;
+
+        } catch (IOException ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
-    @FXML
-    void pressUpdateObjekt(ActionEvent event) {
-        
-
+    //Set FXML values 
+    public void setbtnUpdateObjektVisibility(Boolean bool) {
+        btnUpdateObjekt.setVisible(bool);
     }
 
-    //Gets all the alternative types from the DB and makes it possible to choose 
-    //them. 
-    private void setComboType() throws SQLException {
-        comboType.getItems().add("Alla");
-        comboType.getItems().addAll(DBConnection.getInstance().getObjektTypes());
-        comboType.setValue("Alla");
+    public void setLibrarianButtonsVisibility() {
+        Boolean bool = App.getMainControll().checkIfLibrarianLoggedIn();
+        setbtnUpdateObjektVisibility(bool);
+        setbtnNyttObjektVisibility(bool);
     }
 
+    public void setbtnNyttObjektVisibility(Boolean bool) {
+        btnNyttObjekt.setVisible(bool);
+    }
+
+    //Table 
     private void updateTableView(List<Objekt> result) {
         //Clean table
         tblSearch.getColumns().clear();
@@ -137,6 +173,28 @@ public class SearchController {
         tblSearch.setItems(observableResult);
 
         selectFirstEntry();
+    }
+
+    private ArrayList<Objekt> getObjekts() {
+
+        DBConnection connection = DBConnection.getInstance();
+        try {
+            String SQL;
+            if (comboType.getValue() == "Alla") {
+                SQL = "Select ObjektID, Titel, Typ from Objekt";
+            } else {
+                SQL = "Select ObjektID, Titel, Typ from Objekt "
+                        + "Where Typ = '" + comboType.getValue() + "';";
+            }
+            System.out.println(SQL);
+
+            //gets an arraylist with objects
+            result = connection.getObjektsFromDB(SQL);
+
+        } catch (Exception ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
     }
 
     public static <Objekt> void addTextFilter(ObservableList<Objekt> observList,
@@ -180,116 +238,28 @@ public class SearchController {
         tblSearch.setItems(sortedData);
     }
 
-    private ArrayList<Objekt> getObjekts() throws SQLException {
-
-        DBConnection connection = DBConnection.getInstance();
-        try {
-            String SQL;
-            if (comboType.getValue() == "Alla") {
-                SQL = "Select ObjektID, Titel, Typ from Objekt";
-            } else {
-                SQL = "Select ObjektID, Titel, Typ from Objekt "
-                        + "Where Typ = '" + comboType.getValue() + "';";
-            }
-            System.out.println(SQL);
-
-            //gets an arraylist with objects
-            result = connection.getObjektsFromDB(SQL);
-
-//            System.out.println(result.size());
-//            for (Objekt i : result){
-//                System.out.println(i.getTitel()+" "+i.getType());
-//            }
-        } catch (Exception ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return result;
-    }
-
-    // select first item in TableView
     private void selectFirstEntry() {
         tblSearch.getSelectionModel().selectFirst();
     }
 
+    //Other functions
+    private void setComboType() {
+        comboType.getItems().add("Alla");
+        comboType.getItems().addAll(DBConnection.getInstance().getObjektTypes());
+        comboType.setValue("Alla");
+    }
+
+    //Getters
     public Objekt getSelectedObjekt() {
         return selectedObjekt;
     }
 
-//    public boolean loadPopupKopia() {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("Kopia.fxml"));
-//            Parent root = loader.load();
-//            
-//            //Now we have access to getController() through the instance... don't forget the type cast
-//            KopiaController kopiaControll = (KopiaController) loader.getController();
-//            kopiaControll.setSelectObjekt(selectedObjekt);
-//            
-//            Stage stage = new Stage();
-//            Scene scene = new Scene(root);
-//            stage.setScene(scene);
-//            stage.show();
-//            return true;
-//            
-//        } catch (IOException ex) {
-//            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return false;
-//    }
     public KopiaController getKopiaController() {
         return this.kopiaController;
     }
 
-    private void loadPopupKopia() {
-        try {
-//            if (kopiaRoot == null){
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Kopia.fxml"));
-            kopiaRoot = loader.load();
-            App.getMainControll().getSearchController().setKopiaController(loader.getController());
-//            }
-            Stage stage = new Stage();
-            Scene scene = new Scene(kopiaRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("Fel i " + this.toString());
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private Boolean loadPopup(String fxml) {
-         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-            return true;
-
-        } catch (IOException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
-
+    //Setters   
     public void setKopiaController(KopiaController kopiaController) {
         this.kopiaController = kopiaController;
     }
-
-    public void setbtnUpdateObjektVisibility(Boolean bool) {
-        btnUpdateObjekt.setVisible(bool);
-    }
-
-    public void setLibrarianButtonsVisibility() {
-        Boolean bool = App.getMainControll().checkIfLibrarianLoggedIn();
-        setbtnUpdateObjektVisibility(bool);
-        setbtnNyttObjektVisibility(bool);
-
-    }
-
-    public void setbtnNyttObjektVisibility(Boolean bool) {
-        btnNyttObjekt.setVisible(bool);
-    }
-
 }

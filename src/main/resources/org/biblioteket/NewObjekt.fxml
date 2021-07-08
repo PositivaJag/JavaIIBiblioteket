@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.NewObjectController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.NewObjektController">
    <children>
       <VBox alignment="TOP_CENTER" layoutX="-8.0" prefHeight="500.0" prefWidth="780.0">
          <children>
@@ -52,7 +52,7 @@
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="ISBN" GridPane.rowIndex="1" />
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Författare" GridPane.rowIndex="2" />
                                     <TextField fx:id="txtTitle" GridPane.columnIndex="1" />
-                                    <TextField fx:id="txtISBN" onAction="#checkIfISBNExists" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <TextField fx:id="txtISBN" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Sökord" GridPane.rowIndex="4" />
                                     <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                        <children>
