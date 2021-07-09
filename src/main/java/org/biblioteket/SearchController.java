@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import static javafx.collections.FXCollections.observableList;
@@ -67,7 +68,16 @@ public class SearchController {
             setbtnUpdateObjektVisibility(false);
         }
         setComboType();
-        updateTableView(getObjekts());
+        getObjekts();
+        updateTableView(result);
+        addTextFilter(observableResult, txtSearch, tblSearch);
+        
+        comboType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue options, Object oldValue, Object newValue) {
+                updateTableView(getObjekts());
+            }
+        });
     }
 
     //FXML functions
@@ -146,7 +156,7 @@ public class SearchController {
     }
 
     //Table 
-    private void updateTableView(List<Objekt> result) {
+    public void updateTableView(List<Objekt> result) {
         //Clean table
         tblSearch.getColumns().clear();
 
@@ -175,7 +185,7 @@ public class SearchController {
         selectFirstEntry();
     }
 
-    private ArrayList<Objekt> getObjekts() {
+    public ArrayList<Objekt> getObjekts() {
 
         DBConnection connection = DBConnection.getInstance();
         try {
@@ -233,6 +243,7 @@ public class SearchController {
                 return false;
             };
         }, txtSearch.textProperty()));
+        
         SortedList<Objekt> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(tblSearch.comparatorProperty());
         tblSearch.setItems(sortedData);

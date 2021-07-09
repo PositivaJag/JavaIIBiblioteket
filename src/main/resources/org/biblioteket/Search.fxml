@@ -21,7 +21,7 @@
                <children>
                   <VBox>
                      <children>
-                        <TextField fx:id="txtSearch" prefHeight="25.0" prefWidth="200.0" promptText="Sök" text="Sökfält" />
+                        <TextField fx:id="txtSearch" prefHeight="25.0" prefWidth="200.0" promptText="Sök" />
                         <Button fx:id="btnSearch" mnemonicParsing="false" onAction="#pressSearchBtn" text="Sök">
                            <VBox.margin>
                               <Insets top="10.0" />

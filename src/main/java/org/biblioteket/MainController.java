@@ -128,10 +128,12 @@ public class MainController {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Search.fxml"));
                 searchRoot = loader.load();
                 App.getMainControll().setSearchController(loader.getController());
+                
 //            System.out.println(MainController.searchController);
             }
             borderPane.setCenter(searchRoot);
             searchController.setLibrarianButtonsVisibility();
+            searchController.updateTableView(searchController.getObjekts());
             return true;
 
         } catch (IOException ex) {
