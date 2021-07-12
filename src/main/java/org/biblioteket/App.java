@@ -24,7 +24,7 @@ public class App extends Application {
       
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("Jennis bibliotek");
+        stage.setTitle("Biblioteket");
         stage.show();       
     }
 
