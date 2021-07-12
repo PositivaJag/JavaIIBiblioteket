@@ -36,8 +36,8 @@ public class SearchController {
     @FXML
     private TextField txtSearch;
     @FXML
-    private Button btnSearch;
-    @FXML
+//    private Button btnSearch;
+//    @FXML
     private TableView tblSearch;
     @FXML
     private ComboBox comboType;
@@ -68,25 +68,27 @@ public class SearchController {
             setbtnUpdateObjektVisibility(false);
         }
         setComboType();
-        getObjekts();
-        updateTableView(result);
+        updateTableView(getObjekts());
         addTextFilter(observableResult, txtSearch, tblSearch);
         
-        comboType.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+        comboType.valueProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue options, Object oldValue, Object newValue) {
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                    String newValue) {
                 updateTableView(getObjekts());
-            }
+                addTextFilter(observableResult, txtSearch, tblSearch);
+                }
         });
-    }
+                }
+        
 
     //FXML functions
-    @FXML
-    void pressSearchBtn(ActionEvent event) {
-        getObjekts();
-        updateTableView(result);
-        addTextFilter(observableResult, txtSearch, tblSearch);
-    }
+//    @FXML
+//    void pressSearchBtn(ActionEvent event) {
+////        getObjekts();
+////        updateTableView(result);
+//        //addTextFilter(observableResult, txtSearch, tblSearch);
+//    }
 
     @FXML
     void pressUpdateObjekt(ActionEvent event) {
@@ -213,10 +215,7 @@ public class SearchController {
         // skapa en lista med tabellens kolumner    
         List<TableColumn<Objekt, ?>> columns = tblSearch.getColumns();
 
-        // Skapa en filtrerad lista baserat på ObservableList (allData)
         FilteredList<Objekt> filteredData = new FilteredList<>(observList);
-        // Utan att gå in på alltför mycket detaljer som vi inte pratat om ...
-        // ... så skapar vi här en koppling mellan filterField och data i kolumnerna
         filteredData.predicateProperty().bind(Bindings.createObjectBinding(() -> {
             // läser av textfältet (och kontrollerarr om det är tomt)
             String text = txtSearch.getText();
