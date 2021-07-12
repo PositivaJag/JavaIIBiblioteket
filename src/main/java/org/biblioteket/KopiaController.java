@@ -36,15 +36,11 @@ public class KopiaController {
     @FXML
     private Text lblTitel;
     @FXML
-    private Label lblTyp;
-    @FXML
-    private Label lblInfo2;
-    @FXML
-    private Label lblInfo3;
-    @FXML
     private TableView tblKopia;
     @FXML
     private Button btnClose;
+    @FXML
+    private Label lblNoCopies;
 
     //Other variables
     private Objekt selectObjekt;
@@ -58,8 +54,14 @@ public class KopiaController {
             int id = selectObjekt.getObjektID();
             System.out.println("ID = " + id);
             ArrayList<Kopia> Copies = instance.getObjectCopies(selectObjekt, selectObjekt.getType());
+            if (Copies == null || Copies.isEmpty()){
+                tblKopia.setVisible(false);
+                lblNoCopies.setVisible(true);
+            }
+            else{
             updateTableView(Copies);
             updateDetailsView(selectObjekt);
+            }
 
 //         updateTableView(getKopior());
         } catch (Exception ex) {
@@ -85,6 +87,7 @@ public class KopiaController {
         //System.out.println(fields);
 
         // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
+        
         for (Field field : fields) {
             System.out.println(field);
             TableColumn<Map, String> column = new TableColumn<>(field.getName().toUpperCase());
@@ -102,7 +105,6 @@ public class KopiaController {
     //Other functions
       private void updateDetailsView(Objekt Objekt) {
         lblTitel.setText(Objekt.getTitel());
-        lblTyp.setText(Objekt.getType().toString());
     }
       
     //Setters

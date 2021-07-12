@@ -4,7 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -19,7 +20,6 @@
    <children>
       <VBox alignment="TOP_CENTER" layoutX="-8.0" prefHeight="500.0" prefWidth="780.0">
          <children>
-            <Label text="Skapa kopia till titeln" />
             <Text fx:id="lblTitel" strokeType="OUTSIDE" strokeWidth="0.0" text="Nytt objekt" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
@@ -28,65 +28,91 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </Text>
-            <VBox>
-               <children>
-                  <GridPane hgap="10.0" style="-fx-border-color: #909090;" vgap="20.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="272.0" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="614.0" minWidth="10.0" prefWidth="610.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                    </rowConstraints>
-                     <children>
-                        <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Streckkod" />
-                        <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Lånekategori" GridPane.rowIndex="1" />
-                        <ComboBox fx:id="comboCategory" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Placering" GridPane.rowIndex="2" />
-                        <TextField fx:id="txtStreckkod" GridPane.columnIndex="1" />
-                        <TextField fx:id="txtPlacement" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <HBox alignment="BOTTOM_RIGHT" fillHeight="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <TabPane prefHeight="431.0" prefWidth="740.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Ny bok">
+                  <content>
+                        <VBox>
                            <children>
-                              <Label fx:id="lblWarning" maxWidth="1.7976931348623157E308" textFill="#eb0505">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </Label>
-                              <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#pressAddAuthor" text="Lägg till kopia">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </Button>
+                              <GridPane hgap="10.0" prefHeight="326.0" prefWidth="740.0" vgap="20.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="272.0" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="614.0" minWidth="10.0" prefWidth="610.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Titel" />
+                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="ISBN" GridPane.rowIndex="1" />
+                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Författare" GridPane.rowIndex="2" />
+                                    <TextField fx:id="txtTitle" GridPane.columnIndex="1" />
+                                    <TextField fx:id="txtISBN" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Sökord" GridPane.rowIndex="4" />
+                                    <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                       <children>
+                                          <ComboBox fx:id="comboSearchWords" maxWidth="1.7976931348623157E308" />
+                                          <HBox alignment="TOP_RIGHT">
+                                             <children>
+                                                <Button fx:id="btnAddSearchWords" mnemonicParsing="false" onAction="#pressAddSearchWord" text="Lägg till Sökord" />
+                                                <Button fx:id="btnRemoveSearchWords" mnemonicParsing="false" onAction="#pressRemoveSearchWord" text="Ta bort sökord" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <children>
+                                          <ComboBox fx:id="comboAuthors" maxWidth="1.7976931348623157E308" />
+                                          <HBox alignment="TOP_RIGHT">
+                                             <children>
+                                                <Button fx:id="btnAddAuthor" mnemonicParsing="false" onAction="#pressAddAuthor" text="Lägg till författare" />
+                                                <Button fx:id="btnRemoveAuthor" mnemonicParsing="false" onAction="#pressRemoveAuthor" text="Ta bort författare" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <Label fx:id="lblAuthor" text="Inga författare är tillagda" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Label fx:id="lblSearchWord" text="Inga sökord är tillagda" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                 </padding>
+                              </GridPane>
+                              <HBox alignment="BOTTOM_RIGHT" fillHeight="false">
+                                 <children>
+                                    <Label fx:id="lblWarning" maxWidth="1.7976931348623157E308" textFill="#eb0505">
+                                       <HBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <Button fx:id="btnCreate" mnemonicParsing="false" onAction="#pressCreate" text="Skapa Bok">
+                                       <HBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
                            </children>
-                        </HBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-                     </padding>
-                  </GridPane>
-               </children>
-            </VBox>
-            <HBox maxWidth="1.7976931348623157E308">
-               <children>
-                  <TableView fx:id="tblAddedCopies" prefHeight="167.0" prefWidth="413.0">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </TableView>
-                  <VBox alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" prefHeight="167.0" prefWidth="368.0">
-                     <children>
-                        <Button fx:id="btnCreateCopy" mnemonicParsing="false" text="Lägg till kopior">
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </VBox.margin>
-                        </Button>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
+                        </VBox>
+                  </content>
+                </Tab>
+                <Tab text="Ny Film">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+                  <Tab text="Ny tidskrift">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

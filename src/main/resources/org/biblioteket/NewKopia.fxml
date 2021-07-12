@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.NewObjektController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.NewKopiaController">
    <children>
       <VBox alignment="TOP_CENTER" layoutX="-8.0" prefHeight="500.0" prefWidth="780.0">
          <children>
@@ -55,7 +55,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#pressAddAuthor" text="Lägg till kopia">
+                              <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#pressAddToList" text="Lägg till kopia i listan ">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -78,7 +78,7 @@
                   </TableView>
                   <VBox alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" prefHeight="167.0" prefWidth="368.0">
                      <children>
-                        <Button fx:id="btnCreateCopy" mnemonicParsing="false" text="Lägg till kopior">
+                        <Button fx:id="btnCreateCopy" mnemonicParsing="false" onAction="#pressAddToDB" text="Lägg till kopior i databasen">
                            <VBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </VBox.margin>
@@ -92,6 +92,5 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
       </VBox>
-      <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" />
    </children>
 </AnchorPane>

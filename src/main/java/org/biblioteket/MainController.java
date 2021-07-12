@@ -161,6 +161,8 @@ public class MainController {
         }
         return false;
     }
+    
+
 
 //Set FXML values    
     public void setLogoutVisibility(Boolean bool) {
