@@ -11,9 +11,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.KopiaController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.KopiaController">
    <children>
-      <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="300.0" prefWidth="500.0">
+      <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="300.0" prefWidth="600.0">
          <children>
             <Text fx:id="lblTitel" strokeType="OUTSIDE" strokeWidth="0.0" text="Titel" textAlignment="CENTER">
                <font>
@@ -27,8 +27,11 @@
                <children>
                   <Pane>
                      <children>
-                        <TableView fx:id="tblKopia" prefHeight="129.0" prefWidth="413.0" />
-                        <Label fx:id="lblNoCopies" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="27.0" prefWidth="413.0" text="Det finns för tillfället inga kopior av denna titel. " visible="false">
+                        <TableView fx:id="tblKopia" prefHeight="130.0" prefWidth="550.0" />
+                        <Label fx:id="lblNoCopies" alignment="CENTER" contentDisplay="CENTER" prefHeight="67.0" prefWidth="550.0" text="Denna titel har inga kopior ännu" visible="false">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
                            <font>
                               <Font size="18.0" />
                            </font>

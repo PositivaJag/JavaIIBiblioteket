@@ -1,21 +1,35 @@
 package org.biblioteket;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
 
 public class NewObjektController {
 
+    @FXML
+    private BorderPane borderPane;
     @FXML
     private TextField txtTitle;
     @FXML
@@ -44,14 +58,16 @@ public class NewObjektController {
     //Lists of all the authors/words
     private ArrayList<String> authorsList;
     private ArrayList<String> swList;
-    
+
     //Lists of selected authors/words
     private final ArrayList<String> selectAuthors = new ArrayList<>();
     private final ArrayList<String> selectSearchWords = new ArrayList<>();
-    
+
     //List of all ISBN
     private ArrayList<Integer> allISBN = new ArrayList<>();
     
+    private int newObjektID;
+
     DBConnection connection;
 
     public void initialize() {
@@ -85,29 +101,29 @@ public class NewObjektController {
 
             }
         });
-        
+
         ChangeListener<String> allFieldsListener = ((observable, oldValue, newValue) -> {
-            if (txtTitle.getText() == null 
+            if (txtTitle.getText() == null
                     || txtTitle.getText().equals("")
-                    || txtISBN.getText() == null 
-                    || txtISBN.getText().equals("") 
+                    || txtISBN.getText() == null
+                    || txtISBN.getText().equals("")
                     || selectSearchWords.isEmpty()
-                    || selectAuthors.isEmpty()){
+                    || selectAuthors.isEmpty()) {
                 btnCreate.setDisable(true);
-            }
-            else
+            } else {
                 btnCreate.setDisable(false);
+            }
         });
-        
+
         txtTitle.textProperty().addListener(allFieldsListener);
         txtISBN.textProperty().addListener(allFieldsListener);
         lblAuthor.textProperty().addListener(allFieldsListener);
         lblSearchWord.textProperty().addListener(allFieldsListener);
-        
+
     }
-    
+
     //FXML functions
-     @FXML
+    @FXML
     void pressAddAuthor(ActionEvent event) {
         addComboWordToList(comboAuthors, selectAuthors, lblAuthor);
     }
@@ -132,25 +148,39 @@ public class NewObjektController {
     void pressCreate(ActionEvent event) {
         newBok();
     }
-    
+
     //Insert/update functions
     private void newBok() {
-        
-        int returnObjektID = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()), selectAuthors, selectSearchWords);
-        
-        Alert alert = new Alert(AlertType.INFORMATION);
-        if (returnObjektID != -1)
-            alert.setContentText("Objekt "+returnObjektID+" skapades");
-        else{
-            alert.setAlertType(AlertType.ERROR);
+
+        this.newObjektID = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()), selectAuthors, selectSearchWords);
+
+        Alert alert;
+        if (this.newObjektID != -1) {
+            alert = new Alert(AlertType.CONFIRMATION, "Objekt " + this.newObjektID
+                    + " skapades\nVill du lägga till kopior?");
+            ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Skapa kopior");
+            ((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Avsluta");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                loadPage("NewKopia.fxml");
+            }
+        } else {
+            alert = new Alert(AlertType.ERROR);
             alert.setContentText("Något gick fel.\nObjektet skapades inte");
+            alert.show();
         }
-        alert.show();
-            
-        
-        
+
+//                    if (button == ButtonType.OK) {
+//                loadPopup("NewKopia.fxml");
+//                Stage stage = App.getMainControll().getSearchController().getNewObjektStage();
+//                stage.hide();
+        //Get the button that was pressed. 
+//            Optional<ButtonType> result = alert.showAndWait();
+//            ButtonType button = result.orElse(ButtonType.OK);
+//            }
     }
-    
+
     //Other functions
     private void addComboWordToList(ComboBox selectedWord, ArrayList<String> list, Label text) {
         String word = selectedWord.getValue().toString();
@@ -174,6 +204,39 @@ public class NewObjektController {
         text.setText(Util.listToString(list));
     }
 
+    public boolean loadPage(String fxml) {
+
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(fxml));
+            borderPane.setCenter(root);
+            return true;
+
+        } catch (IOException ex) {
+            System.out.println("Exception i klass NewObjektController.java, i "
+                    + "metoden loadPage()");
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+
+    }
+
+    public boolean loadPopup(String fxml) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            return true;
+
+        } catch (IOException ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     //Setters
     public void setDisableBtnCreate(Boolean bool) {
         this.btnCreate.setDisable(bool);
@@ -182,4 +245,17 @@ public class NewObjektController {
     public void setTextLblWarning(String text) {
         this.lblWarning.setText(text);
     }
+
+    public int getNewObjektID() {
+        return newObjektID;
+    }
+
+    public void setNewObjektID(int newObjektID) {
+        this.newObjektID = newObjektID;
+    }
+    
+    public String getTitle(){
+        return txtTitle.getText();
+    }
+    
 }

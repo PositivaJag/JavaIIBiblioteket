@@ -668,6 +668,12 @@ public class DBConnection {
     public ArrayList<Integer> getAllISBN() {
         String SQL = "select BokISBN from Objekt where typ = 'Bok';";
         return getIntsAsList(SQL);
+       
+    }
+    
+    public ArrayList<Integer> getAllSteckkod() {
+        String SQL = "select streckkod from kopia;";
+        return getIntsAsList(SQL);
     }
 
     private int getObjektIDFromISBN(int ISBN) {

@@ -55,7 +55,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#pressAddToList" text="Lägg till kopia i listan ">
+                              <Button fx:id="btnAdd" disable="true" mnemonicParsing="false" onAction="#pressAddToList" text="Lägg till kopia">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -78,7 +78,7 @@
                   </TableView>
                   <VBox alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" prefHeight="167.0" prefWidth="368.0">
                      <children>
-                        <Button fx:id="btnCreateCopy" mnemonicParsing="false" onAction="#pressAddToDB" text="Lägg till kopior i databasen">
+                        <Button fx:id="btnCreateCopy" disable="true" mnemonicParsing="false" onAction="#pressAddToDB" text="Lägg till kopior">
                            <VBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </VBox.margin>
@@ -92,5 +92,6 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
       </VBox>
+      <VBox alignment="TOP_RIGHT" layoutX="10.0" layoutY="10.0" />
    </children>
 </AnchorPane>

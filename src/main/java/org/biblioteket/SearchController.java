@@ -57,7 +57,10 @@ public class SearchController {
     private Objekt selectedObjekt;
     private KopiaController kopiaController;    //Controller object
     private SearchController searchController;
+    private NewObjektController newObjektController;
+    private Stage newObjektStage;
     private Parent kopiaRoot;
+    private Parent newObjektRoot;
 
     public void initialize() {
         if (App.getMainControll().getPersonTyp() == PersonTyp.BIBLIOTEKARIE) {
@@ -96,7 +99,7 @@ public class SearchController {
 
     @FXML
     void pressNyttObjekt(ActionEvent event) {
-        loadPopup("NewObjekt.fxml");
+        loadPopupNewObjekt();
     }
 
     @FXML
@@ -124,6 +127,25 @@ public class SearchController {
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+     private void loadPopupNewObjekt() {
+        try {
+//            if (kopiaRoot == null){
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("NewObjekt.fxml"));
+            newObjektRoot = loader.load();
+            App.getMainControll().getSearchController().setNewObjektController(loader.getController());
+//            }
+            Stage stage = new Stage();
+            Scene scene = new Scene(newObjektRoot);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException ex) {
+            System.out.println("Fel i " + this.toString());
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 
     private Boolean loadPopup(String fxml) {
         try {
@@ -272,4 +294,22 @@ public class SearchController {
     public void setKopiaController(KopiaController kopiaController) {
         this.kopiaController = kopiaController;
     }
+
+    public NewObjektController getNewObjektController() {
+        return newObjektController;
+    }
+
+    public void setNewObjektController(NewObjektController newObjektController) {
+        this.newObjektController = newObjektController;
+    }
+
+    public Stage getNewObjektStage() {
+        return newObjektStage;
+    }
+
+    public void setNewObjektStage(Stage newObjektStage) {
+        this.newObjektStage = newObjektStage;
+    }
+    
+    
 }

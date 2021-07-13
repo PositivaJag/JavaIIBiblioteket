@@ -42,7 +42,7 @@ public class MainController {
 
     //Other variables
     //Loantakers and librarians
-    private PersonTyp personTyp = PersonTyp.NONE;
+    private PersonTyp personTyp = PersonTyp.BIBLIOTEKARIE;
     private Person activeLibrarian = null;
     private Loantagare activeUser = null;
 
@@ -103,7 +103,7 @@ public class MainController {
     }
 
     //Load pages
-    private boolean loadPage(String fxml) {
+    public boolean loadPage(String fxml) {
 
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxml));

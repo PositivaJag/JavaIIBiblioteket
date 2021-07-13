@@ -30,17 +30,17 @@
             </Text>
             <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
                <children>
-                  <TextArea prefHeight="183.0" prefWidth="106.0" text="Öppettider:&#10;&#10;Måndag  9-20&#10;Tisdag     8-18&#10;Onsdag   9-20&#10;Torsdag   9-20&#10;Fredag     8-17&#10;Lördag    10 -16&#10;Söndag   12-16">
+                  <TextArea editable="false" focusTraversable="false" prefHeight="183.0" prefWidth="106.0" text="Öppettider:&#10;&#10;Måndag  9-20&#10;Tisdag     8-18&#10;Onsdag   9-20&#10;Torsdag   9-20&#10;Fredag     8-17&#10;Lördag    10 -16&#10;Söndag   12-16">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                      </HBox.margin>
                   </TextArea>
-                  <TextArea prefHeight="183.0" prefWidth="184.0" text="Kontakta oss: &#10;&#10;Bibliotekarie på plats&#10;070-123 12 33&#10;&#10;Via mail&#10;biblioteket@orten.se&#10;&#10;Teknisk support&#10;itsupport.biblioteket@orten.se">
+                  <TextArea editable="false" focusTraversable="false" prefHeight="183.0" prefWidth="184.0" text="Kontakta oss: &#10;&#10;Bibliotekarie på plats&#10;070-123 12 33&#10;&#10;Via mail&#10;biblioteket@orten.se&#10;&#10;Teknisk support&#10;itsupport.biblioteket@orten.se">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                      </HBox.margin>
                   </TextArea>
-                  <TextArea prefHeight="300.0" prefWidth="200.0" text="Händer på bibilioteket&#10;&#10;Nytt IT System beräknas vara på plats i slutet av Augusti. Håll utkik efter information om utbildningstillfällen. &#10;&#10;Sommar och semester står för dörren. Biblioteket drar ner på öppettiderna under juli och augusti. Håll utkik efter anslag om förändade tider. " wrapText="true">
+                  <TextArea editable="false" focusTraversable="false" prefHeight="300.0" prefWidth="200.0" text="Händer på bibilioteket&#10;&#10;Nytt IT System beräknas vara på plats i slutet av Augusti. Håll utkik efter information om utbildningstillfällen. &#10;&#10;Sommar och semester står för dörren. Biblioteket drar ner på öppettiderna under juli och augusti. Håll utkik efter anslag om förändade tider. " wrapText="true">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                      </HBox.margin>

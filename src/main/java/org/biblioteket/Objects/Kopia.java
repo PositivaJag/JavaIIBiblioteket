@@ -34,6 +34,14 @@ public class Kopia{
             this.returnLatest = returnDate;
     }
     
+      public Kopia(int streckkod, int objektID, String loanKategori, 
+            String placement) {
+            this.streckkod = streckkod;
+            this.objektID = objektID;
+            this.loanKategori = loanKategori;
+            this.placement = placement;
+    }
+    
 //    public Kopia newCopy(int streckkod, String loanKategori, String placement, AccessKopia access, Objekt objektID) throws SQLException, Exception {
 //        if (Objekt.checkInstance(objektID)){
 //            return new Kopia(streckkod, loanKategori, placement, access);
