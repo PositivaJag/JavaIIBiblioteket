@@ -82,7 +82,7 @@ public class KopiaController {
 
         tblKopia.getColumns().clear();
         observableResult = observableList(result);
-
+        
         Field[] fields = result.get(0).getClass().getDeclaredFields();
         //System.out.println(fields);
 

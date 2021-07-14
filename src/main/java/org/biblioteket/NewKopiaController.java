@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -13,7 +14,10 @@ import static javafx.collections.FXCollections.observableList;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -50,32 +54,35 @@ public class NewKopiaController {
 
     @FXML
     private Button btnCreateCopy;
-    
+
     int newObjektID;
+    DBConnection connection = DBConnection.getInstance();
     String title;
     NewObjektController newObjektController;
-    private ObservableList<Kopia> observableKopior = FXCollections.observableArrayList();;
+    private ArrayList<Kopia> listKopior = new ArrayList<>();
+    ;
     
     ArrayList<Integer> allStreckkod;
-     
-    public void initialize(){
-        
+
+    public void initialize() {
+        //Get information from NewObjektController
         newObjektController = App.getMainControll().getSearchController().
                 getNewObjektController();
         newObjektID = newObjektController.getNewObjektID();
         title = newObjektController.getTitle();
-        
+
+        //Set titel
         lblTitel.setText(newObjektID + " - " + title);
-        
-        System.out.println(newObjektID);
-        
+
+        //Get Categories and add them to comboBox. 
         setComboCategories();
-        
-        DBConnection connection = DBConnection.getInstance();
+
+        connection = DBConnection.getInstance();
         allStreckkod = connection.getAllSteckkod();
         System.out.println(allStreckkod);
         
-         txtStreckkod.textProperty().addListener(new ChangeListener<String>() {
+        //Listener to make sure only numbers are added in streckkod filed. 
+        txtStreckkod.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                     String newValue) {
@@ -83,66 +90,107 @@ public class NewKopiaController {
                     txtStreckkod.setText(newValue.replaceAll("[^\\d]", ""));
 
                 }
-                if (allStreckkod.contains(Integer.parseInt(txtStreckkod.getText()))) {
-                    lblWarning.setText("Streckkod finns redan");
-                    btnAdd.setDisable(true);
-                } else if (!(allStreckkod.contains(Integer.parseInt(txtStreckkod.getText())))) {
-                    lblWarning.setText("");
-                    btnAdd.setDisable(false);
-                }
+//                if (txtStreckkod.getText() != "" && allStreckkod.contains(Integer.parseInt(txtStreckkod.getText()))) {
+//                    lblWarning.setText("Streckkod finns redan");
+//                    btnAdd.setDisable(true);
+//                } else if (txtStreckkod.getText() != "" && !(allStreckkod.contains(Integer.parseInt(txtStreckkod.getText())))) {
+//                    lblWarning.setText("");
+//                    btnAdd.setDisable(false);
+//                }
             }
         });
-         
+        
+        //Listener to make sure all fields are filled in before a copy can be 
+        //added to the list
         ChangeListener<String> allFieldsListener = ((observable, oldValue, newValue) -> {
-            if (txtStreckkod.getText() == null
+            if (!(txtStreckkod.getText().equalsIgnoreCase(""))
+                        && allStreckkod.contains(
+                            Integer.parseInt(txtStreckkod.getText()))) {
+                    btnAdd.setDisable(true);
+                    lblWarning.setText("Streckkod finns redan");
+            }
+                 else if(txtStreckkod.getText() == null
                     || txtStreckkod.getText().equals("")
                     || txtPlacement.getText() == null
                     || txtPlacement.getText().equals("")
-                    || comboCategory.getValue() == null)
-            {
+                    || comboCategory.getValue() == null
+                    || allStreckkod.contains(Integer.parseInt(
+                            txtStreckkod.getText()))) {
                 btnAdd.setDisable(true);
-            } else {
+                 lblWarning.setText("");
+            }
+            
+            else {
                 btnAdd.setDisable(false);
+                lblWarning.setText("");
             }
         });
+        
+//        ChangeListener<String> createButton = ((observable, oldValue, newValue) -> {
+//            if (tblAddedCopies.getItems().isEmpty()){
+//                btnCreateCopy.setDisable(true);
+//            }
+//                else{
+//                btnCreateCopy.setDisable(false);
+//            }
+//        });
 
         txtStreckkod.textProperty().addListener(allFieldsListener);
         txtPlacement.textProperty().addListener(allFieldsListener);
         comboCategory.valueProperty().addListener(allFieldsListener);
     }
+    
+    
 
     @FXML
     void pressAddToDB(ActionEvent event) {
-        
-        
+        Boolean newKopior = connection.newKopior(listKopior);
+
+        Alert alert;
+        if (newKopior) {
+            alert = new Alert(Alert.AlertType.INFORMATION, "Kopiorna skapades\n fönstret stängs.");
+            alert.showAndWait();
+            ((Node) (event.getSource())).getScene().getWindow().hide();
+
+        } else {
+            alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Något gick fel.\nKopiorna skapades inte");
+            alert.show();
+        }
+
     }
 
     @FXML
     void pressAddToList(ActionEvent event) {
-        
-       observableKopior.add(new Kopia(Integer.parseInt(txtStreckkod.getText()), newObjektID, 
+
+        listKopior.add(new Kopia(Integer.parseInt(txtStreckkod.getText()), newObjektID,
                 comboCategory.getValue().toString(), txtPlacement.getText()));
-       allStreckkod.add(Integer.parseInt(txtStreckkod.getText()));
-       System.out.println(allStreckkod);
-       updateTableView();
-        
+        allStreckkod.add(Integer.parseInt(txtStreckkod.getText()));
+        btnCreateCopy.setDisable(false);
+        System.out.println(allStreckkod);
+        updateTableView();
+
+        lblWarning.setText("Streckkod finns redan");
+        btnAdd.setDisable(true);
+
     }
-    private void setComboCategories(){
-        List<String> list = DBConnection.getInstance().getAllKopiaCategories();
+
+    private void setComboCategories() {
+        List<String> list = connection.getAllKopiaCategories();
         Collections.sort(list);
         comboCategory.getItems().addAll(list);
     }
-    
-      //Table functions
+
+    //Table functions
     private void updateTableView() {
 
         tblAddedCopies.getColumns().clear();
 
-        Field[] fields = observableKopior.get(0).getClass().getDeclaredFields();
-        //System.out.println(fields);
+        Field[] fields = listKopior.get(0).getClass().getDeclaredFields();
+        
+        ObservableList<Kopia> observableKopior = FXCollections.observableArrayList(listKopior);
 
         // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
-        
         for (Field field : fields) {
             System.out.println(field);
             TableColumn<Map, String> column = new TableColumn<>(field.getName().toUpperCase());
@@ -152,6 +200,5 @@ public class NewKopiaController {
         tblAddedCopies.setItems(observableKopior);
 
     }
-
 
 }

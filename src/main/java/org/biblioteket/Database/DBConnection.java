@@ -573,7 +573,45 @@ public class DBConnection {
 
         return -1;
     }
-
+    
+    public Boolean newKopior(ArrayList<Kopia> kopior){
+        for(int i = 0; i<kopior.size(); i++){
+            try {
+                Kopia kopia = kopior.get(i);
+                int streckkod = kopia.getStreckkod();
+                int objektID = kopia.getObjektID();
+                String kategori = kopia.getLoanKategori().split(" ")[0];
+                String placering = kopia.getPlacement();
+                
+                insertKopia(streckkod, objektID, kategori, placering);
+                connection.commit();
+                return true;
+                
+            } catch (SQLException ex) {
+                try {
+                    connection.rollback();
+                       System.out.println("Misslyckades att spara kopior.\nRollback Ok.");
+                    Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex1) {
+                    System.out.println("Misslyckades att spara objekt.\nRollback ej ok.");
+                    Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
+    }
+        return false;
+    }
+    
+    private void insertKopia(int streckkod, int objektID, String kategori, String placering) throws SQLException{
+        
+            String SQL = "INSERT INTO kopia (streckkod, ObjektID, LåneKategori, Placering) VALUES (?, ?, ?, ?);";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, streckkod);
+            pState.setInt(2, objektID);
+            pState.setString(3, kategori);
+            pState.setString(4, placering);
+            pState.executeUpdate();
+    }
+            
     private void insertBok(String title, int ISBN) throws SQLException {
 
         String SQLBok = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
@@ -637,6 +675,7 @@ public class DBConnection {
         }
         return -1;
     }
+    
     
     public ArrayList<String> getAllKopiaCategories() {
         String SQL = "select concat(Kategori, ', ', MaxLånetid, ' dagar') as KopiaCategory from maxlånetid;";
