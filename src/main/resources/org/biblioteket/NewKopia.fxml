@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.NewKopiaController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <VBox alignment="TOP_CENTER" layoutX="-8.0" prefHeight="500.0" prefWidth="780.0">
          <children>
@@ -69,14 +69,14 @@
                   </GridPane>
                </children>
             </VBox>
-            <HBox maxWidth="1.7976931348623157E308">
+            <HBox alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308">
                <children>
                   <TableView fx:id="tblAddedCopies" prefHeight="167.0" prefWidth="413.0">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </TableView>
-                  <VBox alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308" prefHeight="167.0" prefWidth="368.0">
+                  <VBox alignment="BOTTOM_LEFT" maxWidth="1.7976931348623157E308">
                      <children>
                         <Button fx:id="btnCreateCopy" disable="true" mnemonicParsing="false" onAction="#pressAddToDB" text="Lägg till kopior">
                            <VBox.margin>
@@ -85,6 +85,15 @@
                         </Button>
                      </children>
                   </VBox>
+                  <HBox alignment="BOTTOM_RIGHT" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Button fx:id="btnAvbryt" mnemonicParsing="false" onAction="#pressBtnAvbryt" text="Avbryt">
+                           <HBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
             </HBox>
          </children>

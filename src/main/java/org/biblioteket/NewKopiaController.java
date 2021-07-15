@@ -54,7 +54,10 @@ public class NewKopiaController {
 
     @FXML
     private Button btnCreateCopy;
+     @FXML
+    private Button btnAvbryt;
 
+     
     int newObjektID;
     DBConnection connection = DBConnection.getInstance();
     String title;
@@ -64,12 +67,16 @@ public class NewKopiaController {
     
     ArrayList<Integer> allStreckkod;
 
+    public NewKopiaController(int objektID, String title){
+        this.newObjektID = objektID;
+        this.title = title;
+    }
     public void initialize() {
         //Get information from NewObjektController
-        newObjektController = App.getMainControll().getSearchController().
-                getNewObjektController();
-        newObjektID = newObjektController.getNewObjektID();
-        title = newObjektController.getTitle();
+//        newObjektController = App.getMainControll().getSearchController().
+//                getNewObjektController();
+//        newObjektID = newObjektController.getNewObjektID();
+//        title = newObjektController.getTitle();
 
         //Set titel
         lblTitel.setText(newObjektID + " - " + title);
@@ -173,6 +180,16 @@ public class NewKopiaController {
         lblWarning.setText("Streckkod finns redan");
         btnAdd.setDisable(true);
 
+    }
+    
+    @FXML
+    void pressBtnAvbryt(ActionEvent event) {
+        
+    }
+    
+    public void initData(int objektID, String title){
+        this.newObjektID = objektID;
+        this.title = title;
     }
 
     private void setComboCategories() {

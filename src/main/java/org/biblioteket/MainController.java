@@ -42,7 +42,7 @@ public class MainController {
 
     //Other variables
     //Loantakers and librarians
-    private PersonTyp personTyp = PersonTyp.BIBLIOTEKARIE;
+    private PersonTyp personTyp = PersonTyp.NONE;
     private Person activeLibrarian = null;
     private Loantagare activeUser = null;
 

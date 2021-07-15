@@ -1,7 +1,6 @@
 package org.biblioteket;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -47,6 +46,11 @@ public class SearchController {
     private Button btnUpdateObjekt;
     @FXML
     private Button btnNyttObjekt;
+    @FXML
+    private Button btnAddKopior;
+    @FXML
+    private Button btnSearch;
+    
 
     //Other variables
     //List with types of objekts. 
@@ -105,10 +109,26 @@ public class SearchController {
     @FXML
     void pressDetalis(ActionEvent event) {
         //Get selected item from list
-        selectedObjekt = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
+        setSelectedObjekt();
         //Create popup and save as correct object. 
         loadPopupKopia();
     }
+    
+    @FXML
+    void pressBtnSearch(ActionEvent event) {
+        addTextFilter(observableResult, txtSearch, tblSearch);
+    }
+    
+    @FXML
+    void pressAddKopior(ActionEvent event) {
+         //Get selected item from list
+        setSelectedObjekt();
+        loadPopupNewKopia(selectedObjekt.getObjektID(), selectedObjekt.getTitel() );
+        
+        //Create popup and save as correct object. 
+        
+    }
+    
 
     //Load pages
     private void loadPopupKopia() {
@@ -128,6 +148,25 @@ public class SearchController {
         }
     }
     
+     private void loadPopupNewKopia(int objektID, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("NewKopia.fxml"));
+            
+            NewKopiaController controller = new NewKopiaController(objektID, title);
+            loader.setController(controller);
+            Parent root = loader.load();
+            
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+     
+     
      private void loadPopupNewObjekt() {
         try {
 //            if (kopiaRoot == null){
@@ -285,6 +324,12 @@ public class SearchController {
     public Objekt getSelectedObjekt() {
         return selectedObjekt;
     }
+
+    public void setSelectedObjekt() {
+        this.selectedObjekt = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
+    }
+    
+    
 
     public KopiaController getKopiaController() {
         return this.kopiaController;

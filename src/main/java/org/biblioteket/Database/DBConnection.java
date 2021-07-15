@@ -63,7 +63,6 @@ public class DBConnection {
         connectedToDB = true;
     }
 
-
 //General database SQL functions. 
     public static DBConnection getInstance() {
         if (instance == null) {
@@ -206,7 +205,7 @@ public class DBConnection {
         //System.out.println(99);  
         return null;
     }
-    
+
     public String[] getPersonDataAsList(String email) {
 
         String[] userData = new String[0];
@@ -420,7 +419,7 @@ public class DBConnection {
         }
         return null;
     }
-    
+
     public ArrayList<String> getObjektTypes() {
 
         ArrayList<String> types = new ArrayList();
@@ -483,7 +482,7 @@ public class DBConnection {
         }
         return null;
     }
-    
+
     public String getCreatorsAsString(int objektID, Type type) {
         String creators;
         String SQL;
@@ -573,45 +572,46 @@ public class DBConnection {
 
         return -1;
     }
-    
-    public Boolean newKopior(ArrayList<Kopia> kopior){
-        for(int i = 0; i<kopior.size(); i++){
-            try {
+
+    public Boolean newKopior(ArrayList<Kopia> kopior) {
+
+        try {
+            for (int i = 0; i < kopior.size(); i++) {
                 Kopia kopia = kopior.get(i);
                 int streckkod = kopia.getStreckkod();
                 int objektID = kopia.getObjektID();
-                String kategori = kopia.getLoanKategori().split(" ")[0];
+                String kategori = kopia.getLoanKategori().split(",")[0];
                 String placering = kopia.getPlacement();
-                
                 insertKopia(streckkod, objektID, kategori, placering);
+            }
                 connection.commit();
                 return true;
-                
-            } catch (SQLException ex) {
-                try {
-                    connection.rollback();
-                       System.out.println("Misslyckades att spara kopior.\nRollback Ok.");
-                    Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex1) {
-                    System.out.println("Misslyckades att spara objekt.\nRollback ej ok.");
-                    Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
-                }
+            
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+                System.out.println("Misslyckades att spara kopior.\nRollback Ok.");
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex1) {
+                System.out.println("Misslyckades att spara objekt.\nRollback ej ok.");
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
             }
-    }
+        }
+
         return false;
     }
-    
-    private void insertKopia(int streckkod, int objektID, String kategori, String placering) throws SQLException{
-        
-            String SQL = "INSERT INTO kopia (streckkod, ObjektID, LåneKategori, Placering) VALUES (?, ?, ?, ?);";
-            pState = connection.prepareStatement(SQL);
-            pState.setInt(1, streckkod);
-            pState.setInt(2, objektID);
-            pState.setString(3, kategori);
-            pState.setString(4, placering);
-            pState.executeUpdate();
+
+    private void insertKopia(int streckkod, int objektID, String kategori, String placering) throws SQLException {
+
+        String SQL = "INSERT INTO kopia (streckkod, ObjektID, LåneKategori, Placering) VALUES (?, ?, ?, ?);";
+        pState = connection.prepareStatement(SQL);
+        pState.setInt(1, streckkod);
+        pState.setInt(2, objektID);
+        pState.setString(3, kategori);
+        pState.setString(4, placering);
+        pState.executeUpdate();
     }
-            
+
     private void insertBok(String title, int ISBN) throws SQLException {
 
         String SQLBok = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
@@ -675,13 +675,12 @@ public class DBConnection {
         }
         return -1;
     }
-    
-    
+
     public ArrayList<String> getAllKopiaCategories() {
         String SQL = "select concat(Kategori, ', ', MaxLånetid, ' dagar') as KopiaCategory from maxlånetid;";
         return getStringsAsList(SQL);
     }
-    
+
     public ArrayList<String> getAllSearchWords() {
         String SQL = "select Ämnesord as seachWords from klassificering;";
         return getStringsAsList(SQL);
@@ -707,9 +706,9 @@ public class DBConnection {
     public ArrayList<Integer> getAllISBN() {
         String SQL = "select BokISBN from Objekt where typ = 'Bok';";
         return getIntsAsList(SQL);
-       
+
     }
-    
+
     public ArrayList<Integer> getAllSteckkod() {
         String SQL = "select streckkod from kopia;";
         return getIntsAsList(SQL);
@@ -730,6 +729,26 @@ public class DBConnection {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return -1;
+    }
+    
+    public ArrayList<Integer> getLoans(int personID) {
+        try {
+            String SQL = "select lånID from lån where låntagare = ?";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, personID);
+            ResultSet resultSet = getQuery(pState);
+
+            ArrayList<Integer> result = new ArrayList<>();
+            while (resultSet.next()) {
+                result.add(resultSet.getInt(1));
+            }
+            return result;
+            
+        } catch (SQLException ex) {
+
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

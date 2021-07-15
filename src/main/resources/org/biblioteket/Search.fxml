@@ -14,17 +14,15 @@
    <children>
       <VBox alignment="CENTER" prefHeight="500.0" prefWidth="780.0">
          <children>
-            <HBox>
-               <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-               </padding>
+            <HBox prefHeight="81.0" prefWidth="740.0">
                <children>
                   <VBox alignment="BOTTOM_LEFT">
                      <children>
                         <TextField fx:id="txtSearch" prefHeight="25.0" prefWidth="200.0" promptText="Sök" />
+                        <Button fx:id="btnSearch" mnemonicParsing="false" onAction="#pressBtnSearch" text="Sök" />
                      </children>
                      <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
                      </padding>
                      <HBox.margin>
                         <Insets right="50.0" />
@@ -40,7 +38,7 @@
                         </ComboBox>
                      </children>
                      <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
                      </padding>
                   </VBox>
                </children>
@@ -51,19 +49,47 @@
             <TableView fx:id="tblSearch" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="330.0" prefWidth="530.0" />
             <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="btnUpdateObjekt" mnemonicParsing="false" onAction="#pressUpdateObjekt" text="Uppdatera objekt">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="btnNyttObjekt" mnemonicParsing="false" onAction="#pressNyttObjekt" text="Nytt objekt">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="btnDetails" mnemonicParsing="false" onAction="#pressDetalis" text="Se detaljer">
+                  <HBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets />
+                     </HBox.margin>
+                     <children>
+                        <VBox style="-fx-border-color: #909090;">
+                           <children>
+                              <Button fx:id="btnNyttObjekt" mnemonicParsing="false" onAction="#pressNyttObjekt" text="Nytt objekt">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Button>
+                              <Button fx:id="btnUpdateObjekt" mnemonicParsing="false" onAction="#pressUpdateObjekt" text="Uppdatera objekt">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox style="-fx-border-color: #909090;">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <children>
+                              <Button fx:id="btnAddKopior" mnemonicParsing="false" onAction="#pressAddKopior" text="Lägg till kopior" />
+                           </children>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Button fx:id="btnDetails" mnemonicParsing="false" onAction="#pressDetalis" text="Se detaljer">
+                     <HBox.margin>
+                        <Insets right="10.0" />
                      </HBox.margin></Button>
                </children>
                <VBox.margin>

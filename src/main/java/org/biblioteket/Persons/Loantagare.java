@@ -5,6 +5,7 @@
  */
 package org.biblioteket.Persons;
 
+import java.util.ArrayList;
 import org.biblioteket.Database.DBConnection;
 
 /**
@@ -17,6 +18,7 @@ public class Loantagare extends Person{
     String gatuAdress;
     String postNr;
     String kategori;
+    ArrayList<Integer> loans;   //lista av lånade streckkoder. 
 
     //Construktor för alla fält. 
     public Loantagare(String personID, String fName, String lName, String email, String password, String personTyp,String telNr, String gatuAdress, String postNr, String Kategori) {
@@ -25,6 +27,7 @@ public class Loantagare extends Person{
         this.gatuAdress = gatuAdress;
         this.postNr = postNr;
         this.kategori = Kategori;
+        this.loans = new ArrayList<>();
     }
     
     public Loantagare(String personID, String fName, String lName, String email, String password, String personTyp){
@@ -74,6 +77,14 @@ public class Loantagare extends Person{
 
     public void setKategori(String Kategori) {
         this.kategori = Kategori;
+    }
+
+    public ArrayList<Integer> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(ArrayList<Integer> loans) {
+        this.loans = loans;
     }
     
     

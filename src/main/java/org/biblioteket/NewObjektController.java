@@ -25,6 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
+import javafx.event.*;
 
 public class NewObjektController {
 
@@ -146,11 +147,11 @@ public class NewObjektController {
 
     @FXML
     void pressCreate(ActionEvent event) {
-        newBok();
+        newBok(event);
     }
 
     //Insert/update functions
-    private void newBok() {
+    private void newBok(ActionEvent event) {
 
         this.newObjektID = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()), selectAuthors, selectSearchWords);
 
@@ -163,7 +164,7 @@ public class NewObjektController {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                loadPage("NewKopia.fxml");
+                loadPageNewKopia(event,newObjektID, txtTitle.getText() );
             }
         } else {
             alert = new Alert(AlertType.ERROR);
@@ -204,11 +205,17 @@ public class NewObjektController {
         text.setText(Util.listToString(list));
     }
 
-    public boolean loadPage(String fxml) {
+    public boolean loadPageNewKopia (ActionEvent event, int objektID, String title ){
 
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxml));
+
+             FXMLLoader loader = new FXMLLoader(getClass().getResource("NewKopia.fxml"));
+            
+            NewKopiaController controller = new NewKopiaController(objektID, title);
+            loader.setController(controller);
+            Parent root = loader.load();
             borderPane.setCenter(root);
+
             return true;
 
         } catch (IOException ex) {
@@ -220,22 +227,22 @@ public class NewObjektController {
 
     }
 
-    public boolean loadPopup(String fxml) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-            return true;
-
-        } catch (IOException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
+//    public boolean loadPopup(String fxml) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+//            Parent root = loader.load();
+//
+//            Stage stage = new Stage();
+//            Scene scene = new Scene(root);
+//            stage.setScene(scene);
+//            stage.show();
+//            return true;
+//
+//        } catch (IOException ex) {
+//            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return false;
+//    }
 
     //Setters
     public void setDisableBtnCreate(Boolean bool) {
