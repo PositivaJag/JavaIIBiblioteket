@@ -1,16 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="500.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text layoutX="33.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Låna böcker (Under uppbyggnad)">
-         <font>
-            <Font size="36.0" />
-         </font>
-      </Text>
+      <VBox alignment="TOP_CENTER" layoutX="5.0" maxWidth="1.7976931348623157E308" prefHeight="500.0">
+         <children>
+            <Text fx:id="lblTitel" strokeType="OUTSIDE" strokeWidth="0.0" text="Låna" textAlignment="CENTER">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </Text>
+            <GridPane prefHeight="500.0" prefWidth="780.0" VBox.vgrow="ALWAYS">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="214.59998168945313" minHeight="10.0" prefHeight="167.4" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="271.4" minHeight="10.0" prefHeight="271.4" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <VBox>
+                     <children>
+                        <Label text="Ange Streckkod">
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="txtStreckkod">
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </TextField>
+                        <Button fx:id="btnAddKopia" mnemonicParsing="false" onAction="#pressAddKopia" text="Lägg till">
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Label fx:id="lblInformation" maxWidth="1.7976931348623157E308">
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox GridPane.columnIndex="1">
+                     <children>
+                        <Label contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Din information">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.80001983642578" minWidth="10.0" prefWidth="120.59999237060546" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="338.2000045776367" minWidth="10.0" prefWidth="248.60000762939453" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label alignment="CENTER_RIGHT" text="Max antal lån: ">
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lblMaxLoan" text="lblMaxLoan" GridPane.columnIndex="1">
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" text="Antal befintliga lån:" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lblExisitngLoans" text="lblExisitngLoans" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label alignment="CENTER_RIGHT" text="Du kan max låna: " GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lblPossibleLoans" text="lblPossibleLoans" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  <VBox GridPane.rowIndex="1">
+                     <children>
+                        <Label contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Att låna">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TableView fx:id="tblTitles" prefHeight="200.0" prefWidth="200.0">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" />
+                           </VBox.margin>
+                        </TableView>
+                        <HBox alignment="BOTTOM_RIGHT">
+                           <children>
+                              <Button fx:id="btnLoanTitles" mnemonicParsing="false" onAction="#pressLoanTitles" text="Låna titlar">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" right="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets right="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </GridPane>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

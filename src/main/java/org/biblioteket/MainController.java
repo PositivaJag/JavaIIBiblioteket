@@ -68,7 +68,13 @@ public class MainController {
         } else {
             System.out.println("Ladda sindan");
         }
-        loadPage("Loan.fxml");
+        if (personTyp == PersonTyp.BIBLIOTEKARIE){
+                loadPageLoan(activeLibrarian);
+            }
+             else if (personTyp == PersonTyp.LOANTAGARE){
+                 loadPageLoan(activeUser);
+            }
+//        loadPage("Loan.fxml");
 
     }
 
@@ -119,6 +125,51 @@ public class MainController {
 
     }
 
+    private boolean loadPageLoan(Loantagare activeUser){
+        try {
+            
+             FXMLLoader loader = new FXMLLoader(getClass().getResource("Loan.fxml"));
+             
+            LoanController controller = new LoanController(activeUser);           
+            loader.setController(controller);
+            Parent root = loader.load();
+            borderPane.setCenter(root);
+
+            return true;
+
+        } catch (IOException ex) {
+            System.out.println("Exception i klass NewObjektController.java, i "
+                    + "metoden loadPage()");
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+
+    
+        
+    }
+    
+     private boolean loadPageLoan(Person activeLibrarian){
+        try {
+            
+             FXMLLoader loader = new FXMLLoader(getClass().getResource("Loan.fxml"));
+             
+            LoanController controller = new LoanController(activeLibrarian);           
+            loader.setController(controller);
+            Parent root = loader.load();
+            borderPane.setCenter(root);
+
+            return true;
+
+        } catch (IOException ex) {
+            System.out.println("Exception i klass NewObjektController.java, i "
+                    + "metoden loadPage()");
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+
+    
+        
+    }
     private boolean loadPageSearch() {
 
         try {
