@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -61,19 +63,21 @@ public class MainController {
 
     @FXML
     void clickButtonLoan(ActionEvent event) {
-        //Check if someone is logged in.
-        if (personTyp == PersonTyp.NONE) {
-            loadPopup("Login.fxml");
 
+        if (personTyp == PersonTyp.LOANTAGARE) {
+            loadPageLoan(activeUser);
+        } else if (personTyp == PersonTyp.BIBLIOTEKARIE) {
+            Alert alert = new Alert(AlertType.ERROR, "Bibliotekarier kan inte"
+                    + "låna böcker själv utan att logga in som en låntagare.\n"
+                    + "gränssnittet för att hjälpa låntagare är inte klart ännu. ");
+            alert.show();
+//                 loadPageLoan(activeUser);
+    
         } else {
-            System.out.println("Ladda sindan");
+            Alert alert = new Alert(AlertType.ERROR, "Något gick fel när "
+                    + "sidan skulle laddas");
+            alert.show();
         }
-        if (personTyp == PersonTyp.BIBLIOTEKARIE){
-                loadPageLoan(activeLibrarian);
-            }
-             else if (personTyp == PersonTyp.LOANTAGARE){
-                 loadPageLoan(activeUser);
-            }
 //        loadPage("Loan.fxml");
 
     }
@@ -125,7 +129,7 @@ public class MainController {
 
     }
 
-    private boolean loadPageLoan(Loantagare activeUser){
+    public boolean loadPageLoan(Loantagare activeUser){
         try {
             
              FXMLLoader loader = new FXMLLoader(getClass().getResource("Loan.fxml"));
@@ -148,28 +152,28 @@ public class MainController {
         
     }
     
-     private boolean loadPageLoan(Person activeLibrarian){
-        try {
-            
-             FXMLLoader loader = new FXMLLoader(getClass().getResource("Loan.fxml"));
-             
-            LoanController controller = new LoanController(activeLibrarian);           
-            loader.setController(controller);
-            Parent root = loader.load();
-            borderPane.setCenter(root);
-
-            return true;
-
-        } catch (IOException ex) {
-            System.out.println("Exception i klass NewObjektController.java, i "
-                    + "metoden loadPage()");
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
-
-    
-        
-    }
+//     public boolean loadPageLoan(Person activeLibrarian){
+//        try {
+//            
+//             FXMLLoader loader = new FXMLLoader(getClass().getResource("Loan.fxml"));
+//             
+//            LoanController controller = new LoanController(activeLibrarian);           
+//            loader.setController(controller);
+//            Parent root = loader.load();
+//            borderPane.setCenter(root);
+//
+//            return true;
+//
+//        } catch (IOException ex) {
+//            System.out.println("Exception i klass NewObjektController.java, i "
+//                    + "metoden loadPage()");
+//            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+//            return false;
+//        }
+//
+//    
+//        
+//    }
     private boolean loadPageSearch() {
 
         try {
@@ -218,10 +222,14 @@ public class MainController {
 //Set FXML values    
     public void setLogoutVisibility(Boolean bool) {
         buttonLogout.setVisible(bool);
+        
     }
 
     public void setLoginVisibility(Boolean bool) {
         buttonLogin.setVisible(bool);
+        buttonLoan.setDisable(bool);
+        
+
     }
 
     public void setLabelInloggad(String labelInloggad) {

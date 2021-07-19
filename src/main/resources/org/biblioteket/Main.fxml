@@ -22,7 +22,7 @@
                               <Insets top="10.0" />
                            </VBox.margin>
                         </Button>
-                        <Button fx:id="buttonLoan" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonLoan" prefHeight="40.0" prefWidth="200.0" text="Låna">
+                        <Button fx:id="buttonLoan" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clickButtonLoan" prefHeight="40.0" prefWidth="200.0" text="Låna">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>

@@ -18,19 +18,24 @@ public class Loantagare extends Person{
     String gatuAdress;
     String postNr;
     String kategori;
+    int noOfLoans;
     ArrayList<Integer> loans;   //lista av lånade streckkoder. 
 
     //Construktor för alla fält. 
-    public Loantagare(String personID, String fName, String lName, String email, String password, String personTyp,String telNr, String gatuAdress, String postNr, String Kategori) {
-        super(personID, fName, lName, email, password, personTyp);
-        this.telNr = telNr;
-        this.gatuAdress = gatuAdress;
-        this.postNr = postNr;
-        this.kategori = Kategori;
-        this.loans = new ArrayList<>();
-    }
+//    public Loantagare(String personID, String fName, String lName, String email, 
+//            String password, String personTyp,String telNr, String gatuAdress, 
+//            String postNr, String Kategori, int noOfLoan) {
+//        super(personID, fName, lName, email, password, personTyp);
+//        this.telNr = telNr;
+//        this.gatuAdress = gatuAdress;
+//        this.postNr = postNr;
+//        this.kategori = Kategori;
+//        this.loans = new ArrayList<>();
+//        this.noOfLoans = noOfLoans;
+//    }
     
-    public Loantagare(String personID, String fName, String lName, String email, String password, String personTyp){
+    public Loantagare(String personID, String fName, String lName, String email, 
+            String password, String personTyp){
         super(personID, fName, lName, email, password, personTyp);
         try{
             DBConnection connection = DBConnection.getInstance();
@@ -85,6 +90,14 @@ public class Loantagare extends Person{
 
     public void setLoans(ArrayList<Integer> loans) {
         this.loans = loans;
+    }
+
+    public int getNoOfLoans() {
+        return noOfLoans;
+    }
+
+    public void setNoOfLoans(int noOfLoans) {
+        this.noOfLoans = noOfLoans;
     }
     
     
