@@ -24,8 +24,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
+import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Persons.Person.PersonTyp;
 
@@ -50,7 +52,14 @@ public class SearchController {
     private Button btnAddKopior;
     @FXML
     private Button btnSearch;
-    
+
+    @FXML
+    private VBox vboxKopia;
+
+    @FXML
+    private VBox vboxObjekt;
+    @FXML
+    private Button btnUpdateKopia;
 
     //Other variables
     //List with types of objekts. 
@@ -67,27 +76,31 @@ public class SearchController {
     private Parent newObjektRoot;
 
     public void initialize() {
-        if (App.getMainControll().getPersonTyp() == PersonTyp.BIBLIOTEKARIE) {
-            setbtnNyttObjektVisibility(true);
-            setbtnUpdateObjektVisibility(true);
-        } else {
-            setbtnNyttObjektVisibility(false);
-            setbtnUpdateObjektVisibility(false);
-        }
+        
+        setLibrarianButtonsVisibility();
+        //Kontrollera vilka knappar som ska aktiveras. 
+//        if (App.getMainControll().getPersonTyp() == PersonTyp.BIBLIOTEKARIE) {
+//            vboxObjekt.setVisible(true);
+//            vboxKopia.setVisible(true);
+////            setbtnNyttObjektVisibility(true);
+////            setbtnUpdateObjektVisibility(true);
+//        } else {
+//            vboxObjekt.setVisible(false);
+//            vboxKopia.setVisible(false);
+//        }
         setComboType();
         updateTableView(getObjekts());
         addTextFilter(observableResult, txtSearch, tblSearch);
-        
+
         comboType.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                     String newValue) {
                 updateTableView(getObjekts());
                 addTextFilter(observableResult, txtSearch, tblSearch);
-                }
+            }
         });
-                }
-        
+    }
 
     //FXML functions
 //    @FXML
@@ -96,9 +109,13 @@ public class SearchController {
 ////        updateTableView(result);
 //        //addTextFilter(observableResult, txtSearch, tblSearch);
 //    }
-
     @FXML
     void pressUpdateObjekt(ActionEvent event) {
+    }
+
+    @FXML
+    void pressUpdateKopia(ActionEvent event) {
+
     }
 
     @FXML
@@ -113,22 +130,20 @@ public class SearchController {
         //Create popup and save as correct object. 
         loadPopupKopia();
     }
-    
+
     @FXML
     void pressBtnSearch(ActionEvent event) {
         addTextFilter(observableResult, txtSearch, tblSearch);
     }
-    
+
     @FXML
     void pressAddKopior(ActionEvent event) {
-         //Get selected item from list
+        //Get selected item from list
         setSelectedObjekt();
-        loadPopupNewKopia(selectedObjekt.getObjektID(), selectedObjekt.getTitel() );
-        
+        loadPopupNewKopia(selectedObjekt);
+
         //Create popup and save as correct object. 
-        
     }
-    
 
     //Load pages
     private void loadPopupKopia() {
@@ -147,27 +162,26 @@ public class SearchController {
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-     private void loadPopupNewKopia(int objektID, String title) {
+
+    private void loadPopupNewKopia(Objekt objekt) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("NewKopia.fxml"));
-            
-            NewKopiaController controller = new NewKopiaController(objektID, title);
+
+            NewKopiaController controller = new NewKopiaController(objekt);
             loader.setController(controller);
             Parent root = loader.load();
-            
+
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
-            
+
         } catch (IOException ex) {
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-     
-     
-     private void loadPopupNewObjekt() {
+
+    private void loadPopupNewObjekt() {
         try {
 //            if (kopiaRoot == null){
             FXMLLoader loader = new FXMLLoader(getClass().getResource("NewObjekt.fxml"));
@@ -185,23 +199,22 @@ public class SearchController {
         }
     }
 
-
-    private Boolean loadPopup(String fxml) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-            return true;
-
-        } catch (IOException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
-    }
+//    private Boolean loadPopup(String fxml) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+//            Parent root = loader.load();
+//
+//            Stage stage = new Stage();
+//            Scene scene = new Scene(root);
+//            stage.setScene(scene);
+//            stage.show();
+//            return true;
+//
+//        } catch (IOException ex) {
+//            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return false;
+//    }
 
     //Set FXML values 
     public void setbtnUpdateObjektVisibility(Boolean bool) {
@@ -210,8 +223,10 @@ public class SearchController {
 
     public void setLibrarianButtonsVisibility() {
         Boolean bool = App.getMainControll().checkIfLibrarianLoggedIn();
-        setbtnUpdateObjektVisibility(bool);
-        setbtnNyttObjektVisibility(bool);
+        vboxObjekt.setVisible(bool);
+            vboxKopia.setVisible(bool);
+//        setbtnUpdateObjektVisibility(bool);
+//        setbtnNyttObjektVisibility(bool);
     }
 
     public void setbtnNyttObjektVisibility(Boolean bool) {
@@ -252,17 +267,9 @@ public class SearchController {
 
         DBConnection connection = DBConnection.getInstance();
         try {
-            String SQL;
-            if (comboType.getValue() == "Alla") {
-                SQL = "Select ObjektID, Titel, Typ from Objekt";
-            } else {
-                SQL = "Select ObjektID, Titel, Typ from Objekt "
-                        + "Where Typ = '" + comboType.getValue() + "';";
-            }
-            System.out.println(SQL);
 
             //gets an arraylist with objects
-            result = connection.getObjektsFromDB(SQL);
+            result = connection.getObjektsFromDB(comboType.getValue().toString());
 
         } catch (Exception ex) {
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
@@ -303,7 +310,7 @@ public class SearchController {
                 return false;
             };
         }, txtSearch.textProperty()));
-        
+
         SortedList<Objekt> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(tblSearch.comparatorProperty());
         tblSearch.setItems(sortedData);
@@ -328,8 +335,6 @@ public class SearchController {
     public void setSelectedObjekt() {
         this.selectedObjekt = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
     }
-    
-    
 
     public KopiaController getKopiaController() {
         return this.kopiaController;
@@ -355,6 +360,5 @@ public class SearchController {
     public void setNewObjektStage(Stage newObjektStage) {
         this.newObjektStage = newObjektStage;
     }
-    
-    
+
 }

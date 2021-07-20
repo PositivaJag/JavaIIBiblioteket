@@ -354,9 +354,16 @@ public class DBConnection {
     }
 
     //Objekts and copies
-    public ArrayList<Objekt> getObjektsFromDB(String SQL) {
+    public ArrayList<Objekt> getObjektsFromDB(String typ) {
         try {
-
+            String SQL;
+            if (typ.equals("Alla")) {
+                SQL = "Select ObjektID, Titel, Typ from Objekt";
+            } else {
+                SQL = "Select ObjektID, Titel, Typ from Objekt "
+                        + "Where Typ = '" + typ + "';";
+            }
+            System.out.println(SQL);
             pState = connection.prepareStatement(SQL);
             ResultSet resultSet = getQuery(pState);
 
@@ -447,7 +454,7 @@ public class DBConnection {
         return null;
     }
 
-    public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type) {
+     public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type) {
 
         try {
             int objektID = Objekt.getObjektID();
@@ -485,6 +492,45 @@ public class DBConnection {
             } while (resultSet.next());
 
             return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+     
+    public Kopia getKopia(int streckkod) {
+
+        try {
+            //Get kopia from DB
+            String SQL = "Select objektID, lånekategori, placering from Kopia where streckkod = ?";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, streckkod);
+            ResultSet resultSet = getQuery(pState);
+
+            //Check if there are any copies of the book. 
+            if (resultSet.next() == false) {
+                return null;
+            }
+                int objektID = resultSet.getInt(1);
+                String loanKategori = resultSet.getString(2);
+                String placement = resultSet.getString(3);
+                AccessKopia access = AccessKopia.AVAILABLE;
+                Date returnLatest = null;
+
+                ResultSet loanResultSet = getKopiaLoanInformation(streckkod);
+                if (loanResultSet.next()) {
+                    access = getKopiaAccess(loanResultSet.getDate(4));
+                }
+
+                if (access == AccessKopia.ON_LOAN) {
+                    returnLatest = loanResultSet.getDate(3);
+                }
+
+               return new Kopia(streckkod, objektID, loanKategori,
+                        placement, access, returnLatest);
+
+
+
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -651,7 +697,7 @@ public class DBConnection {
      }
 
     //Create new
-    public int newBok(String title, int ISBN, ArrayList<String> authors, ArrayList<String> searchWords) {
+    public Bok newBok(String title, int ISBN, ArrayList<String> authors, ArrayList<String> searchWords) {
 
         try {
             insertBok(title, ISBN);
@@ -662,7 +708,8 @@ public class DBConnection {
             //Insert SearchWords
             insertBokSearchWords(searchWords, objektID);
             connection.commit();
-            return objektID;
+            
+            return getBokFromDB(objektID);
 
         } catch (SQLException ex) {
             try {
@@ -676,7 +723,7 @@ public class DBConnection {
 
         }
 
-        return -1;
+        return null;
     }
 
     public Boolean newKopior(ArrayList<Kopia> kopior) {
@@ -783,10 +830,10 @@ public class DBConnection {
         return -1;
     }
 
-    public ArrayList<String> getAllKopiaCategories() {
-        String SQL = "select concat(Kategori, ', ', MaxLånetid, ' dagar') as KopiaCategory from maxlånetid;";
-        return getStringsAsList(SQL);
-    }
+//    public ArrayList<String> getAllKopiaCategories() {
+//        String SQL = "select concat(Kategori, ', ', MaxLånetid, ' dagar') as KopiaCategory from maxlånetid;";
+//        return getStringsAsList(SQL);
+//    }
    
     public ArrayList<String> getAllSearchWords() {
         String SQL = "select Ämnesord as seachWords from klassificering;";

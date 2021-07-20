@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Kopia;
+import org.biblioteket.Objects.Kopia.AccessKopia;
 import org.biblioteket.Objects.Loan;
 import org.biblioteket.Persons.Loantagare;
 import org.biblioteket.Persons.Person;
@@ -56,6 +57,7 @@ public class LoanController {
 
     ArrayList<Loan> loans = new ArrayList<>();
     ArrayList<Integer> addedStreckkoder = new ArrayList<>();
+    ArrayList<Kopia> kopior = new ArrayList<Kopia>();
 
     public LoanController(Loantagare loantagare) {
         this.activeUser = loantagare;
@@ -95,10 +97,23 @@ public class LoanController {
     @FXML
     void pressAddKopia(ActionEvent event) {
         int streckkod = Integer.parseInt(txtStreckkod.getText());
+        
+        //Check if copy exists
         Boolean CopyExists = connection.checkIfKopiaExists(streckkod);
-
         if (CopyExists) {
-            if (!addedStreckkoder.contains(streckkod)) {
+             if (!addedStreckkoder.contains(streckkod)) {
+                 Kopia kopia = (connection.getKopia(streckkod));
+                 if (kopia.getAccess() == AccessKopia.ON_LOAN){
+                     lblInformation.setText("Kopian är inte tillgänglig för lån,\n"
+                             + "vänligen kontakta personalen")
+                             }
+             else{
+                
+            if ()
+            //Check if kopia avalible
+        if ()
+            //Check if copy already in list. 
+           
 
                 int loanDays = connection.getKopiaMaxLånetid(streckkod);
                 String titel = connection.getTitle(streckkod);

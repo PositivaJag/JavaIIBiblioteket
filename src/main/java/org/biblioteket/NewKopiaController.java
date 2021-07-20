@@ -23,6 +23,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Kopia;
+import org.biblioteket.Objects.Objekt;
+import org.biblioteket.Objects.Objekt.Type;
 
 public class NewKopiaController {
 
@@ -49,30 +51,26 @@ public class NewKopiaController {
 
     @FXML
     private Button btnCreateCopy;
-     @FXML
+    @FXML
     private Button btnAvbryt;
 
-     
     int newObjektID;
     DBConnection connection = DBConnection.getInstance();
     String title;
+    Type typ;
     NewObjektController newObjektController;
     private ArrayList<Kopia> listKopior = new ArrayList<>();
     ;
     
     ArrayList<Integer> allStreckkod;
 
-    public NewKopiaController(int objektID, String title){
-        this.newObjektID = objektID;
-        this.title = title;
+    public NewKopiaController(Objekt objekt) {
+        this.newObjektID = objekt.getObjektID();
+        this.title = objekt.getTitel();
+        this.typ = objekt.getType();
     }
-    public void initialize() {
-        //Get information from NewObjektController
-//        newObjektController = App.getMainControll().getSearchController().
-//                getNewObjektController();
-//        newObjektID = newObjektController.getNewObjektID();
-//        title = newObjektController.getTitle();
 
+    public void initialize() {
         //Set titel
         lblTitel.setText(newObjektID + " - " + title);
 
@@ -82,7 +80,7 @@ public class NewKopiaController {
         connection = DBConnection.getInstance();
         allStreckkod = connection.getAllSteckkod();
         System.out.println(allStreckkod);
-        
+
         //Listener to make sure only numbers are added in streckkod filed. 
         txtStreckkod.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -92,26 +90,18 @@ public class NewKopiaController {
                     txtStreckkod.setText(newValue.replaceAll("[^\\d]", ""));
 
                 }
-//                if (txtStreckkod.getText() != "" && allStreckkod.contains(Integer.parseInt(txtStreckkod.getText()))) {
-//                    lblWarning.setText("Streckkod finns redan");
-//                    btnAdd.setDisable(true);
-//                } else if (txtStreckkod.getText() != "" && !(allStreckkod.contains(Integer.parseInt(txtStreckkod.getText())))) {
-//                    lblWarning.setText("");
-//                    btnAdd.setDisable(false);
-//                }
             }
         });
-        
+
         //Listener to make sure all fields are filled in before a copy can be 
         //added to the list
         ChangeListener<String> allFieldsListener = ((observable, oldValue, newValue) -> {
             if (!(txtStreckkod.getText().equalsIgnoreCase(""))
-                        && allStreckkod.contains(
+                    && allStreckkod.contains(
                             Integer.parseInt(txtStreckkod.getText()))) {
-                    btnAdd.setDisable(true);
-                    lblWarning.setText("Streckkod finns redan");
-            }
-                 else if(txtStreckkod.getText() == null
+                btnAdd.setDisable(true);
+                lblWarning.setText("Streckkod finns redan");
+            } else if (txtStreckkod.getText() == null
                     || txtStreckkod.getText().equals("")
                     || txtPlacement.getText() == null
                     || txtPlacement.getText().equals("")
@@ -119,15 +109,13 @@ public class NewKopiaController {
                     || allStreckkod.contains(Integer.parseInt(
                             txtStreckkod.getText()))) {
                 btnAdd.setDisable(true);
-                 lblWarning.setText("");
-            }
-            
-            else {
+                lblWarning.setText("");
+            } else {
                 btnAdd.setDisable(false);
                 lblWarning.setText("");
             }
         });
-        
+
 //        ChangeListener<String> createButton = ((observable, oldValue, newValue) -> {
 //            if (tblAddedCopies.getItems().isEmpty()){
 //                btnCreateCopy.setDisable(true);
@@ -136,13 +124,10 @@ public class NewKopiaController {
 //                btnCreateCopy.setDisable(false);
 //            }
 //        });
-
         txtStreckkod.textProperty().addListener(allFieldsListener);
         txtPlacement.textProperty().addListener(allFieldsListener);
         comboCategory.valueProperty().addListener(allFieldsListener);
     }
-    
-    
 
     @FXML
     void pressAddToDB(ActionEvent event) {
@@ -176,21 +161,29 @@ public class NewKopiaController {
         btnAdd.setDisable(true);
 
     }
-    
+
     @FXML
     void pressBtnAvbryt(ActionEvent event) {
-        
+        ((Node) (event.getSource())).getScene().getWindow().hide();
     }
-    
-    public void initData(int objektID, String title){
+
+    public void initData(int objektID, String title) {
         this.newObjektID = objektID;
         this.title = title;
     }
 
     private void setComboCategories() {
-        List<String> list = connection.getAllKopiaCategories();
-        Collections.sort(list);
-        comboCategory.getItems().addAll(list);
+        if (this.typ == Type.Bok) {
+            comboCategory.getItems().addAll("Bok, 30 dagar",
+                    "Kurslitteratur, 14 dagar",
+                    "Referenslitteratur, 0 dagar");
+        } else if (this.typ == Type.Film) {
+            comboCategory.getItems().addAll("Film, 7 dagar",
+                    "Kurslitteratur, 14 dagar",
+                    "Referenslitteratur, 0 dagar");
+        } else {
+            comboCategory.getItems().addAll("Referenslitteratur, 0 dagar");
+        }
     }
 
     //Table functions
@@ -199,7 +192,7 @@ public class NewKopiaController {
         tblAddedCopies.getColumns().clear();
 
         Field[] fields = listKopior.get(0).getClass().getDeclaredFields();
-        
+
         ObservableList<Kopia> observableKopior = FXCollections.observableArrayList(listKopior);
 
         // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)

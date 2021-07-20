@@ -26,6 +26,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
 import javafx.event.*;
+import org.biblioteket.Objects.Bok;
+import org.biblioteket.Objects.Objekt;
 
 public class NewObjektController {
 
@@ -68,6 +70,7 @@ public class NewObjektController {
     private ArrayList<Integer> allISBN = new ArrayList<>();
     
     private int newObjektID;
+    private Bok newBok;
 
     DBConnection connection;
 
@@ -153,10 +156,11 @@ public class NewObjektController {
     //Insert/update functions
     private void newBok(ActionEvent event) {
 
-        this.newObjektID = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()), selectAuthors, selectSearchWords);
-
+        newBok = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()), selectAuthors, selectSearchWords);
+     
         Alert alert;
-        if (this.newObjektID != -1) {
+        if (newBok != null) {
+            this.newObjektID = newBok.getObjektID();
             alert = new Alert(AlertType.CONFIRMATION, "Objekt " + this.newObjektID
                     + " skapades\nVill du lägga till kopior?");
             ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Skapa kopior");
@@ -164,7 +168,9 @@ public class NewObjektController {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                loadPageNewKopia(event,newObjektID, txtTitle.getText() );
+                //NewKopiaController vill ha ett objekt och ingen bok. 
+                Objekt objekt = newBok;
+                loadPageNewKopia(event, objekt );
             }
         } else {
             alert = new Alert(AlertType.ERROR);
@@ -205,13 +211,13 @@ public class NewObjektController {
         text.setText(Util.listToString(list));
     }
 
-    public boolean loadPageNewKopia (ActionEvent event, int objektID, String title ){
+    public boolean loadPageNewKopia (ActionEvent event, Objekt objekt ){
 
         try {
 
              FXMLLoader loader = new FXMLLoader(getClass().getResource("NewKopia.fxml"));
             
-            NewKopiaController controller = new NewKopiaController(objektID, title);
+            NewKopiaController controller = new NewKopiaController(objekt);
             loader.setController(controller);
             Parent root = loader.load();
             borderPane.setCenter(root);
