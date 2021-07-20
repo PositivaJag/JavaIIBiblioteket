@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -20,6 +21,7 @@ import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Film;
 import org.biblioteket.Objects.Kopia;
 import org.biblioteket.Objects.Kopia.AccessKopia;
+import org.biblioteket.Objects.Loan;
 import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Objects.Objekt.Type;
 import org.biblioteket.Objects.Tidskrift;
@@ -43,6 +45,7 @@ public class DBConnection {
     private Statement statement;
     private PreparedStatement pState;
     private ResultSetMetaData metadata;
+//    private Object resultSet;
 
     //Enum for login
     public enum LoginResult {
@@ -282,8 +285,8 @@ public class DBConnection {
             return false;
         }
     }
-    
-    public String getLoanCategory(String personID){
+
+    public String getLoanCategory(String personID) {
         try {
             String SQL = "select låntagareKategori from låntagare where PersonID = ?;";
             pState = connection.prepareStatement(SQL);
@@ -291,16 +294,15 @@ public class DBConnection {
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
             return resultSet.getString(1);
-            
-            
+
         } catch (SQLException ex) {
             System.out.println("Något gick fel i DBConnection, getLoadCategory");
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-            
-    public int getMaxNoLoan(String Category){
+
+    public int getMaxNoLoan(String Category) {
         try {
             String SQL = "select simultanaLån from låntagarekategori where LåntagareKategori = ?;";
             pState = connection.prepareStatement(SQL);
@@ -308,46 +310,46 @@ public class DBConnection {
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
             return resultSet.getInt(1);
-            
+
         } catch (SQLException ex) {
-             System.out.println("Något gick fel i DBConnection, getMaxNoLoan");
+            System.out.println("Något gick fel i DBConnection, getMaxNoLoan");
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return -1;
     }
-    
-    public String getTitle(int streckkod){
-         try {
+
+    public String getTitle(int streckkod) {
+        try {
             String SQL = "select distinct(titel) from kopia k, objekt o where k.objektID = o.objektID and k.streckkod = ?;";
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, streckkod);
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
             return resultSet.getString(1);
-            
+
         } catch (SQLException ex) {
-             System.out.println("Något gick fel i DBConnection");
+            System.out.println("Något gick fel i DBConnection");
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-    
-    public ArrayList<Integer> getLoanID(String Loantagare){
+
+    public ArrayList<Integer> getLoanID(String Loantagare) {
         try {
             String SQL = "select lånID from lån where Låntagare = ?;";
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, Integer.parseInt(Loantagare));
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
-            
+
             ArrayList<Integer> loans = new ArrayList<>();
-             while (resultSet.next()) {
+            while (resultSet.next()) {
                 loans.add(resultSet.getInt(1));
             }
-            
+
             return loans;
-            } catch (SQLException ex) {
-                 System.out.println("Något gick fel i DBConnection, getLoanID");
+        } catch (SQLException ex) {
+            System.out.println("Något gick fel i DBConnection, getLoanID");
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -454,66 +456,49 @@ public class DBConnection {
         return null;
     }
 
-     public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type) {
+    public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type) {
 
         try {
             int objektID = Objekt.getObjektID();
             //Get objekt from DB
-            String SQL = "Select streckkod, lånekategori, placering from Kopia where ObjektID = ?";
-
+            String SQL = "Select streckkod, lånekategori, placering, objektID from Kopia where ObjektID = ?";
             ResultSet resultSet = getResultSetFromDB(SQL, objektID);
-
-            ArrayList<Kopia> result = new ArrayList<>();
-
-            //Check if there are any copies of the book. 
-            if (resultSet.next() == false) {
-                return result;
-            }
-
-            do {
-                int streckkod = resultSet.getInt(1);
-                String loanKategori = resultSet.getString(2);
-                String placement = resultSet.getString(3);
-                AccessKopia access = AccessKopia.AVAILABLE;
-                Date returnLatest = null;
-
-                ResultSet loanResultSet = getKopiaLoanInformation(streckkod);
-                if (loanResultSet.next()) {
-                    access = getKopiaAccess(loanResultSet.getDate(4));
-                }
-
-                if (access == AccessKopia.ON_LOAN) {
-                    returnLatest = loanResultSet.getDate(3);
-                }
-
-                result.add(new Kopia(streckkod, objektID, loanKategori,
-                        placement, access, returnLatest));
-
-            } while (resultSet.next());
-
-            return result;
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-     
-    public Kopia getKopia(int streckkod) {
-
-        try {
-            //Get kopia from DB
-            String SQL = "Select objektID, lånekategori, placering from Kopia where streckkod = ?";
-            pState = connection.prepareStatement(SQL);
-            pState.setInt(1, streckkod);
-            ResultSet resultSet = getQuery(pState);
 
             //Check if there are any copies of the book. 
             if (resultSet.next() == false) {
                 return null;
             }
-                int objektID = resultSet.getInt(1);
+            return getKopiorAsList(resultSet);
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public Kopia getKopia(int streckkod){
+        try {
+            //Get kopia from DB
+            String SQL = "Select streckkod, lånekategori, placering, objektID from Kopia where streckkod = ?";
+            pState = connection.prepareStatement(SQL);
+            pState.setInt(1, streckkod);
+            ResultSet resultSet = getQuery(pState);
+            if (resultSet.next()) {
+            return getKopiorAsList(resultSet).get(0);
+                    }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public ArrayList<Kopia> getKopiorAsList(ResultSet resultSet) {
+         ArrayList<Kopia> result = new ArrayList<>();
+        try {
+            do {
+                int streckkod = resultSet.getInt(1);
                 String loanKategori = resultSet.getString(2);
                 String placement = resultSet.getString(3);
+                int objektID = resultSet.getInt(4);
                 AccessKopia access = AccessKopia.AVAILABLE;
                 Date returnLatest = null;
 
@@ -526,17 +511,55 @@ public class DBConnection {
                     returnLatest = loanResultSet.getDate(3);
                 }
 
-               return new Kopia(streckkod, objektID, loanKategori,
-                        placement, access, returnLatest);
-
-
-
+               result.add(new Kopia(streckkod, objektID, loanKategori,
+                        placement, access, returnLatest));
+            } while (resultSet.next());
+            return result;
+            
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
+//    public Kopia getKopia(int streckkod) {
+//
+//        try {
+//            //Get kopia from DB
+//            String SQL = "Select objektID, lånekategori, placering from Kopia where streckkod = ?";
+//            pState = connection.prepareStatement(SQL);
+//            pState.setInt(1, streckkod);
+//            ResultSet resultSet = getQuery(pState);
+//
+//            //Check if there are any copies of the book. 
+//            if (resultSet.next() == false) {
+//                return null;
+//            }
+//                int objektID = resultSet.getInt(1);
+//                String loanKategori = resultSet.getString(2);
+//                String placement = resultSet.getString(3);
+//                AccessKopia access = AccessKopia.AVAILABLE;
+//                Date returnLatest = null;
+//
+//                ResultSet loanResultSet = getKopiaLoanInformation(streckkod);
+//                if (loanResultSet.next()) {
+//                    access = getKopiaAccess(loanResultSet.getDate(4));
+//                }
+//
+//                if (access == AccessKopia.ON_LOAN) {
+//                    returnLatest = loanResultSet.getDate(3);
+//                }
+//
+//               return new Kopia(streckkod, objektID, loanKategori,
+//                        placement, access, returnLatest);
+//
+//
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
     public ArrayList<String> getObjektTypes() {
 
         ArrayList<String> types = new ArrayList();
@@ -645,7 +668,7 @@ public class DBConnection {
         return getStringsAsList(SQL, objektID);
     }
 
-    private ResultSet getKopiaLoanInformation(int streckkod) {
+    public ResultSet getKopiaLoanInformation(int streckkod) {
         String access;
         String SQL = "select * from lån where Datumlån = (select max(DatumLån) from lån where streckkod = ?);";
         return getResultSetFromDB(SQL, streckkod);
@@ -660,8 +683,8 @@ public class DBConnection {
             return AccessKopia.AVAILABLE;
         }
     }
-    
-     public int getKopiaMaxLånetid(int streckkod){
+
+    public int getKopiaMaxLånetid(int streckkod) {
         try {
             String SQL = "select maxLånetid from kopia k, maxlånetid m where k.låneKategori = m.kategori and k.streckkod = ?;";
             pState = connection.prepareStatement(SQL);
@@ -669,15 +692,15 @@ public class DBConnection {
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
             return resultSet.getInt(1);
-      
+
         } catch (SQLException ex) {
-             System.out.println("Något gick fel i DBConnection, getMaxNoLoan");
+            System.out.println("Något gick fel i DBConnection, getMaxNoLoan");
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return -1;
     }
-     
-     public Boolean checkIfKopiaExists(int streckkod){
+
+    public Boolean checkIfKopiaExists(int streckkod) {
         try {
             String SQL = "select * from kopia where streckkod = ?;";
             pState = connection.prepareStatement(SQL);
@@ -686,15 +709,15 @@ public class DBConnection {
 
             //Check if row exists
             if (!resultSet.next()) {
-               return false;
+                return false;
             } else {
-               return true;
+                return true;
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
-     return false;
-     }
+        return false;
+    }
 
     //Create new
     public Bok newBok(String title, int ISBN, ArrayList<String> authors, ArrayList<String> searchWords) {
@@ -708,7 +731,7 @@ public class DBConnection {
             //Insert SearchWords
             insertBokSearchWords(searchWords, objektID);
             connection.commit();
-            
+
             return getBokFromDB(objektID);
 
         } catch (SQLException ex) {
@@ -737,9 +760,9 @@ public class DBConnection {
                 String placering = kopia.getPlacement();
                 insertKopia(streckkod, objektID, kategori, placering);
             }
-                connection.commit();
-                return true;
-            
+            connection.commit();
+            return true;
+
         } catch (SQLException ex) {
             try {
                 connection.rollback();
@@ -753,8 +776,40 @@ public class DBConnection {
 
         return false;
     }
-    
 
+    public Boolean newLoan(ArrayList<Loan> loans, int userID) {
+        try {
+            for (int i = 0; i < loans.size(); i++) {
+
+                Loan loan = loans.get(i);
+                LocalDate loanDate = loan.getLoanDate();
+                LocalDate returnLatest = loanDate.plusDays(loan.getLoanDays());
+                int streckkod = loan.getStreckkod();
+                int loantagareID = userID;
+                insertLoan(loanDate, returnLatest, streckkod, loantagareID);
+            }
+            connection.commit();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+
+    }
+
+    private void insertLoan(LocalDate loanDate, LocalDate returnLatest,
+            int streckkod, int loantagare) throws SQLException {
+
+        String SQL = "INSERT INTO lån (DatumLån, ReturSenast, streckkod, Låntagare) "
+                + "VALUES (?, ?, ?, ?);";
+        pState = connection.prepareStatement(SQL);
+        pState.setDate(1, java.sql.Date.valueOf(loanDate));
+        pState.setDate(2, java.sql.Date.valueOf(returnLatest));
+        pState.setInt(3, streckkod);
+        pState.setInt(4, loantagare);
+        pState.executeUpdate();
+    }
+     
     private void insertKopia(int streckkod, int objektID, String kategori, String placering) throws SQLException {
 
         String SQL = "INSERT INTO kopia (streckkod, ObjektID, LåneKategori, Placering) VALUES (?, ?, ?, ?);";
@@ -834,7 +889,6 @@ public class DBConnection {
 //        String SQL = "select concat(Kategori, ', ', MaxLånetid, ' dagar') as KopiaCategory from maxlånetid;";
 //        return getStringsAsList(SQL);
 //    }
-   
     public ArrayList<String> getAllSearchWords() {
         String SQL = "select Ämnesord as seachWords from klassificering;";
         return getStringsAsList(SQL);
@@ -884,7 +938,7 @@ public class DBConnection {
         }
         return -1;
     }
-    
+
     public ArrayList<Integer> getLoans(int personID) {
         try {
             String SQL = "select lånID from lån where låntagare = ?";
@@ -897,7 +951,7 @@ public class DBConnection {
                 result.add(resultSet.getInt(1));
             }
             return result;
-            
+
         } catch (SQLException ex) {
 
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
