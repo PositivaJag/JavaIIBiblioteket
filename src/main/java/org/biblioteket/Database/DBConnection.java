@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.time.temporal.ChronoUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.biblioteket.Objects.Bok;
@@ -354,7 +355,28 @@ public class DBConnection {
         }
         return null;
     }
-
+    
+//     public ArrayList<Loan> getLoans(String Loantagare) {
+//try {
+//            String SQL = "select lånID from lån where Låntagare = ?;";
+//            pState = connection.prepareStatement(SQL);
+//            pState.setInt(1, Integer.parseInt(Loantagare));
+//            ResultSet resultSet = getQuery(pState);
+//            resultSet.next();
+//
+//            ArrayList<Integer> loans = new ArrayList<>();
+//            while (resultSet.next()) {
+//                loans.add(resultSet.getInt(1));
+//            }
+//
+//            return loans;
+//        } catch (SQLException ex) {
+//            System.out.println("Något gick fel i DBConnection, getLoanID");
+//            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
+    
     //Objekts and copies
     public ArrayList<Objekt> getObjektsFromDB(String typ) {
         try {
@@ -504,6 +526,10 @@ public class DBConnection {
 
                 ResultSet loanResultSet = getKopiaLoanInformation(streckkod);
                 if (loanResultSet.next()) {
+                    int lånID = loanResultSet.getInt(1);
+                    Date LoanDate = loanResultSet.getDate(2);
+                    Date returnDate = loanResultSet.getDate(4);
+                    
                     access = getKopiaAccess(loanResultSet.getDate(4));
                 }
 
@@ -670,7 +696,7 @@ public class DBConnection {
 
     public ResultSet getKopiaLoanInformation(int streckkod) {
         String access;
-        String SQL = "select * from lån where Datumlån = (select max(DatumLån) from lån where streckkod = ?);";
+        String SQL = "select * from lån where lånID = (select max(lånID) from lån where streckkod = ?);";
         return getResultSetFromDB(SQL, streckkod);
 
     }
@@ -939,16 +965,26 @@ public class DBConnection {
         return -1;
     }
 
-    public ArrayList<Integer> getLoans(int personID) {
+    public ArrayList<Loan> getLoans(int personID) {
         try {
-            String SQL = "select lånID from lån where låntagare = ?";
+            String SQL = "select * from lån where låntagare = ?";
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, personID);
             ResultSet resultSet = getQuery(pState);
 
-            ArrayList<Integer> result = new ArrayList<>();
+            ArrayList<Loan> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(resultSet.getInt(1));
+                int loanID = resultSet.getInt(1);
+                LocalDate loanDate = resultSet.getDate(2).toLocalDate();
+                LocalDate latestReturn = resultSet.getDate(3).toLocalDate();
+                LocalDate actualReturn = resultSet.getDate(4).toLocalDate();
+                int streckkod = resultSet.getInt(5);
+                int loantagarID = resultSet.getInt(6);
+                String title = getTitle(streckkod);
+                
+                        
+                result.add(new Loan(streckkod,  loantagarID, title, loanDate, 
+                        latestReturn, actualReturn, loanID));
             }
             return result;
 

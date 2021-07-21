@@ -5,9 +5,11 @@ module org.biblioteket {
     requires java.sql;
     requires java.desktop;
     requires java.base;
+    requires pdfbox;
 
     opens org.biblioteket to javafx.fxml;
     opens org.biblioteket.Objects to javafx.base;
     exports org.biblioteket.Objects;
     exports org.biblioteket;
+    requires itextpdf;
 }

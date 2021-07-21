@@ -22,7 +22,12 @@ public class Loan {
     private LocalDate actualReturnDate;
     private int loanID;
     
-    
+    //construnctor för print reciept
+    public Loan( int streckkod, int loantagareID, String titel, 
+            LocalDate loanDate, LocalDate latestReturnDate, 
+            LocalDate acutalReturnDate, int loanID){
+        
+    }
     
     //Contstruktor för lån. 
     public Loan(LocalDate loanDate, int loanDays, int streckkod, int loantagareID, String titel){
@@ -32,6 +37,8 @@ public class Loan {
     this.titel = titel;
     this.loantagareID = loantagareID;
     }
+    
+    
 
     public int getLoanID() {
         return loanID;

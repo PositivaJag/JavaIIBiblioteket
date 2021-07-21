@@ -5,6 +5,7 @@
  */
 package org.biblioteket;
 
+import Printer.Printer;
 import org.biblioteket.Database.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,9 +13,14 @@ import org.biblioteket.Objects.Bok;
 
 //import javafx.embed.swing.SwingNode;
 import org.biblioteket.Objects.Film;
+import org.biblioteket.Objects.Loan;
 import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Objects.Objekt.Type;
 import org.biblioteket.Objects.Tidskrift;
+import org.biblioteket.Persons.Loantagare;
+import org.biblioteket.Persons.Person.PersonTyp;
+import org.biblioteket.Database.DBConnection;
+
 
 
 /**
@@ -24,12 +30,17 @@ import org.biblioteket.Objects.Tidskrift;
 public class DatabasTestMain {
     
     public static void main(String[] args)throws SQLException{
-        
-       DBConnection instance = DBConnection.getInstance();
-       int ObjektID = 3;
-       
-       Objekt k = new Objekt(1, "Kalle", Type.Bok, "", "");
-       ArrayList<?> list = instance.getObjectCopies(k, Type.Bok);
+        DBConnection instance = DBConnection.getInstance();
+        Loantagare loantagare = new Loantagare("1", "Namn", "Namn", "mail", "pass", "LOANTAGARE");
+       ArrayList<Loan> loans = instance.getLoans(11);
+        Printer print = new Printer();
+       print.printLoanReciept(loans, loantagare);
+//        
+//       DBConnection instance = DBConnection.getInstance();
+//       int ObjektID = 3;
+//       
+//       Objekt k = new Objekt(1, "Kalle", Type.Bok, "", "");
+//       ArrayList<?> list = instance.getObjectCopies(k, Type.Bok);
        
        }
 //       Bok bok = instance.getBokFromDB(ObjektID);
