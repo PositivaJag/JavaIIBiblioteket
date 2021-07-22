@@ -1,0 +1,19 @@
+Kvitto lån
+LåntagarID: 11
+2021-07-22
+
+Titel
+Lånedatum	Återlämnas 	Försenad
+
+Eldfödd
+2021-07-20	2021-07-21	1 dagar sen
+
+Alla vill vara med
+2021-07-20	2021-07-22	
+
+Good Will Hunting
+2021-07-20	2021-08-19	
+
+Alla vill vara med
+2021-07-20	2021-08-19	
+

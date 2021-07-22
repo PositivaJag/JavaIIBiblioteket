@@ -22,15 +22,22 @@ public class Loan {
     private LocalDate actualReturnDate;
     private int loanID;
     
-    //construnctor för print reciept
+    //construnctor för aktiva lån/ kvitto
     public Loan( int streckkod, int loantagareID, String titel, 
             LocalDate loanDate, LocalDate latestReturnDate, 
-            LocalDate acutalReturnDate, int loanID){
+           int loanID){
+        this.streckkod = streckkod;
+        this.loantagareID = loantagareID;
+        this.titel = titel;
+        this.loanDate = loanDate;
+        this.latestReturnDate = latestReturnDate;
+        this.loanID = loanID;
         
     }
     
     //Contstruktor för lån. 
-    public Loan(LocalDate loanDate, int loanDays, int streckkod, int loantagareID, String titel){
+    public Loan(LocalDate loanDate, int loanDays, int streckkod, 
+            int loantagareID, String titel){
     this.loanDate = loanDate;
     this.loanDays = loanDays;
     this.streckkod = streckkod;

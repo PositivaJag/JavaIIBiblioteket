@@ -1,35 +1,24 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package Printer;
 
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.jar.Attributes.Name;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
-import javax.swing.JFileChooser;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.printing.PDFPageable;
 import org.biblioteket.Objects.Loan;
 import org.biblioteket.Persons.Loantagare;
-import java.io.*;
 
 /**
  *
@@ -37,37 +26,74 @@ import java.io.*;
  */
 public class Printer {
 
-    public Boolean printLoanReciept(ArrayList<Loan> loans, Loantagare loantagare) {
+    public void createLoanRecipet(ArrayList<Loan> loans, Loantagare loantagare) {
+
         try {
-            int noRows = loans.size();
-            String docName = "Lånelista " + loantagare.getPersonID() + LocalDate.now().toString()+".pdf";
-            String docPath = new JFileChooser().getFileSystemView().getDefaultDirectory().toString();
-            String subTitle1 = "LåntagarID: "+loantagare.getPersonID();
-            String subTitle2 = LocalDate.now().toString();
+            File file = createNewFile("Temp.txt");
+
+            FileWriter writer = new FileWriter(file);
             
-            Document reciept = new Document();
-            PdfWriter.getInstance(reciept, new FileOutputStream(docName));
-            reciept.open();
+            writer.write("Kvitto lån\n");   //Rubrik
+            writer.write("LåntagarID: " + loantagare.getPersonID() + "\n");
+            writer.write(LocalDate.now().toString() + "\n\n");
+            writer.write("Titel\nLånedatum\tÅterlämnas \tFörsenad\n\n");
+            //Skriv alla lån.
+            for (int i = 0; i < loans.size(); i++) {
+                Loan loan = loans.get(i);
+                String toWriter = loan.getTitel() + "\n" + loan.getLoanDate().toString()
+                        + "\t" + loan.getLatestReturnDate().toString() + "\t" 
+                        + getLateStatus(loan)+"\n\n";
+                writer.write(toWriter);
+            }
+            writer.close();
             
-            PdfPTable table = createLoanRecieptTable();
-            
-            reciept.add(table);
-            reciept.close();
-            
-            PDDocument pdfdoc = PDDocument.load(new File(docName));
-            printPDF();
-            
-        } catch (FileNotFoundException ex) {
+            PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintService(findPrintService());
+        job.print();
+        
+        } catch (IOException ex) {
             Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DocumentException ex) {
+        } catch (PrinterException ex) {
             Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
+
+    private File createNewFile(String name) {
+        try {
+            //Create temporary file for reciept
+            File file = new File(name);
+            if (file.exists()) //Delete file if it already exists. 
+            {
+                file.delete();
+            }
+            file.createNewFile();   //Create new, empty file. 
+            return file;
         } catch (IOException ex) {
             Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return true;
+        return null;
     }
 
-    private PrintService findPrintService() {
+    private String getActualReturnDate(Loan loan) {
+        if (loan.getActualReturnDate() == null) {
+            return "";
+        } else {
+            return loan.getActualReturnDate().toString();
+        }
+
+    }
+    
+    private String getLateStatus(Loan loan){
+        LocalDate latestreturn = loan.getLatestReturnDate();
+        
+        if (latestreturn.isBefore(LocalDate.now())){
+            return ChronoUnit.DAYS.between(latestreturn, LocalDate.now()) +" dagar sen";        
+            }
+        else
+            return "";
+    }
+    
+      private PrintService findPrintService() {
         PrintService service = PrintServiceLookup.lookupDefaultPrintService();
         if (service != null) {
             String printServiceName = service.getName();
@@ -78,29 +104,23 @@ public class Printer {
         return service;
     }
 
-    private void printPDF() {
+    private void printFile() {
         try {
             PrinterJob job = PrinterJob.getPrinterJob();
-           // job.setPageable(new PDFPageable(pdfdoc));
             job.setPrintService(findPrintService());
             job.print();
         } catch (PrinterException ex) {
-            Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OLDPrinter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    private void createPDF(){
+        Document document = new Document();
+    PdfWriter.getInstance(document, new FileOutputStream("iTextHelloWorld.pdf"));
 
-    private PdfPTable createLoanRecieptTable() {
-        int noCol = 5;
-        PdfPTable table = new PdfPTable(noCol);
-        
-        PdfPCell c1;
-        String[] titles = {"Lånedatum", "Titel", "Återlämnas senas", "Återlämnad", "Försenad"};
-        for (int i = 0; i<noCol; i++){
-            c1 = new PdfPCell(new Phrase(titles[i]));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(c1);
+document.open();
+Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+Chunk chunk = new Chunk("Hello World", font);
 
-        }
-        return table;
     }
 }

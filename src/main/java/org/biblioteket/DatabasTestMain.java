@@ -5,6 +5,7 @@
  */
 package org.biblioteket;
 
+import Printer.OLDPrinter;
 import Printer.Printer;
 import org.biblioteket.Database.DBConnection;
 import java.sql.*;
@@ -31,10 +32,10 @@ public class DatabasTestMain {
     
     public static void main(String[] args)throws SQLException{
         DBConnection instance = DBConnection.getInstance();
-        Loantagare loantagare = new Loantagare("1", "Namn", "Namn", "mail", "pass", "LOANTAGARE");
+        Loantagare loantagare = new Loantagare("11", "Namn", "Namn", "mail", "pass", "LOANTAGARE");
        ArrayList<Loan> loans = instance.getLoans(11);
-        Printer print = new Printer();
-       print.printLoanReciept(loans, loantagare);
+       Printer printer = new Printer();
+       printer.createLoanRecipet(loans, loantagare);
 //        
 //       DBConnection instance = DBConnection.getInstance();
 //       int ObjektID = 3;

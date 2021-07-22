@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.biblioteket.Objects.Bok;
@@ -355,7 +357,7 @@ public class DBConnection {
         }
         return null;
     }
-    
+
 //     public ArrayList<Loan> getLoans(String Loantagare) {
 //try {
 //            String SQL = "select lånID from lån where Låntagare = ?;";
@@ -376,7 +378,6 @@ public class DBConnection {
 //        }
 //        return null;
 //    }
-    
     //Objekts and copies
     public ArrayList<Objekt> getObjektsFromDB(String typ) {
         try {
@@ -496,8 +497,8 @@ public class DBConnection {
         }
         return null;
     }
-    
-    public Kopia getKopia(int streckkod){
+
+    public Kopia getKopia(int streckkod) {
         try {
             //Get kopia from DB
             String SQL = "Select streckkod, lånekategori, placering, objektID from Kopia where streckkod = ?";
@@ -505,8 +506,8 @@ public class DBConnection {
             pState.setInt(1, streckkod);
             ResultSet resultSet = getQuery(pState);
             if (resultSet.next()) {
-            return getKopiorAsList(resultSet).get(0);
-                    }
+                return getKopiorAsList(resultSet).get(0);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -514,7 +515,7 @@ public class DBConnection {
     }
 
     public ArrayList<Kopia> getKopiorAsList(ResultSet resultSet) {
-         ArrayList<Kopia> result = new ArrayList<>();
+        ArrayList<Kopia> result = new ArrayList<>();
         try {
             do {
                 int streckkod = resultSet.getInt(1);
@@ -529,7 +530,7 @@ public class DBConnection {
                     int lånID = loanResultSet.getInt(1);
                     Date LoanDate = loanResultSet.getDate(2);
                     Date returnDate = loanResultSet.getDate(4);
-                    
+
                     access = getKopiaAccess(loanResultSet.getDate(4));
                 }
 
@@ -537,11 +538,11 @@ public class DBConnection {
                     returnLatest = loanResultSet.getDate(3);
                 }
 
-               result.add(new Kopia(streckkod, objektID, loanKategori,
+                result.add(new Kopia(streckkod, objektID, loanKategori,
                         placement, access, returnLatest));
             } while (resultSet.next());
             return result;
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -835,7 +836,7 @@ public class DBConnection {
         pState.setInt(4, loantagare);
         pState.executeUpdate();
     }
-     
+
     private void insertKopia(int streckkod, int objektID, String kategori, String placering) throws SQLException {
 
         String SQL = "INSERT INTO kopia (streckkod, ObjektID, LåneKategori, Placering) VALUES (?, ?, ?, ?);";
@@ -966,26 +967,28 @@ public class DBConnection {
     }
 
     public ArrayList<Loan> getLoans(int personID) {
+        ArrayList<Loan> result = new ArrayList<>();
         try {
-            String SQL = "select * from lån where låntagare = ?";
+            String SQL = "select * from lån where låntagare = ? and isNull(DatumRetur)";
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, personID);
             ResultSet resultSet = getQuery(pState);
 
-            ArrayList<Loan> result = new ArrayList<>();
             while (resultSet.next()) {
                 int loanID = resultSet.getInt(1);
-                LocalDate loanDate = resultSet.getDate(2).toLocalDate();
-                LocalDate latestReturn = resultSet.getDate(3).toLocalDate();
-                LocalDate actualReturn = resultSet.getDate(4).toLocalDate();
+                LocalDate loanDate = checkDate(resultSet.getDate(2));
+                LocalDate latestReturn = checkDate(resultSet.getDate(3));
                 int streckkod = resultSet.getInt(5);
                 int loantagarID = resultSet.getInt(6);
                 String title = getTitle(streckkod);
                 
-                        
-                result.add(new Loan(streckkod,  loantagarID, title, loanDate, 
-                        latestReturn, actualReturn, loanID));
+                Loan loan = new Loan(streckkod, loantagarID, title, loanDate,
+                        latestReturn, loanID);
+
+                result.add(loan);
             }
+            Comparator<Loan> compareByReturnDate = (Loan o1, Loan o2) -> o1.getLatestReturnDate().compareTo( o2.getLatestReturnDate());
+            Collections.sort(result, compareByReturnDate);
             return result;
 
         } catch (SQLException ex) {
@@ -994,5 +997,15 @@ public class DBConnection {
         }
         return null;
     }
+    
+    private LocalDate checkDate(java.sql.Date date){
+        if (date == null){
+        return null;
+        }
+        else{
+            return  date.toLocalDate();
+        }
+    }
+            
 
 }
