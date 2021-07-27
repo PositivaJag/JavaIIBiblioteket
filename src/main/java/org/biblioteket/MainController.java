@@ -84,6 +84,7 @@ public class MainController {
 
     @FXML
     void clickButtonReturn(ActionEvent event) {
+        loadPage("Return.fxml");
 
     }
 
@@ -151,6 +152,7 @@ public class MainController {
     
         
     }
+    
     
 //     public boolean loadPageLoan(Person activeLibrarian){
 //        try {

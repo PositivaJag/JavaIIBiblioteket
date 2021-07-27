@@ -13,14 +13,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="500.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.ReturnController">
    <children>
       <VBox alignment="TOP_CENTER" layoutX="5.0" maxWidth="1.7976931348623157E308" prefHeight="500.0">
          <children>
             <GridPane hgap="10.0" prefHeight="500.0" prefWidth="780.0" vgap="10.0" VBox.vgrow="ALWAYS">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="384.4000244140625" minWidth="10.0" prefWidth="315.5999755859375" />
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints maxHeight="214.59998168945313" minHeight="10.0" prefHeight="85.0" vgrow="SOMETIMES" />
@@ -62,10 +62,10 @@
                               <Insets left="10.0" right="10.0" top="10.0" />
                            </VBox.margin>
                         </Label>
-                        <GridPane>
+                        <GridPane fx:id="lblLateLoans" VBox.vgrow="NEVER">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.80001983642578" minWidth="10.0" prefWidth="120.59999237060546" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="338.2000045776367" minWidth="10.0" prefWidth="248.60000762939453" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.80001983642578" minWidth="10.0" prefWidth="132.0000198364258" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="338.2000045776367" minWidth="10.0" prefWidth="164.79998016357422" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -73,32 +73,32 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label alignment="CENTER_RIGHT" text="Max antal lån: ">
+                              <Label alignment="CENTER_RIGHT" text="Antal lån">
                                  <GridPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lblMaxLoan" text="lblMaxLoan" GridPane.columnIndex="1">
+                              <Label fx:id="lblNoLoan" text="lblNoLoan" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label alignment="CENTER_RIGHT" text="Antal befintliga lån:" GridPane.rowIndex="1">
+                              <Label alignment="CENTER_RIGHT" text="Antal försenade lån" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lblExisitngLoans" text="lblExisitngLoans" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Label fx:id="lblExisitngLoans" text="lblLateLoans" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label alignment="CENTER_RIGHT" text="Du kan max låna: " GridPane.rowIndex="2">
+                              <Label alignment="CENTER_RIGHT" text="Förseningsavgifter" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lblPossibleLoans" text="lblPossibleLoans" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <Label fx:id="lblFees" text="lblFees" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </GridPane.margin>
@@ -112,7 +112,7 @@
                   </VBox>
                   <VBox GridPane.rowIndex="2">
                      <children>
-                        <Label contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Att låna">
+                        <Label contentDisplay="CENTER" maxWidth="1.7976931348623157E308" text="Att återlämna">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -127,7 +127,7 @@
                         </TableView>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
-                              <Button fx:id="btnLoanTitles" mnemonicParsing="false" onAction="#pressLoanTitles" text="Låna titlar">
+                              <Button fx:id="btnReturnTitles" mnemonicParsing="false" onAction="#pressReturnTitles" text="Lämna tillbaka titlar">
                                  <HBox.margin>
                                     <Insets bottom="5.0" right="10.0" />
                                  </HBox.margin>
@@ -140,7 +140,7 @@
                      </children>
                   </VBox>
                   <VBox GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Label alignment="CENTER" text="Låna" GridPane.halignment="CENTER">
+                  <Label text="Återlämna" GridPane.halignment="CENTER">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -149,6 +149,9 @@
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </GridPane>
          </children>
       </VBox>

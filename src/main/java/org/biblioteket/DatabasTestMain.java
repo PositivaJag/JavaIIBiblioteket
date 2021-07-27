@@ -7,9 +7,13 @@ package org.biblioteket;
 
 import Printer.OLDPrinter;
 import Printer.Printer;
+import com.itextpdf.text.DocumentException;
+import java.io.FileNotFoundException;
 import org.biblioteket.Database.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.biblioteket.Objects.Bok;
 
 //import javafx.embed.swing.SwingNode;
@@ -33,10 +37,10 @@ public class DatabasTestMain {
     public static void main(String[] args)throws SQLException{
         DBConnection instance = DBConnection.getInstance();
         Loantagare loantagare = new Loantagare("11", "Namn", "Namn", "mail", "pass", "LOANTAGARE");
-       ArrayList<Loan> loans = instance.getLoans(11);
-       Printer printer = new Printer();
-       printer.createLoanRecipet(loans, loantagare);
-//        
+        ArrayList<Loan> loans = instance.getLoans(11);
+        Printer printer = new Printer();
+        printer.createLoanRecipet(loans, loantagare);
+//
 //       DBConnection instance = DBConnection.getInstance();
 //       int ObjektID = 3;
 //       

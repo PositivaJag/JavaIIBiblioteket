@@ -1,5 +1,6 @@
 package org.biblioteket;
 
+import Printer.Printer;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -157,7 +158,8 @@ public class LoanController {
 
             Optional<ButtonType> result = alert.showAndWait();
              if (result.isPresent() && result.get() == ButtonType.OK) {
-
+                 Printer printer = new Printer();
+                 printer.createLoanRecipet(loans, activeUser);
             }
              
 //             setUserData();
