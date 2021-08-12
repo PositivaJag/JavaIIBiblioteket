@@ -61,9 +61,9 @@ public class LoanController {
 
     LocalDate today = LocalDate.now();
 
-    ArrayList<Loan> loans = new ArrayList<>();
-    ArrayList<Integer> addedStreckkoder = new ArrayList<>();
-    ArrayList<Kopia> kopior = new ArrayList<Kopia>();
+    ArrayList<Loan> loans;
+    ArrayList<Integer> addedStreckkoder;
+    ArrayList<Kopia> kopior;
 
     public LoanController(Loantagare loantagare) {
         this.activeUser = loantagare;
@@ -75,10 +75,16 @@ public class LoanController {
 //        PersonTyp personTyp = PersonTyp.BIBLIOTEKARIE;
 //    }
     public void initialize() {
+        if (connection == null)
         connection = DBConnection.getInstance();
+        
         setUserData();
         printUserData();
-
+        
+        loans = new ArrayList<>();
+        addedStreckkoder = new ArrayList<>();
+        kopior = new ArrayList<Kopia>();
+        
         //Bara siffror i fältet för streckkod. 
         txtStreckkod.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -117,9 +123,9 @@ public class LoanController {
         }
         
         //Check if Kopia utlånad
-        Kopia kopia = (connection.getKopia(streckkod));
-        if (kopia.getAccess() == AccessKopia.ON_LOAN) {
-            lblInformation.setText("Kopian är inte tillgänglig för lån,\n"
+        Loan lastLoan = (connection.getLoan(streckkod));
+        if ( lastLoan != null && lastLoan.getActualReturnDate()== null) {
+            lblInformation.setText("Kopian är redan utlånad,\n"
                     + "vänligen kontakta personalen");
             return;
         }
@@ -131,13 +137,14 @@ public class LoanController {
                     + "lånas ut.");
             return;
         }
+        LocalDate latestReturnDate = today.plusDays(loanDays);
         
         //Create loan
            
             String titel = connection.getTitle(streckkod);
             int loantagareID = Integer.parseInt(activeUser.getPersonID());
 
-            loans.add(new Loan(today, loanDays, streckkod, loantagareID, titel));
+            loans.add(new Loan(today, latestReturnDate, loanDays, streckkod, loantagareID, titel));
             addedStreckkoder.add(streckkod);
             updateTableView();
     
@@ -150,6 +157,7 @@ public class LoanController {
         
        Alert alert;
        if (newLoan){
+
            alert = new Alert(AlertType.CONFIRMATION, loans.size()+" titlar lånades."
                    + "\nVill du skriva ut en minneslapp?");
            
@@ -167,6 +175,9 @@ public class LoanController {
              txtStreckkod.setText("");
              tblTitles.getColumns().clear();
              initialize();
+             loans = new ArrayList<>();
+        addedStreckkoder = new ArrayList<>();
+        kopior = new ArrayList<Kopia>();
              
         } else {
             alert = new Alert(Alert.AlertType.ERROR);

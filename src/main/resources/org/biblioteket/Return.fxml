@@ -23,8 +23,8 @@
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="384.4000244140625" minWidth="10.0" prefWidth="315.5999755859375" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints maxHeight="214.59998168945313" minHeight="10.0" prefHeight="85.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="214.59998168945313" minHeight="10.0" prefHeight="145.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="214.59998168945313" minHeight="10.0" prefHeight="53.200006103515626" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="214.59998168945313" minHeight="10.0" prefHeight="141.99999389648437" vgrow="SOMETIMES" />
                 <RowConstraints maxHeight="271.4" minHeight="10.0" prefHeight="271.4" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>

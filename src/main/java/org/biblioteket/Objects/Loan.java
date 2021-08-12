@@ -13,6 +13,9 @@ import java.util.Date;
  * @author jenni
  */
 public class Loan {
+    
+    public enum Skuld{BETALD, OBETALD, NONE}
+    
     private int streckkod;
     private String titel;
     private LocalDate loanDate;
@@ -21,29 +24,33 @@ public class Loan {
     private LocalDate latestReturnDate;
     private LocalDate actualReturnDate;
     private int loanID;
+    private Skuld skuld;
     
     //construnctor för aktiva lån/ kvitto
     public Loan( int streckkod, int loantagareID, String titel, 
             LocalDate loanDate, LocalDate latestReturnDate, 
-           int loanID){
+            LocalDate actualReturnDate, int loanID){
         this.streckkod = streckkod;
         this.loantagareID = loantagareID;
         this.titel = titel;
         this.loanDate = loanDate;
+        this.actualReturnDate = actualReturnDate;
         this.latestReturnDate = latestReturnDate;
         this.loanID = loanID;
         
     }
     
     //Contstruktor för lån. 
-    public Loan(LocalDate loanDate, int loanDays, int streckkod, 
-            int loantagareID, String titel){
+    public Loan(LocalDate loanDate, LocalDate latestReturnDate, int loanDays, 
+            int streckkod, int loantagareID, String titel){
     this.loanDate = loanDate;
     this.loanDays = loanDays;
     this.streckkod = streckkod;
     this.titel = titel;
     this.loantagareID = loantagareID;
+    this.latestReturnDate = latestReturnDate;
     }
+    
     
     
 

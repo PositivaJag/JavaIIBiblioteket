@@ -25,6 +25,7 @@ import org.biblioteket.Objects.Film;
 import org.biblioteket.Objects.Kopia;
 import org.biblioteket.Objects.Kopia.AccessKopia;
 import org.biblioteket.Objects.Loan;
+import org.biblioteket.Objects.Loan.Skuld;
 import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Objects.Objekt.Type;
 import org.biblioteket.Objects.Tidskrift;
@@ -337,6 +338,7 @@ public class DBConnection {
         return null;
     }
 
+
     public ArrayList<Integer> getLoanID(String Loantagare) {
         try {
             String SQL = "select lånID from lån where Låntagare = ?;";
@@ -525,7 +527,7 @@ public class DBConnection {
                 AccessKopia access = AccessKopia.AVAILABLE;
                 Date returnLatest = null;
 
-                ResultSet loanResultSet = getKopiaLoanInformation(streckkod);
+                ResultSet loanResultSet = getLoanInformation(streckkod);
                 if (loanResultSet.next()) {
                     int lånID = loanResultSet.getInt(1);
                     Date LoanDate = loanResultSet.getDate(2);
@@ -695,7 +697,32 @@ public class DBConnection {
         return getStringsAsList(SQL, objektID);
     }
 
-    public ResultSet getKopiaLoanInformation(int streckkod) {
+    public Loan getLoan(int streckkod){
+        try {
+            ResultSet resultSet = getLoanInformation(streckkod);
+            
+            resultSet.next();
+            int loantagareID = resultSet.getInt(6);
+            String title = getTitle(streckkod);
+            LocalDate loanDate = resultSet.getDate(2).toLocalDate();
+            
+            LocalDate actualReturnDate = null;
+            if (resultSet.getDate(4) != null) {
+                actualReturnDate = resultSet.getDate(4).toLocalDate();
+            }
+            
+            LocalDate latestReturnDate = resultSet.getDate(3).toLocalDate();
+            int loanID = resultSet.getInt(1);
+            return new Loan(streckkod, loantagareID, title, loanDate, 
+                     latestReturnDate, actualReturnDate, loanID);
+            
+                    } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public ResultSet getLoanInformation(int streckkod) {
         String access;
         String SQL = "select * from lån where lånID = (select max(lånID) from lån where streckkod = ?);";
         return getResultSetFromDB(SQL, streckkod);
@@ -803,17 +830,36 @@ public class DBConnection {
 
         return false;
     }
-
     public Boolean newLoan(ArrayList<Loan> loans, int userID) {
         try {
             for (int i = 0; i < loans.size(); i++) {
 
                 Loan loan = loans.get(i);
                 LocalDate loanDate = loan.getLoanDate();
-                LocalDate returnLatest = loanDate.plusDays(loan.getLoanDays());
+                LocalDate returnLatest = loan.getLatestReturnDate();
                 int streckkod = loan.getStreckkod();
                 int loantagareID = userID;
                 insertLoan(loanDate, returnLatest, streckkod, loantagareID);
+            }
+            connection.commit();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+
+    }
+    
+    public Boolean returnLoan(ArrayList<Loan> loans) {
+        try {
+            for (int i = 0; i < loans.size(); i++) {
+
+                Loan loan = loans.get(i);
+                Skuld skuld = Skuld.NONE; 
+                 if (loan.getLatestReturnDate().isBefore(LocalDate.now())){
+                     skuld = Skuld.OBETALD;
+                 }
+                updateReturnLoan(loan.getLoanID(), skuld.toString());
             }
             connection.commit();
             return true;
@@ -834,6 +880,16 @@ public class DBConnection {
         pState.setDate(2, java.sql.Date.valueOf(returnLatest));
         pState.setInt(3, streckkod);
         pState.setInt(4, loantagare);
+        pState.executeUpdate();
+    }
+    
+    private void updateReturnLoan(int loanID, String skuld) throws SQLException{
+        
+        String SQL = "UPDATE lån SET DatumRetur = ?, Skuld = ? WHERE `lånID` = ?;";
+        pState = connection.prepareStatement(SQL);
+        pState.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+        pState.setString(2, skuld);
+        pState.setInt(3,loanID);
         pState.executeUpdate();
     }
 
@@ -977,13 +1033,21 @@ public class DBConnection {
             while (resultSet.next()) {
                 int loanID = resultSet.getInt(1);
                 LocalDate loanDate = checkDate(resultSet.getDate(2));
+                
+                //Check if actualReturn has a value in the DB
+                LocalDate actualReturn;
+                if (resultSet.getDate(4) == null)
+                    actualReturn = null; 
+                else
+                    actualReturn = checkDate(resultSet.getDate(4));
+                
                 LocalDate latestReturn = checkDate(resultSet.getDate(3));
                 int streckkod = resultSet.getInt(5);
                 int loantagarID = resultSet.getInt(6);
                 String title = getTitle(streckkod);
                 
                 Loan loan = new Loan(streckkod, loantagarID, title, loanDate,
-                        latestReturn, loanID);
+                        latestReturn, actualReturn, loanID);
 
                 result.add(loan);
             }
