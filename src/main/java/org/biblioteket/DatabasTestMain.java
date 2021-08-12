@@ -34,6 +34,11 @@ import org.biblioteket.Database.DBConnection;
  */
 public class DatabasTestMain {
     
+    /**
+     *
+     * @param args
+     * @throws SQLException
+     */
     public static void main(String[] args)throws SQLException{
         DBConnection instance = DBConnection.getInstance();
         Loantagare loantagare = new Loantagare("11", "Namn", "Namn", "mail", "pass", "LOANTAGARE");

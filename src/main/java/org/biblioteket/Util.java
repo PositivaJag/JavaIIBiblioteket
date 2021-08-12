@@ -5,8 +5,17 @@
  */
 package org.biblioteket;
 
+import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import org.biblioteket.Objects.Loan;
 
 /**
  *
@@ -14,6 +23,11 @@ import java.util.ArrayList;
  */
 public class Util {
     
+    /**
+     *
+     * @param list
+     * @return
+     */
     public static String listToString(ArrayList<String> list){
         String string = "";
         for (int i = 0; i < list.size(); i++){
@@ -22,6 +36,37 @@ public class Util {
         return string;
     }
     
+    /**
+     *
+     * @param table
+     * @param list
+     */
+    public static void updateTableView(TableView table, List<?> list) {
+
+        table.getColumns().clear();
+
+        Field[] fields = list.get(0).getClass().getDeclaredFields();
+
+        ObservableList<?> observableList = FXCollections.observableArrayList(list);
+
+        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
+        for (Field field : fields) {
+            System.out.println(field);
+            TableColumn<Map, String> column = new TableColumn<>(field.getName());
+            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
+            table.getColumns().add(column);
+        }
+        table.setItems(observableList);
+
+    }
+    
+    /**
+     *
+     * @param name
+     */
+    public static void generalError(String name){
+        System.out.println("Ett fel har uppstått i klass" + name);
+    }
 
     
 }

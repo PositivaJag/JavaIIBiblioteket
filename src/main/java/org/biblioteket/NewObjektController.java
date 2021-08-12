@@ -29,6 +29,10 @@ import javafx.event.*;
 import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Objekt;
 
+/**
+ *
+ * @author jenni
+ */
 public class NewObjektController {
 
     @FXML
@@ -74,6 +78,9 @@ public class NewObjektController {
 
     DBConnection connection;
 
+    /**
+     *
+     */
     public void initialize() {
         connection = DBConnection.getInstance();
 
@@ -211,6 +218,12 @@ public class NewObjektController {
         text.setText(Util.listToString(list));
     }
 
+    /**
+     *
+     * @param event
+     * @param objekt
+     * @return
+     */
     public boolean loadPageNewKopia (ActionEvent event, Objekt objekt ){
 
         try {
@@ -251,22 +264,43 @@ public class NewObjektController {
 //    }
 
     //Setters
+
+    /**
+     *
+     * @param bool
+     */
     public void setDisableBtnCreate(Boolean bool) {
         this.btnCreate.setDisable(bool);
     }
 
+    /**
+     *
+     * @param text
+     */
     public void setTextLblWarning(String text) {
         this.lblWarning.setText(text);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNewObjektID() {
         return newObjektID;
     }
 
+    /**
+     *
+     * @param newObjektID
+     */
     public void setNewObjektID(int newObjektID) {
         this.newObjektID = newObjektID;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getTitle(){
         return txtTitle.getText();
     }

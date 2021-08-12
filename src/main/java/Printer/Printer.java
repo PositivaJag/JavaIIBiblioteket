@@ -40,6 +40,11 @@ public class Printer {
     Document document;
     String docName = "Temp.pdf";
 
+    /**
+     *
+     * @param loans
+     * @param loantagare
+     */
     public void createLoanRecipet(ArrayList<Loan> loans, Loantagare loantagare) {
 
         this.loantagare = loantagare;

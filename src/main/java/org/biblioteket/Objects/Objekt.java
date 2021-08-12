@@ -15,8 +15,25 @@ import org.biblioteket.Database.DBConnection;
  */
 public class Objekt {
     
+    /**
+     *
+     */
     public enum Type{
-        Bok, Film, Tidskrift
+
+        /**
+         *
+         */
+        Bok,
+
+        /**
+         *
+         */
+        Film,
+
+        /**
+         *
+         */
+        Tidskrift
     }
     
     private int objektID;
@@ -26,10 +43,15 @@ public class Objekt {
     private String creators;
     private String searchWords;
     
-    
-
-    
-     public Objekt(int ObjektID, String Titel, Type type, String creators, 
+    /**
+     *
+     * @param ObjektID
+     * @param Titel
+     * @param type
+     * @param creators
+     * @param sw
+     */
+    public Objekt(int ObjektID, String Titel, Type type, String creators, 
              String sw) {
 //        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
@@ -40,7 +62,13 @@ public class Objekt {
         
     }
      
-          public Objekt(int ObjektID, String Titel, Type type) {
+    /**
+     *
+     * @param ObjektID
+     * @param Titel
+     * @param type
+     */
+    public Objekt(int ObjektID, String Titel, Type type) {
 //        this.copies = new ArrayList<>(5);
         this.objektID = ObjektID;
         this.titel = Titel;
@@ -49,19 +77,34 @@ public class Objekt {
         
     }
 
-
+    /**
+     *
+     * @return
+     */
     public int getObjektID() {
         return objektID;
     }
 
+    /**
+     *
+     * @param objectID
+     */
     public void setObjektID(int objectID) {
         this.objektID = objectID;
     }
 
+    /**
+     *
+     * @return
+     */
     public Type getType() {
         return type;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setType(Type type) {
         this.type = type;
     }
@@ -74,10 +117,19 @@ public class Objekt {
 //        this.copies = copies;
 //    }
 
+    /**
+     *
+     * @return
+     */
+
     public String getCreators() {
         return creators;
     }
 
+    /**
+     *
+     * @param authors
+     */
     public void setCreators(String authors) {
         this.creators = authors;
     }
@@ -89,23 +141,46 @@ public class Objekt {
 //    public void removeCopy(int kopia){
 //        this.copies.remove(kopia);
 //    }
+
+    /**
+     *
+     * @return
+     */
     
     public String getTitel() {
         return titel;
     }
 
+    /**
+     *
+     * @param Titel
+     */
     public void setTitel(String Titel) {
         this.titel = Titel;
     }
 
-        public static Boolean checkInstance(Objekt instance) throws SQLException {
+    /**
+     *
+     * @param instance
+     * @return
+     * @throws SQLException
+     */
+    public static Boolean checkInstance(Objekt instance) throws SQLException {
             return instance != null;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getSearchWords() {
         return searchWords;
     }
     
+    /**
+     *
+     * @return
+     */
     public Objekt getSubclassObject(){
         DBConnection connection = DBConnection.getInstance();
         
@@ -123,14 +198,26 @@ public class Objekt {
         }
     }
     
+    /**
+     *
+     * @return
+     */
     public String printInfo(){
          return "Denna funktion är inte klar i Objekt.";
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Integer> getCopies() {
         return copies;
     }
 
+    /**
+     *
+     * @param copies
+     */
     public void setCopies(ArrayList<Integer> copies) {
         this.copies = copies;
     }

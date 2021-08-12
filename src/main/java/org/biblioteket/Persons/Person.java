@@ -20,12 +20,36 @@ public class Person {
     private String password;
     private String personTyp;
     
+    /**
+     *
+     */
     public enum PersonTyp{
+
+        /**
+         *
+         */
         BIBLIOTEKARIE,
+
+        /**
+         *
+         */
         LOANTAGARE, 
+
+        /**
+         *
+         */
         NONE
     }
 
+    /**
+     *
+     * @param personID
+     * @param fName
+     * @param lName
+     * @param email
+     * @param password
+     * @param personTyp
+     */
     public Person(String personID, String fName, String lName, String email, String password, String personTyp) {
         this.personID = personID;
         this.fName = fName;
@@ -35,6 +59,11 @@ public class Person {
         this.personTyp = personTyp;
     }
     
+    /**
+     *
+     * @param email
+     * @throws SQLException
+     */
     public Person (String email) throws SQLException{
         //Check connection to DB
         DBConnection connection = DBConnection.getInstance();
@@ -49,48 +78,90 @@ public class Person {
         
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPersonID() {
         return personID;
     }
 
-
+    /**
+     *
+     * @return
+     */
     public String getfName() {
         return fName;
     }
 
+    /**
+     *
+     * @param fName
+     */
     public void setfName(String fName) {
         this.fName = fName;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getlName() {
         return lName;
     }
 
+    /**
+     *
+     * @param lName
+     */
     public void setlName(String lName) {
         this.lName = lName;
     }  
 
+    /**
+     *
+     * @return
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     *
+     * @param email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     *
+     * @param password
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPersonTyp() {
         return personTyp;
     }
     
-    
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString(){
         return "Persondata\n"+personID+"\n"+fName+"\n"+lName+"\n"+password+"\n"+personTyp+"\n";

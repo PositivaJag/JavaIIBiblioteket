@@ -52,10 +52,30 @@ public class DBConnection {
 //    private Object resultSet;
 
     //Enum for login
+
+    /**
+     *
+     */
     public enum LoginResult {
+
+        /**
+         *
+         */
         LOGIN_OK,
+
+        /**
+         *
+         */
         WRONG_PASSWORD,
+
+        /**
+         *
+         */
         NO_SUCH_USER,
+
+        /**
+         *
+         */
         LOGOUT
     }
 
@@ -72,6 +92,11 @@ public class DBConnection {
     }
 
 //General database SQL functions. 
+
+    /**
+     *
+     * @return
+     */
     public static DBConnection getInstance() {
         if (instance == null) {
             try {
@@ -86,6 +111,10 @@ public class DBConnection {
         return instance;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isConnectedToDB() {
         return connectedToDB;
     }
@@ -106,6 +135,12 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param SQL
+     * @param objektID
+     * @return
+     */
     public ResultSet getResultSetFromDB(String SQL, int objektID) {
 
         try {
@@ -121,6 +156,11 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param SQL
+     * @return
+     */
     public ResultSet getResultSetFromDB(String SQL) {
 
         try {
@@ -135,6 +175,12 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param SQL
+     * @param objektID
+     * @return
+     */
     public ArrayList<String> getStringsAsList(String SQL, int objektID) {
         try {
             ResultSet resultSet = getResultSetFromDB(SQL, objektID);
@@ -151,6 +197,11 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param SQL
+     * @return
+     */
     public ArrayList<String> getStringsAsList(String SQL) {
         try {
             ResultSet resultSet = getResultSetFromDB(SQL);
@@ -167,6 +218,11 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param SQL
+     * @return
+     */
     public ArrayList<Integer> getIntsAsList(String SQL) {
         try {
             ResultSet resultSet = getResultSetFromDB(SQL);
@@ -184,6 +240,13 @@ public class DBConnection {
     }
 
 //Users
+
+    /**
+     *
+     * @param email
+     * @param pwordIn
+     * @return
+     */
     public LoginResult checkUserAndPassword(String email, String pwordIn) {
         try {
             LoginResult result;
@@ -214,6 +277,11 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param email
+     * @return
+     */
     public String[] getPersonDataAsList(String email) {
 
         String[] userData = new String[0];
@@ -245,6 +313,11 @@ public class DBConnection {
         return userData;
     }
 
+    /**
+     *
+     * @param personID
+     * @return
+     */
     public String[] getLoantagareDataAsList(String personID) {
 
         String[] LoantagareData = new String[0];
@@ -274,6 +347,11 @@ public class DBConnection {
 
     }
 
+    /**
+     *
+     * @param email
+     * @return
+     */
     public boolean chechIfLibrarian(String email) {
 
         try {
@@ -290,6 +368,11 @@ public class DBConnection {
         }
     }
 
+    /**
+     *
+     * @param personID
+     * @return
+     */
     public String getLoanCategory(String personID) {
         try {
             String SQL = "select låntagareKategori from låntagare where PersonID = ?;";
@@ -306,6 +389,11 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param Category
+     * @return
+     */
     public int getMaxNoLoan(String Category) {
         try {
             String SQL = "select simultanaLån from låntagarekategori where LåntagareKategori = ?;";
@@ -322,6 +410,11 @@ public class DBConnection {
         return -1;
     }
 
+    /**
+     *
+     * @param streckkod
+     * @return
+     */
     public String getTitle(int streckkod) {
         try {
             String SQL = "select distinct(titel) from kopia k, objekt o where k.objektID = o.objektID and k.streckkod = ?;";
@@ -338,7 +431,11 @@ public class DBConnection {
         return null;
     }
 
-
+    /**
+     *
+     * @param Loantagare
+     * @return
+     */
     public ArrayList<Integer> getLoanID(String Loantagare) {
         try {
             String SQL = "select lånID from lån where Låntagare = ?;";
@@ -381,6 +478,12 @@ public class DBConnection {
 //        return null;
 //    }
     //Objekts and copies
+
+    /**
+     *
+     * @param typ
+     * @return
+     */
     public ArrayList<Objekt> getObjektsFromDB(String typ) {
         try {
             String SQL;
@@ -413,6 +516,11 @@ public class DBConnection {
 
     }
 
+    /**
+     *
+     * @param objektID
+     * @return
+     */
     public Film getFilmFromDB(int objektID) {
         try {
             String SQL = "select ObjektID, Titel, Typ, FilmÅldersbegr, FilmProdLand from Objekt where typ = 'Film' and  ObjektID = ?;";
@@ -439,6 +547,11 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param objektID
+     * @return
+     */
     public Bok getBokFromDB(int objektID) {
         try {
             String SQL = "select titel, BokISBN from Objekt where ObjektID = ?;";
@@ -460,6 +573,11 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param objektID
+     * @return
+     */
     public Tidskrift getTidskriftFromDB(int objektID) {
         try {
             String SQL = "Select Titel, TidskriftDatum, Tidskriftnr from objekt where ObjektId = ?;";
@@ -481,6 +599,12 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param Objekt
+     * @param type
+     * @return
+     */
     public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type) {
 
         try {
@@ -500,6 +624,13 @@ public class DBConnection {
         return null;
     }
 
+    //Finns ingen användning
+
+    /**
+     *
+     * @param streckkod
+     * @return
+     */
     public Kopia getKopia(int streckkod) {
         try {
             //Get kopia from DB
@@ -516,6 +647,11 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param resultSet
+     * @return
+     */
     public ArrayList<Kopia> getKopiorAsList(ResultSet resultSet) {
         ArrayList<Kopia> result = new ArrayList<>();
         try {
@@ -525,23 +661,20 @@ public class DBConnection {
                 String placement = resultSet.getString(3);
                 int objektID = resultSet.getInt(4);
                 AccessKopia access = AccessKopia.AVAILABLE;
-                Date returnLatest = null;
+                LocalDate latestReturnDate = null;
 
-                ResultSet loanResultSet = getLoanInformation(streckkod);
-                if (loanResultSet.next()) {
-                    int lånID = loanResultSet.getInt(1);
-                    Date LoanDate = loanResultSet.getDate(2);
-                    Date returnDate = loanResultSet.getDate(4);
+                Loan loan = getActiveLoan(streckkod);
+                   
 
-                    access = getKopiaAccess(loanResultSet.getDate(4));
-                }
+                    access = getKopiaAccess(loan.getActualReturnDate());
+
 
                 if (access == AccessKopia.ON_LOAN) {
-                    returnLatest = loanResultSet.getDate(3);
+                    latestReturnDate = loan.getLatestReturnDate();
                 }
 
                 result.add(new Kopia(streckkod, objektID, loanKategori,
-                        placement, access, returnLatest));
+                        placement, access, latestReturnDate));
             } while (resultSet.next());
             return result;
 
@@ -589,6 +722,11 @@ public class DBConnection {
 //        }
 //        return null;
 //    }
+
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getObjektTypes() {
 
         ArrayList<String> types = new ArrayList();
@@ -616,12 +754,22 @@ public class DBConnection {
 
     }
 
+    /**
+     *
+     * @param objektID
+     * @return
+     */
     public ArrayList<String> getSearchWordsAsList(int objektID) {
 
         String SQL = "select Ämnesord from klassificering k, objektklass ok, objekt o where k.KlassificeringID = ok.KategoriID and ok.ObjektID = o.ObjektID and o.ObjektID =? ;";
         return getStringsAsList(SQL, objektID);
     }
 
+    /**
+     *
+     * @param objektID
+     * @return
+     */
     public String getSearchWordsAsString(int objektID) {
         try {
             String searchWords = "";
@@ -652,6 +800,12 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param objektID
+     * @param type
+     * @return
+     */
     public String getCreatorsAsString(int objektID, Type type) {
         String creators;
         String SQL;
@@ -682,54 +836,92 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param objektID
+     * @return
+     */
     public ArrayList<String> getActorsAsList(int objektID) {
         String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Skådis from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = 'Akt';";
         return getStringsAsList(SQL, objektID);
     }
 
+    /**
+     *
+     * @param objektID
+     * @return
+     */
     public ArrayList<String> getAuthorsAsList(int objektID) {
         String SQL = "select concat(f.fNamn, ' ', f.eNamn) as Författare from författare f, bokförfattare b where f.FörfattareID = b.FörfattareID and b.ObjektID = ?;";
         return getStringsAsList(SQL, objektID);
     }
 
+    /**
+     *
+     * @param objektID
+     * @return
+     */
     public ArrayList<String> getDirectorsAsList(int objektID) {
         String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Regissör from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = 'Reg';";
         return getStringsAsList(SQL, objektID);
     }
 
-    public Loan getLoan(int streckkod){
+    /**
+     *
+     * @param streckkod
+     * @return
+     */
+    public Loan getActiveLoan(int streckkod) {
+
+        String SQL = "select * from lån where lånID = (select max(lånID) from lån where streckkod = ?);";
+        ResultSet resultSet = getResultSetFromDB(SQL, streckkod);
+        return getLoan(resultSet).get(0);
+
+    }
+    
+    
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Loan> getLateLoans(){
+         String SQL = "select * from lån where DatumRetur is null and ReturSenast < now();";
+        ResultSet resultSet = getResultSetFromDB(SQL);
+        return getLoan(resultSet);
+    }
+
+    /**
+     *
+     * @param resultSet
+     * @return
+     */
+    public ArrayList<Loan> getLoan(ResultSet resultSet) {
+        ArrayList<Loan> loans = new ArrayList();
         try {
-            ResultSet resultSet = getLoanInformation(streckkod);
-            
-            resultSet.next();
-            int loantagareID = resultSet.getInt(6);
-            String title = getTitle(streckkod);
-            LocalDate loanDate = resultSet.getDate(2).toLocalDate();
-            
-            LocalDate actualReturnDate = null;
-            if (resultSet.getDate(4) != null) {
-                actualReturnDate = resultSet.getDate(4).toLocalDate();
+
+            while (resultSet.next()) {
+                int loantagareID = resultSet.getInt(6);
+                int streckkod = resultSet.getInt(5);
+                String title = getTitle(streckkod);
+                LocalDate loanDate = resultSet.getDate(2).toLocalDate();
+                LocalDate actualReturnDate = null;
+                if (resultSet.getDate(4) != null) {
+                    actualReturnDate = resultSet.getDate(4).toLocalDate();
+                }
+                LocalDate latestReturnDate = resultSet.getDate(3).toLocalDate();
+                int loanID = resultSet.getInt(1);
+                loans.add(new Loan(streckkod, loantagareID, title, loanDate,
+                        latestReturnDate, actualReturnDate, loanID));
             }
-            
-            LocalDate latestReturnDate = resultSet.getDate(3).toLocalDate();
-            int loanID = resultSet.getInt(1);
-            return new Loan(streckkod, loantagareID, title, loanDate, 
-                     latestReturnDate, actualReturnDate, loanID);
-            
-                    } catch (SQLException ex) {
+            return loans;
+
+        } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
-    
-    public ResultSet getLoanInformation(int streckkod) {
-        String access;
-        String SQL = "select * from lån where lånID = (select max(lånID) from lån where streckkod = ?);";
-        return getResultSetFromDB(SQL, streckkod);
 
-    }
-
-    private AccessKopia getKopiaAccess(Date returnDate) {
+    private AccessKopia getKopiaAccess(LocalDate returnDate) {
 
         if (returnDate == null) {
             return AccessKopia.ON_LOAN;
@@ -738,6 +930,11 @@ public class DBConnection {
         }
     }
 
+    /**
+     *
+     * @param streckkod
+     * @return
+     */
     public int getKopiaMaxLånetid(int streckkod) {
         try {
             String SQL = "select maxLånetid from kopia k, maxlånetid m where k.låneKategori = m.kategori and k.streckkod = ?;";
@@ -754,6 +951,11 @@ public class DBConnection {
         return -1;
     }
 
+    /**
+     *
+     * @param streckkod
+     * @return
+     */
     public Boolean checkIfKopiaExists(int streckkod) {
         try {
             String SQL = "select * from kopia where streckkod = ?;";
@@ -774,6 +976,15 @@ public class DBConnection {
     }
 
     //Create new
+
+    /**
+     *
+     * @param title
+     * @param ISBN
+     * @param authors
+     * @param searchWords
+     * @return
+     */
     public Bok newBok(String title, int ISBN, ArrayList<String> authors, ArrayList<String> searchWords) {
 
         try {
@@ -803,6 +1014,11 @@ public class DBConnection {
         return null;
     }
 
+    /**
+     *
+     * @param kopior
+     * @return
+     */
     public Boolean newKopior(ArrayList<Kopia> kopior) {
 
         try {
@@ -830,6 +1046,13 @@ public class DBConnection {
 
         return false;
     }
+
+    /**
+     *
+     * @param loans
+     * @param userID
+     * @return
+     */
     public Boolean newLoan(ArrayList<Loan> loans, int userID) {
         try {
             for (int i = 0; i < loans.size(); i++) {
@@ -849,16 +1072,21 @@ public class DBConnection {
         return false;
 
     }
-    
+
+    /**
+     *
+     * @param loans
+     * @return
+     */
     public Boolean returnLoan(ArrayList<Loan> loans) {
         try {
             for (int i = 0; i < loans.size(); i++) {
 
                 Loan loan = loans.get(i);
-                Skuld skuld = Skuld.NONE; 
-                 if (loan.getLatestReturnDate().isBefore(LocalDate.now())){
-                     skuld = Skuld.OBETALD;
-                 }
+                Skuld skuld = Skuld.NONE;
+                if (loan.getLatestReturnDate().isBefore(LocalDate.now())) {
+                    skuld = Skuld.OBETALD;
+                }
                 updateReturnLoan(loan.getLoanID(), skuld.toString());
             }
             connection.commit();
@@ -882,14 +1110,14 @@ public class DBConnection {
         pState.setInt(4, loantagare);
         pState.executeUpdate();
     }
-    
-    private void updateReturnLoan(int loanID, String skuld) throws SQLException{
-        
+
+    private void updateReturnLoan(int loanID, String skuld) throws SQLException {
+
         String SQL = "UPDATE lån SET DatumRetur = ?, Skuld = ? WHERE `lånID` = ?;";
         pState = connection.prepareStatement(SQL);
         pState.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
         pState.setString(2, skuld);
-        pState.setInt(3,loanID);
+        pState.setInt(3, loanID);
         pState.executeUpdate();
     }
 
@@ -914,6 +1142,12 @@ public class DBConnection {
 
     }
 
+    /**
+     *
+     * @param authors
+     * @param objektID
+     * @throws SQLException
+     */
     public void insertBokAuthors(ArrayList<String> authors, int objektID) throws SQLException {
 
         for (int i = 0; i < authors.size(); i++) {
@@ -930,6 +1164,12 @@ public class DBConnection {
         }
     }
 
+    /**
+     *
+     * @param searchWords
+     * @param objektID
+     * @throws SQLException
+     */
     public void insertBokSearchWords(ArrayList<String> searchWords, int objektID) throws SQLException {
 
         for (int i = 0; i < searchWords.size(); i++) {
@@ -945,6 +1185,10 @@ public class DBConnection {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getAllAuthors() {
         String SQL = "select concat(fNamn, ' ', eNamn) as authors from Författare;";
         return getStringsAsList(SQL);
@@ -972,6 +1216,11 @@ public class DBConnection {
 //        String SQL = "select concat(Kategori, ', ', MaxLånetid, ' dagar') as KopiaCategory from maxlånetid;";
 //        return getStringsAsList(SQL);
 //    }
+
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getAllSearchWords() {
         String SQL = "select Ämnesord as seachWords from klassificering;";
         return getStringsAsList(SQL);
@@ -994,12 +1243,20 @@ public class DBConnection {
         return -1;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Integer> getAllISBN() {
         String SQL = "select BokISBN from Objekt where typ = 'Bok';";
         return getIntsAsList(SQL);
 
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Integer> getAllSteckkod() {
         String SQL = "select streckkod from kopia;";
         return getIntsAsList(SQL);
@@ -1022,6 +1279,11 @@ public class DBConnection {
         return -1;
     }
 
+    /**
+     *
+     * @param personID
+     * @return
+     */
     public ArrayList<Loan> getLoans(int personID) {
         ArrayList<Loan> result = new ArrayList<>();
         try {
@@ -1033,25 +1295,26 @@ public class DBConnection {
             while (resultSet.next()) {
                 int loanID = resultSet.getInt(1);
                 LocalDate loanDate = checkDate(resultSet.getDate(2));
-                
+
                 //Check if actualReturn has a value in the DB
                 LocalDate actualReturn;
-                if (resultSet.getDate(4) == null)
-                    actualReturn = null; 
-                else
+                if (resultSet.getDate(4) == null) {
+                    actualReturn = null;
+                } else {
                     actualReturn = checkDate(resultSet.getDate(4));
-                
+                }
+
                 LocalDate latestReturn = checkDate(resultSet.getDate(3));
                 int streckkod = resultSet.getInt(5);
                 int loantagarID = resultSet.getInt(6);
                 String title = getTitle(streckkod);
-                
+
                 Loan loan = new Loan(streckkod, loantagarID, title, loanDate,
                         latestReturn, actualReturn, loanID);
 
                 result.add(loan);
             }
-            Comparator<Loan> compareByReturnDate = (Loan o1, Loan o2) -> o1.getLatestReturnDate().compareTo( o2.getLatestReturnDate());
+            Comparator<Loan> compareByReturnDate = (Loan o1, Loan o2) -> o1.getLatestReturnDate().compareTo(o2.getLatestReturnDate());
             Collections.sort(result, compareByReturnDate);
             return result;
 
@@ -1061,15 +1324,13 @@ public class DBConnection {
         }
         return null;
     }
-    
-    private LocalDate checkDate(java.sql.Date date){
-        if (date == null){
-        return null;
-        }
-        else{
-            return  date.toLocalDate();
+
+    private LocalDate checkDate(java.sql.Date date) {
+        if (date == null) {
+            return null;
+        } else {
+            return date.toLocalDate();
         }
     }
-            
 
 }

@@ -22,6 +22,16 @@ public class Bibliotekarie extends Person{
 //        return anstNummer;
 //    }
 
+    /**
+     *
+     * @param personID
+     * @param fName
+     * @param lName
+     * @param email
+     * @param password
+     * @param personTyp
+     */
+
     public Bibliotekarie(String personID, String fName, String lName, String email, String password, String personTyp) {
         super(personID, fName, lName, email, password, personTyp);
     }

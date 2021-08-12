@@ -26,6 +26,10 @@ import org.biblioteket.Objects.Kopia;
 import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Objects.Objekt.Type;
 
+/**
+ *
+ * @author jenni
+ */
 public class NewKopiaController {
 
     @FXML
@@ -64,12 +68,19 @@ public class NewKopiaController {
     
     ArrayList<Integer> allStreckkod;
 
+    /**
+     *
+     * @param objekt
+     */
     public NewKopiaController(Objekt objekt) {
         this.newObjektID = objekt.getObjektID();
         this.title = objekt.getTitel();
         this.typ = objekt.getType();
     }
 
+    /**
+     *
+     */
     public void initialize() {
         //Set titel
         lblTitel.setText(newObjektID + " - " + title);
@@ -138,7 +149,7 @@ public class NewKopiaController {
             alert = new Alert(Alert.AlertType.INFORMATION, "Kopiorna skapades\n fönstret stängs.");
             alert.showAndWait();
             ((Node) (event.getSource())).getScene().getWindow().hide();
-
+            
         } else {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Något gick fel.\nKopiorna skapades inte");
@@ -155,7 +166,7 @@ public class NewKopiaController {
         allStreckkod.add(Integer.parseInt(txtStreckkod.getText()));
         btnCreateCopy.setDisable(false);
         System.out.println(allStreckkod);
-        updateTableView();
+        Util.updateTableView(tblAddedCopies, listKopior);
 
         lblWarning.setText("Streckkod finns redan");
         btnAdd.setDisable(true);
@@ -167,6 +178,11 @@ public class NewKopiaController {
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 
+    /**
+     *
+     * @param objektID
+     * @param title
+     */
     public void initData(int objektID, String title) {
         this.newObjektID = objektID;
         this.title = title;
@@ -187,23 +203,23 @@ public class NewKopiaController {
     }
 
     //Table functions
-    private void updateTableView() {
-
-        tblAddedCopies.getColumns().clear();
-
-        Field[] fields = listKopior.get(0).getClass().getDeclaredFields();
-
-        ObservableList<Kopia> observableKopior = FXCollections.observableArrayList(listKopior);
-
-        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
-        for (Field field : fields) {
-            System.out.println(field);
-            TableColumn<Map, String> column = new TableColumn<>(field.getName().toUpperCase());
-            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
-            tblAddedCopies.getColumns().add(column);
-        }
-        tblAddedCopies.setItems(observableKopior);
-
-    }
+//    private void updateTableView() {
+//
+//        tblAddedCopies.getColumns().clear();
+//
+//        Field[] fields = listKopior.get(0).getClass().getDeclaredFields();
+//
+//        ObservableList<Kopia> observableKopior = FXCollections.observableArrayList(listKopior);
+//
+//        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
+//        for (Field field : fields) {
+//            System.out.println(field);
+//            TableColumn<Map, String> column = new TableColumn<>(field.getName().toUpperCase());
+//            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
+//            tblAddedCopies.getColumns().add(column);
+//        }
+//        tblAddedCopies.setItems(observableKopior);
+//
+//    }
 
 }

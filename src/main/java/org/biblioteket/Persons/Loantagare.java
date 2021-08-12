@@ -33,6 +33,16 @@ public class Loantagare extends Person{
 //        this.loans = new ArrayList<>();
 //        this.noOfLoans = noOfLoans;
 //    }
+
+    /**
+     *
+     * @param personID
+     * @param fName
+     * @param lName
+     * @param email
+     * @param password
+     * @param personTyp
+     */
     
     public Loantagare(String personID, String fName, String lName, String email, 
             String password, String personTyp){
@@ -52,56 +62,106 @@ public class Loantagare extends Person{
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTelNr() {
         return telNr;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getGatuAdress() {
         return gatuAdress;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPostNr() {
         return postNr;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getKategori() {
         return kategori;
     }
 
+    /**
+     *
+     * @param telNr
+     */
     public void setTelNr(String telNr) {
         this.telNr = telNr;
     }
 
+    /**
+     *
+     * @param gatuAdress
+     */
     public void setGatuAdress(String gatuAdress) {
         this.gatuAdress = gatuAdress;
     }
 
+    /**
+     *
+     * @param postNr
+     */
     public void setPostNr(String postNr) {
         this.postNr = postNr;
     }
 
+    /**
+     *
+     * @param Kategori
+     */
     public void setKategori(String Kategori) {
         this.kategori = Kategori;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Integer> getLoans() {
         return loans;
     }
 
+    /**
+     *
+     * @param loans
+     */
     public void setLoans(ArrayList<Integer> loans) {
         this.loans = loans;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNoOfLoans() {
         return noOfLoans;
     }
 
+    /**
+     *
+     * @param noOfLoans
+     */
     public void setNoOfLoans(int noOfLoans) {
         this.noOfLoans = noOfLoans;
     }
     
-    
-    
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString(){
         return "Persondata\n"+getPersonID()+"\n"+getfName()+"\n"+getlName()+"\n"+getPassword()+"\n"+getPersonTyp()+"\n\n"+

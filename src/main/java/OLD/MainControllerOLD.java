@@ -34,6 +34,12 @@ public class MainControllerOLD{
    
 
     //Singleton implementation. 
+
+    /**
+     *
+     * @return
+     * @throws SQLException
+     */
     public static MainControllerOLD getInstance() throws SQLException {
         if (instance == null) {
             instance = new MainControllerOLD();

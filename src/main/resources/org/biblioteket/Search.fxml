@@ -93,6 +93,21 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </HBox.margin>
                         </VBox>
+                        <VBox fx:id="vboxLoan" style="-fx-border-color: #909090;">
+                           <children>
+                              <Button fx:id="btnLateLoans" mnemonicParsing="false" onAction="#pressLateLoans" text="Lista försenade lån">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </VBox>
                      </children>
                   </HBox>
                   <Button fx:id="btnDetails" mnemonicParsing="false" onAction="#pressDetalis" text="Se detaljer">

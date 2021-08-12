@@ -31,6 +31,10 @@ import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Persons.Person.PersonTyp;
 
+/**
+ *
+ * @author jenni
+ */
 public class SearchController {
 
     //FXML variables
@@ -51,6 +55,8 @@ public class SearchController {
     @FXML
     private Button btnAddKopior;
     @FXML
+    private Button btnLateLoans;
+    @FXML
     private Button btnSearch;
 
     @FXML
@@ -58,6 +64,8 @@ public class SearchController {
 
     @FXML
     private VBox vboxObjekt;
+    @FXML
+    private VBox vboxLoan;
     @FXML
     private Button btnUpdateKopia;
 
@@ -75,19 +83,13 @@ public class SearchController {
     private Parent kopiaRoot;
     private Parent newObjektRoot;
 
+    /**
+     *
+     */
     public void initialize() {
         
         setLibrarianButtonsVisibility();
-        //Kontrollera vilka knappar som ska aktiveras. 
-//        if (App.getMainControll().getPersonTyp() == PersonTyp.BIBLIOTEKARIE) {
-//            vboxObjekt.setVisible(true);
-//            vboxKopia.setVisible(true);
-////            setbtnNyttObjektVisibility(true);
-////            setbtnUpdateObjektVisibility(true);
-//        } else {
-//            vboxObjekt.setVisible(false);
-//            vboxKopia.setVisible(false);
-//        }
+      
         setComboType();
         updateTableView(getObjekts());
         addTextFilter(observableResult, txtSearch, tblSearch);
@@ -144,6 +146,11 @@ public class SearchController {
 
         //Create popup and save as correct object. 
     }
+    
+        @FXML
+    void pressLateLoans(ActionEvent event) {
+        loadPopup("LateLoans.fxml");
+    }
 
     //Load pages
     private void loadPopupKopia() {
@@ -198,6 +205,28 @@ public class SearchController {
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    /**
+     *
+     * @param fxml
+     */
+    public void loadPopup(String fxml) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException ex) {
+            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    
+
 
 //    private Boolean loadPopup(String fxml) {
 //        try {
@@ -217,10 +246,18 @@ public class SearchController {
 //    }
 
     //Set FXML values 
+
+    /**
+     *
+     * @param bool
+     */
     public void setbtnUpdateObjektVisibility(Boolean bool) {
         btnUpdateObjekt.setVisible(bool);
     }
 
+    /**
+     *
+     */
     public void setLibrarianButtonsVisibility() {
         Boolean bool = App.getMainControll().checkIfLibrarianLoggedIn();
         vboxObjekt.setVisible(bool);
@@ -229,11 +266,20 @@ public class SearchController {
 //        setbtnNyttObjektVisibility(bool);
     }
 
+    /**
+     *
+     * @param bool
+     */
     public void setbtnNyttObjektVisibility(Boolean bool) {
         btnNyttObjekt.setVisible(bool);
     }
 
     //Table 
+
+    /**
+     *
+     * @param result
+     */
     public void updateTableView(List<Objekt> result) {
         //Clean table
         tblSearch.getColumns().clear();
@@ -263,6 +309,10 @@ public class SearchController {
         selectFirstEntry();
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Objekt> getObjekts() {
 
         DBConnection connection = DBConnection.getInstance();
@@ -277,6 +327,13 @@ public class SearchController {
         return result;
     }
 
+    /**
+     *
+     * @param <Objekt>
+     * @param observList
+     * @param txtSearch
+     * @param tblSearch
+     */
     public static <Objekt> void addTextFilter(ObservableList<Objekt> observList,
             TextField txtSearch, TableView tblSearch) {
 
@@ -328,35 +385,68 @@ public class SearchController {
     }
 
     //Getters
+
+    /**
+     *
+     * @return
+     */
     public Objekt getSelectedObjekt() {
         return selectedObjekt;
     }
 
+    /**
+     *
+     */
     public void setSelectedObjekt() {
         this.selectedObjekt = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
     }
 
+    /**
+     *
+     * @return
+     */
     public KopiaController getKopiaController() {
         return this.kopiaController;
     }
 
     //Setters   
+
+    /**
+     *
+     * @param kopiaController
+     */
     public void setKopiaController(KopiaController kopiaController) {
         this.kopiaController = kopiaController;
     }
 
+    /**
+     *
+     * @return
+     */
     public NewObjektController getNewObjektController() {
         return newObjektController;
     }
 
+    /**
+     *
+     * @param newObjektController
+     */
     public void setNewObjektController(NewObjektController newObjektController) {
         this.newObjektController = newObjektController;
     }
 
+    /**
+     *
+     * @return
+     */
     public Stage getNewObjektStage() {
         return newObjektStage;
     }
 
+    /**
+     *
+     * @param newObjektStage
+     */
     public void setNewObjektStage(Stage newObjektStage) {
         this.newObjektStage = newObjektStage;
     }

@@ -32,6 +32,10 @@ import org.biblioteket.Persons.Loantagare;
 import org.biblioteket.Persons.Person;
 import org.biblioteket.Persons.Person.PersonTyp;
 
+/**
+ *
+ * @author jenni
+ */
 public class LoanController {
 
     @FXML
@@ -65,6 +69,10 @@ public class LoanController {
     ArrayList<Integer> addedStreckkoder;
     ArrayList<Kopia> kopior;
 
+    /**
+     *
+     * @param loantagare
+     */
     public LoanController(Loantagare loantagare) {
         this.activeUser = loantagare;
         PersonTyp personTyp = PersonTyp.LOANTAGARE;
@@ -74,6 +82,10 @@ public class LoanController {
 //        this.activeLibrarian = person;
 //        PersonTyp personTyp = PersonTyp.BIBLIOTEKARIE;
 //    }
+
+    /**
+     *
+     */
     public void initialize() {
         if (connection == null)
         connection = DBConnection.getInstance();
@@ -123,7 +135,7 @@ public class LoanController {
         }
         
         //Check if Kopia utlånad
-        Loan lastLoan = (connection.getLoan(streckkod));
+        Loan lastLoan = (connection.getActiveLoan(streckkod));
         if ( lastLoan != null && lastLoan.getActualReturnDate()== null) {
             lblInformation.setText("Kopian är redan utlånad,\n"
                     + "vänligen kontakta personalen");
@@ -146,7 +158,7 @@ public class LoanController {
 
             loans.add(new Loan(today, latestReturnDate, loanDays, streckkod, loantagareID, titel));
             addedStreckkoder.add(streckkod);
-            updateTableView();
+            Util.updateTableView(tblTitles, loans);
     
        
 }
@@ -203,22 +215,22 @@ public class LoanController {
                 activeUser.getNoOfLoans() - activeUser.getLoans().size()));
     }
 
-    private void updateTableView() {
-
-        tblTitles.getColumns().clear();
-
-        Field[] fields = loans.get(0).getClass().getDeclaredFields();
-
-        ObservableList<Loan> observableKopior = FXCollections.observableArrayList(loans);
-
-        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
-        for (Field field : fields) {
-            System.out.println(field);
-            TableColumn<Map, String> column = new TableColumn<>(field.getName());
-            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
-            tblTitles.getColumns().add(column);
-        }
-        tblTitles.setItems(observableKopior);
-
-    }
+//    private void updateTableView() {
+//
+//        tblTitles.getColumns().clear();
+//
+//        Field[] fields = loans.get(0).getClass().getDeclaredFields();
+//
+//        ObservableList<Loan> observableKopior = FXCollections.observableArrayList(loans);
+//
+//        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
+//        for (Field field : fields) {
+//            System.out.println(field);
+//            TableColumn<Map, String> column = new TableColumn<>(field.getName());
+//            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
+//            tblTitles.getColumns().add(column);
+//        }
+//        tblTitles.setItems(observableKopior);
+//
+//    }
 }

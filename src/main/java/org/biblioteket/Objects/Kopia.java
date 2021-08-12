@@ -6,6 +6,7 @@
 package org.biblioteket.Objects;
 import org.biblioteket.Objects.Objekt;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Date;
 /**
  *
@@ -13,19 +14,40 @@ import java.util.Date;
  */
 public class Kopia{
     
-     public enum AccessKopia {
+    /**
+     *
+     */
+    public enum AccessKopia {
+
+         /**
+          *
+          */
          AVAILABLE,
+
+         /**
+          *
+          */
          ON_LOAN
-    }
+     }
     private int streckkod;
     private int objektID;
     private String loanKategori;
     private String placement;
     private AccessKopia access;
-    private Date returnLatest;
+    private LocalDate returnLatest;
 
+    /**
+     *
+     * @param streckkod
+     * @param objektID
+     * @param loanKategori
+     * @param placement
+     * @param access
+     * @param returnDate
+     * @throws SQLException
+     */
     public Kopia(int streckkod, int objektID, String loanKategori, 
-            String placement, AccessKopia access, Date returnDate) throws SQLException {
+            String placement, AccessKopia access, LocalDate returnDate) throws SQLException {
             this.streckkod = streckkod;
             this.objektID = objektID;
             this.loanKategori = loanKategori;
@@ -34,7 +56,14 @@ public class Kopia{
             this.returnLatest = returnDate;
     }
     
-      public Kopia(int streckkod, int objektID, String loanKategori, 
+    /**
+     *
+     * @param streckkod
+     * @param objektID
+     * @param loanKategori
+     * @param placement
+     */
+    public Kopia(int streckkod, int objektID, String loanKategori, 
             String placement) {
             this.streckkod = streckkod;
             this.objektID = objektID;
@@ -49,27 +78,52 @@ public class Kopia{
 //        else
 //            throw new Exception("Objektet "+objektID.getTitel()+"finns inte.");
 //    }
+
+    /**
+     *
+     * @return
+     */
         
     public int getStreckkod() {
         return streckkod;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getLoanKategori() {
         return loanKategori;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPlacement() {
         return placement;
     }
 
+    /**
+     *
+     * @param streckkod
+     */
     public void setStreckkod(int streckkod) {
         this.streckkod = streckkod;
     }
 
+    /**
+     *
+     * @param loanKategori
+     */
     public void setLoanKategori(String loanKategori) {
         this.loanKategori = loanKategori;
     }
 
+    /**
+     *
+     * @param placement
+     */
     public void setPlacement(String placement) {
         this.placement = placement;
     }
@@ -80,15 +134,28 @@ public class Kopia{
 //        return c;    
 //    }
 
+    /**
+     *
+     * @return
+     */
+
     public int getObjektID() {
         return objektID;
     }
 
+    /**
+     *
+     * @return
+     */
     public AccessKopia getAccess() {
         return access;
     }
 
-    public Date getReturnLatest() {
+    /**
+     *
+     * @return
+     */
+    public LocalDate getReturnLatest() {
         return returnLatest;
     }
     

@@ -20,6 +20,10 @@ import org.biblioteket.Persons.Loantagare;
 import org.biblioteket.Persons.Person;
 import org.biblioteket.Persons.Person.PersonTyp;
 
+/**
+ *
+ * @author jenni
+ */
 public class MainController {
 
     //FXML variables
@@ -33,6 +37,10 @@ public class MainController {
     Button buttonLoan;
     @FXML
     Button buttonRetur;
+
+    /**
+     *
+     */
     @FXML
     public Button buttonLogout;
     @FXML
@@ -51,6 +59,9 @@ public class MainController {
     private SearchController searchController;
     private Parent searchRoot;  //Makes sure the same window opens every time
 
+    /**
+     *
+     */
     public void initialize() {
 
     }
@@ -114,6 +125,12 @@ public class MainController {
     }
 
     //Load pages
+
+    /**
+     *
+     * @param fxml
+     * @return
+     */
     public boolean loadPage(String fxml) {
 
         try {
@@ -130,6 +147,11 @@ public class MainController {
 
     }
 
+    /**
+     *
+     * @param activeUser
+     * @return
+     */
     public boolean loadPageLoan(Loantagare activeUser){
         try {
             
@@ -202,6 +224,11 @@ public class MainController {
 
     }
 
+    /**
+     *
+     * @param fxml
+     * @return
+     */
     public boolean loadPopup(String fxml) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
@@ -222,11 +249,20 @@ public class MainController {
 
 
 //Set FXML values    
+
+    /**
+     *
+     * @param bool
+     */
     public void setLogoutVisibility(Boolean bool) {
         buttonLogout.setVisible(bool);
         
     }
 
+    /**
+     *
+     * @param bool
+     */
     public void setLoginVisibility(Boolean bool) {
         buttonLogin.setVisible(bool);
         buttonLoan.setDisable(bool);
@@ -234,11 +270,20 @@ public class MainController {
 
     }
 
+    /**
+     *
+     * @param labelInloggad
+     */
     public void setLabelInloggad(String labelInloggad) {
         this.labelInloggad.setText(labelInloggad);
     }
 
     //Övriga
+
+    /**
+     *
+     * @return
+     */
     public LoginResult logout() {
         this.personTyp = PersonTyp.NONE;
         this.activeUser = null;
@@ -246,6 +291,10 @@ public class MainController {
         return LoginResult.LOGOUT;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean checkIfLibrarianLoggedIn() {
         if (personTyp == PersonTyp.BIBLIOTEKARIE) {
             return true;
@@ -255,31 +304,61 @@ public class MainController {
     }
 
 //Getters
+
+    /**
+     *
+     * @return
+     */
     public PersonTyp getPersonTyp() {
         return personTyp;
     }
 
+    /**
+     *
+     * @return
+     */
     public Person getActiveLibrarian() {
         return activeLibrarian;
     }
 
+    /**
+     *
+     * @return
+     */
     public Loantagare getActiveUser() {
         return activeUser;
     }
 
+    /**
+     *
+     * @return
+     */
     public SearchController getSearchController() {
         return searchController;
     }
 
 //Setters
+
+    /**
+     *
+     * @param personT
+     */
     public void setPersonTyp(PersonTyp personT) {
         this.personTyp = personT;
     }
 
+    /**
+     *
+     * @param activeLib
+     */
     public void setActiveLibrarian(Person activeLib) {
         this.activeLibrarian = activeLib;
     }
 
+    /**
+     *
+     * @param activeU
+     */
     public void setActiveUser(Loantagare activeU) {
         this.activeUser = activeU;
     }

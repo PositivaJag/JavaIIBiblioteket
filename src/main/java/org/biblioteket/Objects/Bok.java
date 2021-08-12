@@ -21,7 +21,16 @@ public class Bok extends Objekt{
     private ArrayList<String> SearchWords;
     private ArrayList<Kopia> Kopior;
 
-
+    /**
+     *
+     * @param objektID
+     * @param title
+     * @param type
+     * @param ISBN
+     * @param authors
+     * @param sw
+     * @throws SQLException
+     */
     public Bok(int objektID, String title, Type type, int ISBN, 
             ArrayList<String> authors, ArrayList<String> sw) throws SQLException {
         super(objektID, title, type);
@@ -30,30 +39,58 @@ public class Bok extends Objekt{
         this.SearchWords = sw;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getISBN() {
         return ISBN;
     }
 
+    /**
+     *
+     * @param ISBN
+     */
     public void setISBN(int ISBN) {
         this.ISBN = ISBN;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getAuthors() {
         return authors;
     }
 
+    /**
+     *
+     * @param authors
+     */
     public void setAuthors(ArrayList<String> authors) {
         this.authors = authors;
     }
     
+    /**
+     *
+     * @param author
+     */
     public void addAuthor(String author){
         this.authors.add(author);
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getSearchWordsAsList() {
         return SearchWords;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getSearchWordsAsString(){
         return DBConnection.getInstance().getSearchWordsAsString(super.getObjektID());
     }

@@ -6,7 +6,6 @@
 package org.biblioteket.Objects;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  *
@@ -14,19 +13,50 @@ import java.util.Date;
  */
 public class Loan {
     
-    public enum Skuld{BETALD, OBETALD, NONE}
+    /**
+     *
+     */
+    public enum Skuld{ 
+
+        /**
+         *
+         */
+        BETALD, 
+
+        /**
+         *
+         */
+        OBETALD, 
+
+        /**
+         *
+         */
+        NONE}
     
     private int streckkod;
     private String titel;
     private LocalDate loanDate;
     private int loanDays;
-    private int loantagareID;
     private LocalDate latestReturnDate;
     private LocalDate actualReturnDate;
+    private int loantagareID;
     private int loanID;
     private Skuld skuld;
     
-    //construnctor för aktiva lån/ kvitto
+    
+    
+    //construnctor för aktiva lån/ kvitto samt lista förseningar
+
+    /**
+     *
+     * @param streckkod
+     * @param loantagareID
+     * @param titel
+     * @param loanDate
+     * @param latestReturnDate
+     * @param actualReturnDate
+     * @param loanID
+     */
     public Loan( int streckkod, int loantagareID, String titel, 
             LocalDate loanDate, LocalDate latestReturnDate, 
             LocalDate actualReturnDate, int loanID){
@@ -36,11 +66,20 @@ public class Loan {
         this.loanDate = loanDate;
         this.actualReturnDate = actualReturnDate;
         this.latestReturnDate = latestReturnDate;
-        this.loanID = loanID;
-        
+        this.loanID = loanID;   
     }
     
     //Contstruktor för lån. 
+
+    /**
+     *
+     * @param loanDate
+     * @param latestReturnDate
+     * @param loanDays
+     * @param streckkod
+     * @param loantagareID
+     * @param titel
+     */
     public Loan(LocalDate loanDate, LocalDate latestReturnDate, int loanDays, 
             int streckkod, int loantagareID, String titel){
     this.loanDate = loanDate;
@@ -51,69 +90,130 @@ public class Loan {
     this.latestReturnDate = latestReturnDate;
     }
     
-    
-    
-
+    /**
+     *
+     * @return
+     */
     public int getLoanID() {
         return loanID;
     }
 
+    /**
+     *
+     * @param loanID
+     */
     public void setLoanID(int loanID) {
         this.loanID = loanID;
     }
 
+    /**
+     *
+     * @return
+     */
     public LocalDate getLoanDate() {
         return loanDate;
     }
 
+    /**
+     *
+     * @param loanDate
+     */
     public void setLoanDate(LocalDate loanDate) {
         this.loanDate = loanDate;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLoanDays() {
         return loanDays;
     }
 
+    /**
+     *
+     * @param loanDays
+     */
     public void setLoanDays(int loanDays) {
         this.loanDays = loanDays;
     }
 
+    /**
+     *
+     * @return
+     */
     public LocalDate getLatestReturnDate() {
         return latestReturnDate;
     }
 
+    /**
+     *
+     * @param latestReturnDate
+     */
     public void setLatestReturnDate(LocalDate latestReturnDate) {
         this.latestReturnDate = latestReturnDate;
     }
 
+    /**
+     *
+     * @return
+     */
     public LocalDate getActualReturnDate() {
         return actualReturnDate;
     }
 
+    /**
+     *
+     * @param actualReturnDate
+     */
     public void setActualReturnDate(LocalDate actualReturnDate) {
         this.actualReturnDate = actualReturnDate;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getStreckkod() {
         return streckkod;
     }
 
+    /**
+     *
+     * @param streckkod
+     */
     public void setStreckkod(int streckkod) {
         this.streckkod = streckkod;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLoantagareID() {
         return loantagareID;
     }
 
+    /**
+     *
+     * @param loantagareID
+     */
     public void setLoantagareID(int loantagareID) {
         this.loantagareID = loantagareID;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTitel() {
         return titel;
     }
 
+    /**
+     *
+     * @param titel
+     */
     public void setTitel(String titel) {
         this.titel = titel;
     }

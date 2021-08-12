@@ -21,6 +21,10 @@ import org.biblioteket.Persons.Person;
 import org.biblioteket.Persons.Loantagare;
 import org.biblioteket.Persons.Person.PersonTyp;
 
+/**
+ *
+ * @author jenni
+ */
 public class LoginController {
 
     @FXML
@@ -85,6 +89,13 @@ public class LoginController {
 
     }
 
+    /**
+     *
+     * @param mail
+     * @param password
+     * @return
+     * @throws Exception
+     */
     public LoginResult login(String mail, String password) throws Exception {
         MainController mainControll;
         try {
@@ -120,6 +131,11 @@ public class LoginController {
         throw new Exception("Unknown error");
     }
 
+    /**
+     *
+     * @param mainControll
+     * @return
+     */
     public String getActiveName(MainController mainControll) {
         String labelTxt = null;
         if (mainControll.getPersonTyp() == PersonTyp.BIBLIOTEKARIE) {

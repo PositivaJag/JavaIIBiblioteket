@@ -15,6 +15,10 @@ public class loggedInLoantagare extends LoggedInUser{
     
     Loantagare loggedInUser = null;
 
+    /**
+     *
+     * @param loantagare
+     */
     public loggedInLoantagare(Loantagare loantagare) {
         loggedInUser = loantagare;
         super.type = loantagare.getPersonTyp();
