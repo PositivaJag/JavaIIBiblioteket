@@ -18,6 +18,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -29,7 +31,8 @@ import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Objekt;
-import org.biblioteket.Persons.Person.PersonTyp;
+import org.biblioteket.Objects.Objekt.Type;
+import static org.biblioteket.Objects.Objekt.Type.Bok;
 
 /**
  *
@@ -88,7 +91,7 @@ public class SearchController {
      */
     public void initialize() {
         
-        setLibrarianButtonsVisibility();
+        setLibrarianButtons();
       
         setComboType();
         updateTableView(getObjekts());
@@ -113,6 +116,18 @@ public class SearchController {
 //    }
     @FXML
     void pressUpdateObjekt(ActionEvent event) {
+        setSelectedObjekt();
+        if (selectedObjekt.getType() != Type.Bok){
+            Alert alert = new Alert(AlertType.INFORMATION, "Programmet kan bara"
+                    + " hantera böcker för tillfället.");
+            alert.show();
+        }
+        else{
+            
+            loadPopupUpdateObjekt();
+        }
+        
+       
     }
 
     @FXML
@@ -226,6 +241,31 @@ public class SearchController {
 
     }
     
+       public void loadPopupUpdateObjekt(){
+        try {
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateObjekt.fxml"));
+             
+            UpdateObjektController controller = new UpdateObjektController(this.selectedObjekt);           
+            loader.setController(controller);
+            
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException ex) {
+            System.out.println("Exception i klass NewObjektController.java, i "
+                    + "metoden loadPage()");
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    
+        
+    }
+    
+    
 
 
 //    private Boolean loadPopup(String fxml) {
@@ -247,21 +287,22 @@ public class SearchController {
 
     //Set FXML values 
 
-    /**
-     *
-     * @param bool
-     */
-    public void setbtnUpdateObjektVisibility(Boolean bool) {
-        btnUpdateObjekt.setVisible(bool);
-    }
+//    /**
+//     *
+//     * @param bool
+//     */
+//    public void setbtnUpdateObjektVisibility(Boolean bool) {
+//        btnUpdateObjekt.setVisible(bool);
+//    }
 
     /**
      *
      */
-    public void setLibrarianButtonsVisibility() {
+    public void setLibrarianButtons() {
         Boolean bool = App.getMainControll().checkIfLibrarianLoggedIn();
         vboxObjekt.setVisible(bool);
             vboxKopia.setVisible(bool);
+            vboxLoan.setVisible(bool);
 //        setbtnUpdateObjektVisibility(bool);
 //        setbtnNyttObjektVisibility(bool);
     }

@@ -1,16 +1,11 @@
 package org.biblioteket;
 
 import Printer.Printer;
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -18,16 +13,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Kopia;
-import org.biblioteket.Objects.Kopia.AccessKopia;
 import org.biblioteket.Objects.Loan;
-import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Persons.Loantagare;
 import org.biblioteket.Persons.Person;
 import org.biblioteket.Persons.Person.PersonTyp;
@@ -57,91 +48,95 @@ public class LoanController {
     @FXML
     private Button btnLoanTitles;
 
-    private PersonTyp personTyp = Person.PersonTyp.NONE;
-//    private Person activeLibrarian = null;
+    //Info about the logged-in user
     private Loantagare activeUser = null;
 
     DBConnection connection;
-
     LocalDate today = LocalDate.now();
 
+    //Lists for handling needed objects. 
     ArrayList<Loan> loans;
     ArrayList<Integer> addedStreckkoder;
     ArrayList<Kopia> kopior;
+    
+    //Maximum number of loans for activeUser. 
+    int maxPossibleLoans;
 
     /**
-     *
-     * @param loantagare
+     * Constructor that takes a Loantagare object as input.
+     * @param loantagare, the logged-in user. 
      */
     public LoanController(Loantagare loantagare) {
         this.activeUser = loantagare;
         PersonTyp personTyp = PersonTyp.LOANTAGARE;
     }
 
-//    public LoanController(Person person){
-//        this.activeLibrarian = person;
-//        PersonTyp personTyp = PersonTyp.BIBLIOTEKARIE;
-//    }
-
     /**
-     *
+     *The method is run automatically when the class is created.
+     * Connects to DB
+     * Gets and sets information about activeUser category, active loans and 
+     * number of possible new loans. 
+     * 
      */
     public void initialize() {
-        if (connection == null)
         connection = DBConnection.getInstance();
         
+        //Gets and sets relevant info about activeUser loans. 
         setUserData();
         printUserData();
         
+        //Initiation of lists.
         loans = new ArrayList<>();
         addedStreckkoder = new ArrayList<>();
         kopior = new ArrayList<Kopia>();
         
-        //Bara siffror i fältet för streckkod. 
+        //There can only be numbers in the Streckkod field.
+        //A streckkod can only be added to the list once. 
         txtStreckkod.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                     String newValue) {
                 if (!newValue.matches("\\d*")) {
                     txtStreckkod.setText(newValue.replaceAll("[^\\d]", ""));
-
                 }
+                //checks if the streckkod is already added to the list. 
                 if (addedStreckkoder.contains(Integer.parseInt(txtStreckkod.getText()))) {
                     lblInformation.setText("Titeln är redan tillagd i listan.");
-
                 } else if (!(addedStreckkoder.contains(Integer.parseInt(txtStreckkod.getText())))) {
                     lblInformation.setText("");
-
                 }
-
             }
         });
     }
-
+    
+    /**
+     * Adds selected Kopia to the list if it meets the requirements. 
+     * @param event 
+     */
     @FXML
     void pressAddKopia(ActionEvent event) {
+        //get streckkod from text field. 
         int streckkod = Integer.parseInt(txtStreckkod.getText());
 
-        //Check if copy exists
+        //Check if Kopia with that streckkod exists
         if (!connection.checkIfKopiaExists(streckkod)) {
             lblInformation.setText("Det finns ingen titel med streckkod "
                     + streckkod + ".\n Vänligen försök igen.");
             return;
         }
-        //check if streckkod redan i listan
+        //check if streckkod is alredy in the list. 
         if (addedStreckkoder.contains(streckkod)) {
             lblInformation.setText("Titeln är redan tillagd i listan.");
             return;
         }
         
-        //Check if Kopia utlånad
-        Loan lastLoan = (connection.getActiveLoan(streckkod));
-        if ( lastLoan != null && lastLoan.getActualReturnDate()== null) {
-            lblInformation.setText("Kopian är redan utlånad,\n"
+        //Check if Kopia already ob loan. 
+        if (connection.checkCopyOnLoan(streckkod)){
+             lblInformation.setText("Kopian är redan utlånad,\n"
                     + "vänligen kontakta personalen");
-            return;
+             return;
         }
-        
+                
         //Check if referenslitteratur
          int loanDays = connection.getKopiaMaxLånetid(streckkod);
         if(loanDays == 0){
@@ -159,6 +154,14 @@ public class LoanController {
             loans.add(new Loan(today, latestReturnDate, loanDays, streckkod, loantagareID, titel));
             addedStreckkoder.add(streckkod);
             Util.updateTableView(tblTitles, loans);
+            
+            if (loans.size() < this.maxPossibleLoans ){
+                btnAddKopia.setDisable(false);
+            }
+            else{
+                 btnAddKopia.setDisable(true);
+                 lblInformation.setText("Du får inte låna fler kopior nu");
+            }
     
        
 }
@@ -211,8 +214,8 @@ public class LoanController {
     private void printUserData() {
         lblMaxLoan.setText(Integer.toString(activeUser.getNoOfLoans()));
         lblExisitngLoans.setText(Integer.toString(activeUser.getLoans().size()));
-        lblPossibleLoans.setText(Integer.toString(
-                activeUser.getNoOfLoans() - activeUser.getLoans().size()));
+        this.maxPossibleLoans = activeUser.getNoOfLoans() - activeUser.getLoans().size();
+        lblPossibleLoans.setText(Integer.toString(this.maxPossibleLoans));
     }
 
 //    private void updateTableView() {

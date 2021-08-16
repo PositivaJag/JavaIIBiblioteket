@@ -63,6 +63,7 @@ public class MainController {
      *
      */
     public void initialize() {
+        setLibrarianButtons();
 
     }
 
@@ -121,6 +122,7 @@ public class MainController {
             setLogoutVisibility(false);
             setLoginVisibility(true);
             labelInloggad.setText("Utloggad");
+            setLibrarianButtons();
         }
     }
 
@@ -211,7 +213,7 @@ public class MainController {
 //            System.out.println(MainController.searchController);
             }
             borderPane.setCenter(searchRoot);
-            searchController.setLibrarianButtonsVisibility();
+            searchController.setLibrarianButtons();
             searchController.updateTableView(searchController.getObjekts());
             return true;
 
@@ -289,6 +291,7 @@ public class MainController {
         this.activeUser = null;
         this.activeLibrarian = null;
         return LoginResult.LOGOUT;
+        
     }
 
     /**
@@ -302,6 +305,16 @@ public class MainController {
             return false;
         }
     }
+    
+     public void setLibrarianButtons(){
+         Boolean bool = checkIfLibrarianLoggedIn();
+         if (bool){
+         buttonSearch.setText("Sök, Skapa, Uppdatera");
+         }
+         else{
+             buttonSearch.setText("Sök");
+         }
+     }
 
 //Getters
 

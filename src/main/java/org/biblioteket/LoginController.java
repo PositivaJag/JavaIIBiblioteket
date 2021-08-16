@@ -37,7 +37,7 @@ public class LoginController {
     private PasswordField password;
 
     @FXML
-    void pressButtonLogin(ActionEvent event) throws SQLException {
+    void pressButtonLogin(ActionEvent event){
 
         String mail = txtEmail.getText();
         String pw = password.getText();
@@ -121,6 +121,7 @@ public class LoginController {
                     mainControll.setLabelInloggad(label);
                 }
                 mainControll.setLabelInloggad(getActiveName(mainControll));
+                mainControll.setLibrarianButtons();
                 mainControll.setLogoutVisibility(true);
                 mainControll.setLoginVisibility(false);
             }

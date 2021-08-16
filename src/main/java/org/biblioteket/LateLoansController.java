@@ -11,35 +11,39 @@ import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Loan;
 
 /**
- *
+ * Prints a list of all loans that are late at the moment. 
  * @author jenni
  */
 public class LateLoansController {
 
     @FXML
     private Text lblTitel;
-
     @FXML
     private TableView<?> tblLateLoans;
-
     @FXML
     private Button btnClose;
     
     ArrayList<Loan> lateLoans;
+    DBConnection connection;
     
     /**
-     *
+     * The method is run automatically when the class is created.
+     * Gets info from all the late loans and prints it in a table. 
      */
     public void initialize() {
-        DBConnection connection = DBConnection.getInstance();
+        //Get all the late loans and show them in a table. 
+        connection = DBConnection.getInstance();
         lateLoans = connection.getLateLoans();
         Util.updateTableView(tblLateLoans, lateLoans);
      }
 
+    /**
+     * Aborts and closes the pop-up. 
+     * @param event 
+     */
     @FXML
     void pressClose(ActionEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
-
-    
+   
 }

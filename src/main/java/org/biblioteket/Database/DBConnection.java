@@ -438,11 +438,11 @@ public class DBConnection {
      */
     public ArrayList<Integer> getLoanID(String Loantagare) {
         try {
-            String SQL = "select lånID from lån where Låntagare = ?;";
+            String SQL = "select lånID from lån where Låntagare = ? and DatumRetur is null;";
             pState = connection.prepareStatement(SQL);
             pState.setInt(1, Integer.parseInt(Loantagare));
             ResultSet resultSet = getQuery(pState);
-            resultSet.next();
+            //resultSet.next();
 
             ArrayList<Integer> loans = new ArrayList<>();
             while (resultSet.next()) {
@@ -662,15 +662,11 @@ public class DBConnection {
                 int objektID = resultSet.getInt(4);
                 AccessKopia access = AccessKopia.AVAILABLE;
                 LocalDate latestReturnDate = null;
-
-                Loan loan = getActiveLoan(streckkod);
-                   
-
-                    access = getKopiaAccess(loan.getActualReturnDate());
-
-
-                if (access == AccessKopia.ON_LOAN) {
-                    latestReturnDate = loan.getLatestReturnDate();
+                
+                if (checkCopyOnLoan(streckkod)){
+                    access = AccessKopia.ON_LOAN;
+                   latestReturnDate = getActiveLoan(streckkod).getLatestReturnDate();
+              
                 }
 
                 result.add(new Kopia(streckkod, objektID, loanKategori,
@@ -866,6 +862,25 @@ public class DBConnection {
         return getStringsAsList(SQL, objektID);
     }
 
+    public Boolean checkCopyOnLoan(int streckkod){
+        try {
+            //Välj lånID för den rad där DatumRetur saknas. 
+            String SQL = "select lånID from Lån where streckkod = ? and DatumRetur is null;";
+            ResultSet resultSet = getResultSetFromDB(SQL, streckkod);
+            
+            //Om resultSet har innehåll så är kopian utlånad. 
+            //Om resultSdet är tomt är kopian tillgänglig. 
+            if (resultSet.next()){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
     /**
      *
      * @param streckkod
@@ -875,7 +890,13 @@ public class DBConnection {
 
         String SQL = "select * from lån where lånID = (select max(lånID) from lån where streckkod = ?);";
         ResultSet resultSet = getResultSetFromDB(SQL, streckkod);
-        return getLoan(resultSet).get(0);
+        
+        ArrayList<Loan> loans =  getLoan(resultSet);
+        for (int i = 0; i <loans.size(); i++){
+            System.out.println(loans.get(i).getLoanID()+" "+loans.get(i).getTitel());
+        }
+        
+        return loans.get(0);
 
     }
     
@@ -921,14 +942,14 @@ public class DBConnection {
         return null;
     }
 
-    private AccessKopia getKopiaAccess(LocalDate returnDate) {
-
-        if (returnDate == null) {
-            return AccessKopia.ON_LOAN;
-        } else {
-            return AccessKopia.AVAILABLE;
-        }
-    }
+//    private AccessKopia getKopiaAccess(LocalDate returnDate) {
+//
+//        if (returnDate == null) {
+//            return AccessKopia.ON_LOAN;
+//        } else {
+//            return AccessKopia.AVAILABLE;
+//        }
+//    }
 
     /**
      *

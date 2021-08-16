@@ -20,19 +20,8 @@ public class Objekt {
      */
     public enum Type{
 
-        /**
-         *
-         */
         Bok,
-
-        /**
-         *
-         */
         Film,
-
-        /**
-         *
-         */
         Tidskrift
     }
     

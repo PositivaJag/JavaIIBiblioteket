@@ -44,17 +44,17 @@ public class ReturnController {
     @FXML
     private Label lblInformation;
 
-    @FXML
-    private GridPane lblLateLoans;
-
-    @FXML
-    private Label lblNoLoan;
-
-    @FXML
-    private Label lblExisitngLoans;
-
-    @FXML
-    private Label lblFees;
+//    @FXML
+//    private GridPane lblLateLoans;
+//
+//    @FXML
+//    private Label lblNoLoan;
+//
+//    @FXML
+//    private Label lblExisitngLoans;
+//
+//    @FXML
+//    private Label lblFees;
 
     @FXML
     private TableView tblTitles;
