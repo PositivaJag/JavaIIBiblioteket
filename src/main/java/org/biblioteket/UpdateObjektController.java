@@ -2,12 +2,16 @@ package org.biblioteket;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -18,9 +22,11 @@ import org.biblioteket.Objects.Objekt;
 
 /**
  * The class updates Objekts (Bok, Tidskrift, Film)
+ *
  * @author jenni
  */
 public class UpdateObjektController {
+
     //FXML variables
     @FXML
     private BorderPane borderPane;
@@ -45,11 +51,15 @@ public class UpdateObjektController {
     @FXML
     private Label lblSearchWord;
     @FXML
-    private Button btnCreate;
+    private Label lblObjektID;
+    @FXML
+    private Button btnUpdate;
     @FXML
     private Label lblWarning;
     @FXML
     private Button btnCancel;
+    @FXML
+    private Button btnDelete;
 
     //Lists with all authors/search words. 
     private ArrayList<String> authorsList;
@@ -61,9 +71,9 @@ public class UpdateObjektController {
 
     //Lists with all ISBN numbers. 
     private ArrayList<Integer> allISBN = new ArrayList<>();
-    
+
     //Info about selected Objekt. 
-    private int ObjektID;
+    private int objektID;
     private Objekt selectedObjekt;
     private Bok bok;
 
@@ -71,23 +81,22 @@ public class UpdateObjektController {
     DBConnection connection;
 
     /**
-     *Construktor
+     * Construktor
+     *
      * @param selectedObjekt
      */
     public UpdateObjektController(Objekt selectedObjekt) {
         this.selectedObjekt = selectedObjekt;
-        this.ObjektID = selectedObjekt.getObjektID();
+        this.objektID = selectedObjekt.getObjektID();
     }
 
     /**
-     * Initialize
-     * Creates contact with DB. 
-     * Reads info from the selected Objekt. 
-     * Creates listeners. 
+     * Initialize Creates contact with DB. Reads info from the selected Objekt.
+     * Creates listeners.
      */
     public void initialize() {
         connection = DBConnection.getInstance();
-        setOriginalParameters();
+        setGeneralSettings();
 
         //Listener that ensures that the ISBN is on the right format and
         //doesn't areadu exist. 
@@ -100,10 +109,10 @@ public class UpdateObjektController {
                 }
                 if (allISBN.contains(Integer.parseInt(txtISBN.getText()))) {
                     lblWarning.setText("ISBN finns redan");
-                    btnCreate.setDisable(true);
+                    btnUpdate.setDisable(true);
                 } else if (!(allISBN.contains(Integer.parseInt(txtISBN.getText())))) {
                     lblWarning.setText("");
-                    btnCreate.setDisable(false);
+                    btnUpdate.setDisable(false);
                 }
             }
         });
@@ -117,9 +126,9 @@ public class UpdateObjektController {
                     || txtISBN.getText().equals("")
                     || selectSearchWords.isEmpty()
                     || selectAuthors.isEmpty()) {
-                btnCreate.setDisable(true);
+                btnUpdate.setDisable(true);
             } else {
-                btnCreate.setDisable(false);
+                btnUpdate.setDisable(false);
             }
         });
         txtTitle.textProperty().addListener(allFieldsListener);
@@ -129,8 +138,9 @@ public class UpdateObjektController {
     }
 
     /**
-     * Calls the function to add authors. 
-     * @param event 
+     * Calls the function to add authors.
+     *
+     * @param event
      */
     @FXML
     void pressAddAuthor(ActionEvent event) {
@@ -138,8 +148,9 @@ public class UpdateObjektController {
     }
 
     /**
-     * Calls the function to remove authors. 
-     * @param event 
+     * Calls the function to remove authors.
+     *
+     * @param event
      */
     @FXML
     void pressRemoveAuthor(ActionEvent event) {
@@ -148,7 +159,8 @@ public class UpdateObjektController {
 
     /**
      * Calls the function to add search words.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     void pressAddSearchWord(ActionEvent event) {
@@ -157,7 +169,8 @@ public class UpdateObjektController {
 
     /**
      * Calls the function to remove search words.
-     * @param event 
+     *
+     * @param event
      */
     @FXML
     void pressRemoveSearchWord(ActionEvent event) {
@@ -165,28 +178,47 @@ public class UpdateObjektController {
     }
 
     /**
-     * Calls function to update the Objekt.  
-     * @param event 
+     * Calls function to update the Objekt.
+     *
+     * @param event
      */
     @FXML
-    void pressCreate(ActionEvent event) {
-        UpdateBok(event);
+    void pressUpdate(ActionEvent event) {
+
+        Bok updateBok = connection.updateBok(objektID, txtTitle.getText(),
+                Integer.parseInt(txtISBN.getText()), selectAuthors,
+                selectSearchWords);
+         Alert alert;
+        if (updateBok != null) {
+           
+            alert = new Alert(AlertType.INFORMATION, "Objekt " + Integer.toString(objektID)
+                    + " uppdaterades");
+            alert.showAndWait();
+            ((Node) (event.getSource())).getScene().getWindow().hide();
+
+        } else {
+            alert = new Alert(AlertType.ERROR);
+            alert.setContentText("Något gick fel.\nObjektet uppdaterades inte");
+            alert.show();
+        }
+
+    }
+
+    @FXML
+    void pressDelete(ActionEvent event) {
+
     }
 
     /**
-     * Aborts and closes the pop-up. 
-     * @param event 
+     * Aborts and closes the pop-up.
+     *
+     * @param event
      */
     @FXML
     void pressCancel(ActionEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
 
     }
-
-    
-    private void newBok(ActionEvent event) {
-
-        selectedObjekt = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()), selectAuthors, selectSearchWords);
 
 //        Alert alert;
 //        //Om 
@@ -212,20 +244,19 @@ public class UpdateObjektController {
 //                loadPopup("NewKopia.fxml");
 //                Stage stage = App.getMainControll().getSearchController().getNewObjektStage();
 //                stage.hide();
-        //Get the button that was pressed. 
+    //Get the button that was pressed. 
 //            Optional<ButtonType> result = alert.showAndWait();
 //            ButtonType button = result.orElse(ButtonType.OK);
 //            }
-    }
-
     /**
-     * Adds chosen word, from a combobox, to a list and prints the list in a 
-     * label. 
-     * @param selectedWord, the name of the combobox where a word was chosen. 
-     * @param list of already selected words. 
-     * @param text, the lable where the result should be printed out.  
+     * Adds chosen word, from a combobox, to a list and prints the list in a
+     * label.
+     *
+     * @param selectedWord, the name of the combobox where a word was chosen.
+     * @param list of already selected words.
+     * @param text, the lable where the result should be printed out.
      */
-    private void addComboWordToList(ComboBox selectedWord, ArrayList<String> list, 
+    private void addComboWordToList(ComboBox selectedWord, ArrayList<String> list,
             Label text) {
         //get the selected word from the ComboBox. 
         String word = selectedWord.getValue().toString();
@@ -237,16 +268,18 @@ public class UpdateObjektController {
                 list.add(word);
             }
         }
-       //Call function  that creates a string from the list
-       //Print the list in the text label. 
+        //Call function  that creates a string from the list
+        //Print the list in the text label. 
         text.setText(Util.listToString(list));
     }
+
     /**
-     * Removes chosen word, from a combobox, from a list and prints the list in a 
-     * label. 
-     * @param selectedWord, the name of the combobox where a word was chosen. 
-     * @param list of already selected words. 
-     * @param text, the lable where the result should be printed out. 
+     * Removes chosen word, from a combobox, from a list and prints the list in
+     * a label.
+     *
+     * @param selectedWord, the name of the combobox where a word was chosen.
+     * @param list of already selected words.
+     * @param text, the lable where the result should be printed out.
      */
     private void removeComboWordFromList(ComboBox selectedWord, ArrayList<String> list, Label text) {
         //get the selected word from the ComboBox.
@@ -257,8 +290,8 @@ public class UpdateObjektController {
                 list.remove(word);
             }
         }
-         //Call function  that creates a string from the list
-       //Print the list in the text label. 
+        //Call function  that creates a string from the list
+        //Print the list in the text label. 
         text.setText(Util.listToString(list));
     }
 
@@ -289,7 +322,6 @@ public class UpdateObjektController {
 //        }
 //
 //    }
-
 //    public boolean loadPopup(String fxml) {
 //        try {
 //            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
@@ -306,53 +338,63 @@ public class UpdateObjektController {
 //        }
 //        return false;
 //    }
-
-
-
     /**
-     * returns the title as string. 
+     * returns the title as string.
+     *
      * @return
      */
     public String getTitle() {
         return txtTitle.getText();
     }
 
-
-/**
- * Sets variables used it the UI. 
- * E.g. Objekt variables, lists of authors, search words and ISBN numbers. 
- */
-    private void setOriginalParameters() {
+    /**
+     * Sets variables used it the UI. E.g. Objekt variables, lists of authors,
+     * search words and ISBN numbers.
+     */
+    private void setGeneralSettings() {
         //Create a Bok instance. 
-        bok = connection.getBokFromDB(this.ObjektID);
+        bok = connection.getBokFromDB(this.objektID);
 
-        //Handle authors
+        // authors
         authorsList = connection.getAllAuthors();
         Collections.sort(authorsList);
         comboAuthors.getItems().addAll(authorsList);
 
-        selectAuthors = bok.getAuthors();
-        lblAuthor.setText(Util.listToString(selectAuthors));
-
-        //Handle search words. 
+        //search words. 
         swList = connection.getAllSearchWords();
         Collections.sort(swList);
         comboSearchWords.getItems().addAll(swList);
 
+        showBok(bok);
+
+        listAllISBN(bok);
+    }
+
+    private void listAllISBN(Bok bok) {
+        //get all ISBN numbers.
+        allISBN = connection.getAllISBN();
+        //then remove the ISBN of bok to make sure that that number is 
+        //allowed to be added. 
+        allISBN.remove(Integer.valueOf(bok.getISBN()));
+
+    }
+
+    private void showBok(Bok bok) {
+
+        selectAuthors = bok.getAuthors();
+        lblAuthor.setText(Util.listToString(selectAuthors));
+
         selectSearchWords = bok.getSearchWordsAsList();
         lblSearchWord.setText(Util.listToString(selectSearchWords));
 
-        //get all ISBN numbers.
-        allISBN = connection.getAllISBN();
-
-        //Print relevant text to labels. 
+        lblObjektID.setText(Integer.toString(objektID));
         txtTitle.setText(selectedObjekt.getTitel());
         txtISBN.setText(Integer.toString(bok.getISBN()));
 
+        listAllISBN(bok);
     }
 
-    private void UpdateBok(ActionEvent event) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    private void UpdateBok() {
 
+    }
 }

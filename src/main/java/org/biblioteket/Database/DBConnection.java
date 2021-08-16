@@ -47,7 +47,7 @@ public class DBConnection {
     private static DBConnection instance;
     private final Connection connection;
     private Statement statement;
-    private PreparedStatement pState;
+    //private PreparedStatement pState;
     private ResultSetMetaData metadata;
 //    private Object resultSet;
 
@@ -145,7 +145,7 @@ public class DBConnection {
 
         try {
 
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
             ResultSet resultSet = getQuery(pState);
             return resultSet;
@@ -165,7 +165,7 @@ public class DBConnection {
 
         try {
 
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             ResultSet resultSet = getQuery(pState);
             return resultSet;
 
@@ -252,7 +252,7 @@ public class DBConnection {
             LoginResult result;
 
             String SQL = "Select lösenord from person where eMail = ?";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setString(1, email);
             ResultSet resultSet = getQuery(pState);
 
@@ -290,7 +290,7 @@ public class DBConnection {
 
             //Get data from DB
             String SQL = "Select * from person where eMail = ?";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setString(1, email);
             ResultSet resultSet = getQuery(pState);
 
@@ -325,7 +325,7 @@ public class DBConnection {
         try {
             //Get loantagera data
             String SQL = "Select * from låntagare where personID = ?";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setString(1, personID);
             ResultSet resultSet = getQuery(pState);
 
@@ -356,7 +356,7 @@ public class DBConnection {
 
         try {
             String SQL = "Select PersonTyp from person where eMail = ?";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setString(1, email);
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
@@ -376,7 +376,7 @@ public class DBConnection {
     public String getLoanCategory(String personID) {
         try {
             String SQL = "select låntagareKategori from låntagare where PersonID = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, Integer.parseInt(personID));
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
@@ -397,7 +397,7 @@ public class DBConnection {
     public int getMaxNoLoan(String Category) {
         try {
             String SQL = "select simultanaLån from låntagarekategori where LåntagareKategori = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setString(1, Category);
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
@@ -418,7 +418,7 @@ public class DBConnection {
     public String getTitle(int streckkod) {
         try {
             String SQL = "select distinct(titel) from kopia k, objekt o where k.objektID = o.objektID and k.streckkod = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, streckkod);
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
@@ -439,7 +439,7 @@ public class DBConnection {
     public ArrayList<Integer> getLoanID(String Loantagare) {
         try {
             String SQL = "select lånID from lån where Låntagare = ? and DatumRetur is null;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, Integer.parseInt(Loantagare));
             ResultSet resultSet = getQuery(pState);
             //resultSet.next();
@@ -460,7 +460,7 @@ public class DBConnection {
 //     public ArrayList<Loan> getLoans(String Loantagare) {
 //try {
 //            String SQL = "select lånID from lån where Låntagare = ?;";
-//            pState = connection.prepareStatement(SQL);
+//            PreparedStatement pState =  connection.prepareStatement(SQL);
 //            pState.setInt(1, Integer.parseInt(Loantagare));
 //            ResultSet resultSet = getQuery(pState);
 //            resultSet.next();
@@ -494,7 +494,7 @@ public class DBConnection {
                         + "Where Typ = '" + typ + "';";
             }
             System.out.println(SQL);
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             ResultSet resultSet = getQuery(pState);
 
             ArrayList<Objekt> result = new ArrayList<>();
@@ -524,7 +524,7 @@ public class DBConnection {
     public Film getFilmFromDB(int objektID) {
         try {
             String SQL = "select ObjektID, Titel, Typ, FilmÅldersbegr, FilmProdLand from Objekt where typ = 'Film' and  ObjektID = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
             ResultSet resultSet = getQuery(pState);
 
@@ -555,7 +555,7 @@ public class DBConnection {
     public Bok getBokFromDB(int objektID) {
         try {
             String SQL = "select titel, BokISBN from Objekt where ObjektID = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
             ResultSet resultSet = getQuery(pState);
 
@@ -581,7 +581,7 @@ public class DBConnection {
     public Tidskrift getTidskriftFromDB(int objektID) {
         try {
             String SQL = "Select Titel, TidskriftDatum, Tidskriftnr from objekt where ObjektId = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
             ResultSet resultSet = getQuery(pState);
 
@@ -635,7 +635,7 @@ public class DBConnection {
         try {
             //Get kopia from DB
             String SQL = "Select streckkod, lånekategori, placering, objektID from Kopia where streckkod = ?";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, streckkod);
             ResultSet resultSet = getQuery(pState);
             if (resultSet.next()) {
@@ -685,7 +685,7 @@ public class DBConnection {
 //        try {
 //            //Get kopia from DB
 //            String SQL = "Select objektID, lånekategori, placering from Kopia where streckkod = ?";
-//            pState = connection.prepareStatement(SQL);
+//            PreparedStatement pState =  connection.prepareStatement(SQL);
 //            pState.setInt(1, streckkod);
 //            ResultSet resultSet = getQuery(pState);
 //
@@ -729,7 +729,7 @@ public class DBConnection {
 
         try {
             String SQL = "select distinct typ from objekt;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             ResultSet resultSet = getQuery(pState);
 
             if (!resultSet.next()) {
@@ -959,7 +959,7 @@ public class DBConnection {
     public int getKopiaMaxLånetid(int streckkod) {
         try {
             String SQL = "select maxLånetid from kopia k, maxlånetid m where k.låneKategori = m.kategori and k.streckkod = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, streckkod);
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
@@ -980,7 +980,7 @@ public class DBConnection {
     public Boolean checkIfKopiaExists(int streckkod) {
         try {
             String SQL = "select * from kopia where streckkod = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, streckkod);
             ResultSet resultSet = getQuery(pState);
 
@@ -1013,9 +1013,9 @@ public class DBConnection {
             //Check that the book was added
             int objektID = getObjektIDFromISBN(ISBN);
             //Insert Autors
-            insertBokAuthors(authors, objektID);
+            insertBokAuthors(objektID, authors);
             //Insert SearchWords
-            insertBokSearchWords(searchWords, objektID);
+            insertBokSearchWords(objektID, searchWords);
             connection.commit();
 
             return getBokFromDB(objektID);
@@ -1087,8 +1087,14 @@ public class DBConnection {
             }
             connection.commit();
             return true;
+            
         } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                connection.rollback();
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex1) {
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            }
         }
         return false;
 
@@ -1124,7 +1130,7 @@ public class DBConnection {
 
         String SQL = "INSERT INTO lån (DatumLån, ReturSenast, streckkod, Låntagare) "
                 + "VALUES (?, ?, ?, ?);";
-        pState = connection.prepareStatement(SQL);
+        PreparedStatement pState =  connection.prepareStatement(SQL);
         pState.setDate(1, java.sql.Date.valueOf(loanDate));
         pState.setDate(2, java.sql.Date.valueOf(returnLatest));
         pState.setInt(3, streckkod);
@@ -1135,17 +1141,69 @@ public class DBConnection {
     private void updateReturnLoan(int loanID, String skuld) throws SQLException {
 
         String SQL = "UPDATE lån SET DatumRetur = ?, Skuld = ? WHERE `lånID` = ?;";
-        pState = connection.prepareStatement(SQL);
+        PreparedStatement pState =  connection.prepareStatement(SQL);
         pState.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
         pState.setString(2, skuld);
         pState.setInt(3, loanID);
+        pState.executeUpdate();
+    }
+    
+    public Bok updateBok(int objektID, String title, int ISBN, 
+            ArrayList<String> authors, ArrayList<String> searchWords){
+        try {
+            //Uppdatera Objekt
+            updateBokObjekt(objektID, title, ISBN);
+            //Delete Authors
+            deleteBokAuthors(objektID, authors);
+            //Add authors
+            insertBokAuthors(objektID, authors);
+            //Delete search words
+            deleteBokSearchWords(objektID, searchWords);
+            //add searchWords
+            insertBokSearchWords(objektID, searchWords);
+            connection.commit();
+            return getBokFromDB(objektID);
+            
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex1) {
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+        return null;
+    }
+    
+    public Boolean updateBokObjekt(int objektID, String title, int ISBN) throws SQLException{
+        
+            String SQL = "UPDATE objekt SET Titel = ?, BokISBN = ? WHERE ObjektID = ?;";
+            PreparedStatement pState =  connection.prepareStatement(SQL);
+            pState.setString(1,title );
+            pState.setInt(2, ISBN);
+            pState.setInt(3, objektID);
+            pState.executeUpdate();
+            return true;
+    } 
+    
+    public void deleteKopia(int streckkod) throws SQLException{
+        String SQL = "DELETE from kopia WHERE streckkod = ?";
+        PreparedStatement pState =  connection.prepareStatement(SQL);
+        pState.setInt(1, streckkod);
+        pState.executeUpdate();
+    }
+    public void deleteBokObjekt(int objektID) throws SQLException{
+       
+        String SQL = "DELETE from objekt WHERE objektID = ?;";
+        PreparedStatement pState =  connection.prepareStatement(SQL);
+        pState.setInt(1, objektID);
         pState.executeUpdate();
     }
 
     private void insertKopia(int streckkod, int objektID, String kategori, String placering) throws SQLException {
 
         String SQL = "INSERT INTO kopia (streckkod, ObjektID, LåneKategori, Placering) VALUES (?, ?, ?, ?);";
-        pState = connection.prepareStatement(SQL);
+        PreparedStatement pState =  connection.prepareStatement(SQL);
         pState.setInt(1, streckkod);
         pState.setInt(2, objektID);
         pState.setString(3, kategori);
@@ -1156,7 +1214,7 @@ public class DBConnection {
     private void insertBok(String title, int ISBN) throws SQLException {
 
         String SQLBok = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
-        pState = connection.prepareStatement(SQLBok);
+        PreparedStatement pState =  connection.prepareStatement(SQLBok);
         pState.setString(1, title);
         pState.setInt(2, ISBN);
         pState.executeUpdate();
@@ -1169,20 +1227,59 @@ public class DBConnection {
      * @param objektID
      * @throws SQLException
      */
-    public void insertBokAuthors(ArrayList<String> authors, int objektID) throws SQLException {
+    public void insertBokAuthors(int objektID, ArrayList<String> authors) throws SQLException {
+        ArrayList<String> existing = getAuthorsAsList(objektID);
 
         for (int i = 0; i < authors.size(); i++) {
-
-            int authorID = getAuthorID(authors.get(i));
-
-            String SQL = "INSERT INTO bokförfattare (FörfattareID, ObjektID)VALUES (?, ?);";
-            pState = connection.prepareStatement(SQL);
-
-            pState.setInt(1, authorID);
-            pState.setInt(2, objektID);
-            pState.executeUpdate();
-
+            //Only add author if it doesn´t already exist. 
+            if (!existing.contains(authors.get(i))) {
+                
+                int authorID = getAuthorID(authors.get(i));
+                String SQL = "INSERT INTO bokförfattare (FörfattareID, ObjektID)VALUES (?, ?);";
+                PreparedStatement pState =  connection.prepareStatement(SQL);
+                pState.setInt(1, authorID);
+                pState.setInt(2, objektID);
+                pState.executeUpdate();
+            }
         }
+    }
+    
+    public void deleteBokAuthors(int objektID, ArrayList<String> authors) throws SQLException{
+        
+            //Get existing authors
+            ArrayList<String> existingAuthors = getAuthorsAsList(objektID);
+            
+        for (int i = 0; i < existingAuthors.size(); i++) {
+            String existingAuthor = existingAuthors.get(i);
+            //If the author isnt in list authors, it should be deleted. 
+            if (!authors.contains(existingAuthor)) {
+                String SQL = "DELETE FROM bokförfattare WHERE FörfattareID = ? and ObjektID = ?;";
+                PreparedStatement pState = connection.prepareStatement(SQL);
+                pState.setInt(1, getAuthorID(existingAuthor));
+                pState.setInt(2, objektID);
+                pState.executeUpdate();
+            }
+        }
+
+    }
+    
+    public void deleteBokSearchWords(int objektID, ArrayList<String> sw) throws SQLException {
+
+        //Get existing search words
+        ArrayList<String> existingSw = getSearchWordsAsList(objektID);
+
+        for (int i = 0; i < existingSw.size(); i++) {
+            String existing = existingSw.get(i);
+            //If the search word isnt in list authors, it should be deleted. 
+            if (!sw.contains(existing)) {
+                String SQL = "DELETE FROM objektklass WHERE KategoriID = ? and ObjektID = ?;";
+                PreparedStatement pState =  connection.prepareStatement(SQL);
+                pState.setInt(1, getSearchWordID(existing));
+                pState.setInt(2, objektID);
+                pState.executeUpdate();
+            }
+        }
+
     }
 
     /**
@@ -1191,18 +1288,22 @@ public class DBConnection {
      * @param objektID
      * @throws SQLException
      */
-    public void insertBokSearchWords(ArrayList<String> searchWords, int objektID) throws SQLException {
+    public void insertBokSearchWords(int objektID, ArrayList<String> searchWords) throws SQLException {
 
+        ArrayList<String> existing = getSearchWordsAsList(objektID);
         for (int i = 0; i < searchWords.size(); i++) {
+            //Only add author if it doesn´t already exist. 
+            if (!existing.contains(searchWords.get(i))) {
 
-            int swID = getSearchWordID(searchWords.get(i));
+                int swID = getSearchWordID(searchWords.get(i));
 
-            String SQL = "INSERT INTO objektklass (ObjektID, KategoriID)VALUES (?, ?);";
-            pState = connection.prepareStatement(SQL);
-            pState.setInt(1, objektID);
-            pState.setInt(2, swID);
-            pState.executeUpdate();
+                String SQL = "INSERT INTO objektklass (ObjektID, KategoriID)VALUES (?, ?);";
+                PreparedStatement pState =  connection.prepareStatement(SQL);
+                pState.setInt(1, objektID);
+                pState.setInt(2, swID);
+                pState.executeUpdate();
 
+            }
         }
     }
 
@@ -1219,7 +1320,7 @@ public class DBConnection {
     private int getAuthorID(String name) {
         try {
             String SQL = "select författareID from (select FörfattareID, concat(fNamn, ' ', eNamn) as namn from Författare) as T where T.namn = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setString(1, name);
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
@@ -1250,7 +1351,7 @@ public class DBConnection {
     private int getSearchWordID(String sw) {
         try {
             String SQL = "select KlassificeringID from klassificering where Ämnesord = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setString(1, sw);
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
@@ -1286,7 +1387,7 @@ public class DBConnection {
     private int getObjektIDFromISBN(int ISBN) {
         try {
             String SQL = "Select ObjektID from Objekt where BokISBN = ?;";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
 
             pState.setInt(1, ISBN);
             ResultSet resultSet = getQuery(pState);
@@ -1309,7 +1410,7 @@ public class DBConnection {
         ArrayList<Loan> result = new ArrayList<>();
         try {
             String SQL = "select * from lån where låntagare = ? and isNull(DatumRetur)";
-            pState = connection.prepareStatement(SQL);
+            PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, personID);
             ResultSet resultSet = getQuery(pState);
 

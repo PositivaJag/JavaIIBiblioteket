@@ -93,12 +93,21 @@
                                           </GridPane>
                                           <HBox alignment="BOTTOM_RIGHT" fillHeight="false">
                                              <children>
+                                                <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" prefHeight="46.0" prefWidth="526.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#pressDelete" text="Ta bort bok">
+                                                         <HBox.margin>
+                                                            <Insets bottom="10.0" top="10.0" />
+                                                         </HBox.margin>
+                                                      </Button>
+                                                   </children>
+                                                </HBox>
                                                 <Label fx:id="lblWarning" focusTraversable="false" maxWidth="1.7976931348623157E308" textFill="#eb0505">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                    </HBox.margin>
                                                 </Label>
-                                                <Button fx:id="btnCreate" mnemonicParsing="false" onAction="#pressCreate" text="Uppdatera bok">
+                                                <Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#pressUpdate" text="Uppdatera bok">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="10.0" top="10.0" />
                                                    </HBox.margin>

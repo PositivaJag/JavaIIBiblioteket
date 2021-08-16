@@ -107,13 +107,6 @@ public class SearchController {
         });
     }
 
-    //FXML functions
-//    @FXML
-//    void pressSearchBtn(ActionEvent event) {
-////        getObjekts();
-////        updateTableView(result);
-//        //addTextFilter(observableResult, txtSearch, tblSearch);
-//    }
     @FXML
     void pressUpdateObjekt(ActionEvent event) {
         setSelectedObjekt();

@@ -88,6 +88,10 @@ public class Printer {
         PdfPCell c1 = new PdfPCell(new Phrase("Titel", rubrik2));
         c1.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.addCell(c1);
+        
+        c1 = new PdfPCell(new Phrase("Streckkod", rubrik2));
+        c1.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table.addCell(c1);
 
         c1 = new PdfPCell(new Phrase("Lånedatum", rubrik2));
         c1.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -96,19 +100,16 @@ public class Printer {
         c1 = new PdfPCell(new Phrase("Återlämnas", rubrik2));
         c1.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.addCell(c1);
-        table.setHeaderRows(1);
 
-        c1 = new PdfPCell(new Phrase("Försenad", rubrik2));
-        c1.setHorizontalAlignment(Element.ALIGN_LEFT);
-        table.addCell(c1);
         table.setHeaderRows(1);
 
         for (int i = 0; i < loans.size(); i++) {
             Loan loan = loans.get(i);
             table.addCell(new Phrase(loan.getTitel(), font));
+            table.addCell(new Phrase(Integer.toString(loan.getStreckkod()), font));
             table.addCell(new Phrase(loan.getLoanDate().toString(), font));
             table.addCell(new Phrase(loan.getLatestReturnDate().toString(), font));
-            table.addCell(new Phrase(getLateStatus(loan), font));
+            
         }
 
         return table;
