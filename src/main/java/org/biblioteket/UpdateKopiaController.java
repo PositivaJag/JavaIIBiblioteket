@@ -1,24 +1,21 @@
 package org.biblioteket;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Kopia;
@@ -26,428 +23,242 @@ import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Objects.Objekt.Type;
 
 /**
- * The class updates Objekts (Bok, Tidskrift, Film)
  *
  * @author jenni
  */
-public class UpdateKopiaController {
+public class UpdateKopiaController extends update {
 
-    //FXML variables
     @FXML
-    private BorderPane borderPane;
+    private Text lblTitel;
+
     @FXML
-    private TextField txtTitle;
+    private ComboBox comboCategory;
+
     @FXML
-    private TextField txtISBN;
+    private TextField txtStreckkod;
+
     @FXML
-    private Button btnRemoveSearchWords;
-    @FXML
-    private Button btnRemoveAuthor;
-    @FXML
-    private ComboBox comboSearchWords;
-    @FXML
-    private Button btnAddSearchWords;
-    @FXML
-    private ComboBox comboAuthors;
-    @FXML
-    private Button btnAddAuthor;
-    @FXML
-    private Label lblAuthor;
-    @FXML
-    private Label lblSearchWord;
-    @FXML
-    private Label lblObjektID;
-    @FXML
-    private Button btnUpdate;
+    private TextField txtPlacement;
+
     @FXML
     private Label lblWarning;
+
     @FXML
-    private Button btnCancel;
+    private Button btnUpdate;
+
     @FXML
-    private Button btnDelete;
+    private TableView tblAddedCopies;
 
-    //Lists with all authors/search words. 
-    private ArrayList<String> authorsList;
-    private ArrayList<String> swList;
+    @FXML
+    private Button btnDeleteKopia;
 
-    //Lists with selected authors/search words. 
-    private ArrayList<String> selectAuthors;
-    private ArrayList<String> selectSearchWords;
+    @FXML
+    private Button btnAvbryt;
 
-    //Lists with all ISBN numbers. 
-    private ArrayList<Integer> allISBN = new ArrayList<>();
+    @FXML
+    private GridPane grdKopia;
 
-    //Info about selected Objekt. 
-    private int objektID;
     private Objekt selectedObjekt;
+    private Kopia selectedKopia;
+    int objektID;
+    private DBConnection connection;
+    private String title;
+    private Type typ;
+    private ArrayList<Kopia> listKopior;
     private Bok bok;
 
-    //Connections to DB.
-    DBConnection connection;
+    private ArrayList<Integer> allStreckkod;
+    private Alert alert;
 
     /**
-     * Construktor
      *
-     * @param selectedObjekt
+     * @param objekt
      */
-    public UpdateKopiaController(Objekt selectedObjekt) {
-        this.selectedObjekt = selectedObjekt;
-        this.objektID = selectedObjekt.getObjektID();
+    public UpdateKopiaController(Objekt objekt) {
+        connection = DBConnection.getInstance();
+        this.selectedObjekt = objekt;
+        this.objektID = objekt.getObjektID();
+        bok = connection.getBokFromDB(this.objektID);
+        this.title = objekt.getTitel();
+        this.typ = objekt.getType();
+        this.listKopior = connection.getObjektCopies(objekt, typ);
+        this.allStreckkod = listAllISBN(bok, connection);
     }
 
     /**
-     * Initialize Creates contact with DB. Reads info from the selected Objekt.
-     * Creates listeners.
+     *
      */
     public void initialize() {
-        connection = DBConnection.getInstance();
-        setGeneralSettings();
 
-        //Listener that ensures that the ISBN is on the right format and
-        //doesn't areadu exist. 
-        txtISBN.textProperty().addListener(new ChangeListener<String>() {
+        //Listener to make sure only numbers are added in streckkod filed. 
+        txtStreckkod.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                     String newValue) {
                 if (!newValue.matches("\\d*")) {
-                    txtISBN.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-                if (allISBN.contains(Integer.parseInt(txtISBN.getText()))) {
-                    lblWarning.setText("ISBN finns redan");
-                    btnUpdate.setDisable(true);
-                } else if (!(allISBN.contains(Integer.parseInt(txtISBN.getText())))) {
-                    lblWarning.setText("");
-                    btnUpdate.setDisable(false);
+                    txtStreckkod.setText(newValue.replaceAll("[^\\d]", ""));
                 }
             }
         });
 
-        //Listener that ensures that all fields are filled in before the update
-        //button becomes available.     
+        //Listener to make sure all fields are filled in before a copy can be 
+        //added to the list
         ChangeListener<String> allFieldsListener = ((observable, oldValue, newValue) -> {
-            if (txtTitle.getText() == null
-                    || txtTitle.getText().equals("")
-                    || txtISBN.getText() == null
-                    || txtISBN.getText().equals("")
-                    || selectSearchWords.isEmpty()
-                    || selectAuthors.isEmpty()) {
+            if (!(txtStreckkod.getText().equalsIgnoreCase(""))
+                    && allStreckkod.contains(
+                            Integer.parseInt(txtStreckkod.getText()))) {
                 btnUpdate.setDisable(true);
+                lblWarning.setText("Streckkod finns redan");
+            } else if (txtStreckkod.getText() == null
+                    || txtStreckkod.getText().equals("")
+                    || txtPlacement.getText() == null
+                    || txtPlacement.getText().equals("")
+                    || comboCategory.getValue() == null
+                    || allStreckkod.contains(Integer.parseInt(
+                            txtStreckkod.getText()))) {
+                btnUpdate.setDisable(true);
+                lblWarning.setText("");
             } else {
                 btnUpdate.setDisable(false);
+                lblWarning.setText("");
             }
         });
-        txtTitle.textProperty().addListener(allFieldsListener);
-        txtISBN.textProperty().addListener(allFieldsListener);
-        lblAuthor.textProperty().addListener(allFieldsListener);
-        lblSearchWord.textProperty().addListener(allFieldsListener);
+
+        txtStreckkod.textProperty().addListener(allFieldsListener);
+        txtPlacement.textProperty().addListener(allFieldsListener);
+        comboCategory.valueProperty().addListener(allFieldsListener);
+
+        //Listener to open upp a Kopia for editing when it is chosen. 
+        tblAddedCopies.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                this.selectedKopia = (Kopia) tblAddedCopies.getSelectionModel().getSelectedItem();
+                grdKopia.setDisable(false);
+                txtStreckkod.setText(Integer.toString(selectedKopia.getStreckkod()));
+                comboCategory.setValue(selectedKopia.getLoanKategori());
+                txtPlacement.setText(selectedKopia.getPlacement());
+            } else {
+                this.selectedKopia = null;
+                grdKopia.setDisable(true);
+                txtStreckkod.setText("");
+                comboCategory.setValue("");
+                txtPlacement.setText("");
+            }
+        });
+        
+        setGeneralSettings();
     }
 
-    /**
-     * Calls the function to add authors.
-     *
-     * @param event
-     */
+//    @FXML
+//    void pressAddToDB(ActionEvent event) {
+//        Boolean newKopior = connection.newKopior(listKopior);
+//
+//        Alert alert;
+//        if (newKopior) {
+//            alert = new Alert(Alert.AlertType.INFORMATION, "Kopiorna skapades\n fönstret stängs.");
+//            alert.showAndWait();
+//            ((Node) (event.getSource())).getScene().getWindow().hide();
+//            
+//        } else {
+//            alert = new Alert(Alert.AlertType.ERROR);
+//            alert.setContentText("Något gick fel.\nKopiorna skapades inte");
+//            alert.show();
+//        }
+//
+//    }
     @FXML
-    void pressAddAuthor(ActionEvent event) {
-        addComboWordToList(comboAuthors, selectAuthors, lblAuthor);
+    void pressDeleteKopia(ActionEvent event) {
+        this.selectedKopia = (Kopia) tblAddedCopies.getSelectionModel().getSelectedItem();
+        //If Kopia on loan
+        if (selectedKopia.getAccess() == Kopia.AccessKopia.ON_LOAN) { 
+            Util.simpleInfoAlert("Kopian är utlånad och kan därför inte tas bort");
+                return;
+            }
+        
+        //Do you really want to delete?
+        alert = new Alert(Alert.AlertType.CONFIRMATION, "Kopia "
+                + "selectedKopia.getStreckkod() kommer att tas bort permanent.\n"
+                + "Lån förknippade med kopian tas bort permanent");
+        //Set answers and get answers from user
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Ta bort permanent");
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Avbryt");
+        Optional<ButtonType> result = alert.showAndWait();
+        //Delete if answer is OK
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            //If Objekt was deleted successfully, show message and close. 
+            if (connection.deleteKopia(selectedKopia.getStreckkod())) {
+                Util.simpleInfoAlert("Kopian raderades framgångsrikt.");
+                listKopior.remove(selectedKopia);
+                Util.updateTableView(tblAddedCopies, listKopior);
+                
+            //If something went wrong, show message. 
+            } else {
+                Util.simpleErrorAlert("Något gick fel, objektet raderades inte.");
+            }
+        }
+        
     }
 
-    /**
-     * Calls the function to remove authors.
-     *
-     * @param event
-     */
-    @FXML
-    void pressRemoveAuthor(ActionEvent event) {
-        removeComboWordFromList(comboAuthors, selectAuthors, lblAuthor);
-    }
-
-    /**
-     * Calls the function to add search words.
-     *
-     * @param event
-     */
-    @FXML
-    void pressAddSearchWord(ActionEvent event) {
-        addComboWordToList(comboSearchWords, selectSearchWords, lblSearchWord);
-    }
-
-    /**
-     * Calls the function to remove search words.
-     *
-     * @param event
-     */
-    @FXML
-    void pressRemoveSearchWord(ActionEvent event) {
-        removeComboWordFromList(comboSearchWords, selectSearchWords, lblSearchWord);
-    }
-
-    /**
-     * Calls function to update the Objekt.
-     *
-     * @param event
-     */
     @FXML
     void pressUpdate(ActionEvent event) {
 
-        Bok updateBok = connection.updateBok(objektID, txtTitle.getText(),
-                Integer.parseInt(txtISBN.getText()), selectAuthors,
-                selectSearchWords);
-         Alert alert;
-        if (updateBok != null) {
-           
-            alert = new Alert(AlertType.INFORMATION, "Objekt " + Integer.toString(objektID)
-                    + " uppdaterades");
-            alert.showAndWait();
-            ((Node) (event.getSource())).getScene().getWindow().hide();
+        listKopior.add(new Kopia(Integer.parseInt(txtStreckkod.getText()), objektID,
+                comboCategory.getValue().toString(), txtPlacement.getText()));
+        allStreckkod.add(Integer.parseInt(txtStreckkod.getText()));
+//        btnCreateCopy.setDisable(false);
+        System.out.println(allStreckkod);
+        Util.updateTableView(tblAddedCopies, listKopior);
 
-        } else {
-            alert = new Alert(AlertType.ERROR);
-            alert.setContentText("Något gick fel.\nObjektet uppdaterades inte");
-            alert.show();
-        }
+        lblWarning.setText("Streckkod finns redan");
+        btnUpdate.setDisable(true);
 
     }
 
     @FXML
-    void pressDelete(ActionEvent event) {
-        //Check if Objekt is on loan and can´t be deleted. 
-        //Get all Kopia connected to the objekt. 
-        ArrayList<Kopia> listKopia = connection.getObjektCopies(selectedObjekt, Type.Bok);
-        int noKopia = 0;
-        if (listKopia != null) { // If there are Kopia connected to the Objekt
-            noKopia = listKopia.size();
-            if (checkIfCopyOnLoan(listKopia)) { // Is any Kopia on loan?
-                Alert alert = new Alert(AlertType.ERROR, "En kopia är utlånad. "
-                        + "Objektet kan därför inte tas bort.");
-                alert.showAndWait();
-                return;
-            }
-        }
-
-       String title = selectedObjekt.getTitel();
-
-        //Do you really want to delete.
-        Alert alert = new Alert(AlertType.CONFIRMATION, "Objekt "
-                +objektID+", "+title+", kommer att tas bort permanent.\n"
-                +noKopia+" kopior kommer att tas bort permanent");
-            ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Ta bort permanent");
-            ((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Avbryt");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                //Delete objekt
-                if (connection.deleteBokObjekt(objektID)){
-                   alert = new Alert(AlertType.INFORMATION, "Objektet "
-                    + "raderades framgångsrikt.");
-                   alert.showAndWait();
-                   ((Node) (event.getSource())).getScene().getWindow().hide();
-                }
-                else{
-                    alert = new Alert(AlertType.ERROR, "Något gick fel, "
-                            + "objektet raderades inte.");
-                   alert.show();}
-            }
-
-    }
-
-    /**
-     * Aborts and closes the pop-up.
-     *
-     * @param event
-     */
-    @FXML
-    void pressCancel(ActionEvent event) {
+    void pressBtnAvbryt(ActionEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
-
     }
 
-//        Alert alert;
-//        //Om 
-//        if (selectedObjekt != null) {
-//            this.newObjektID = selectedObjekt.getObjektID();
-//            alert = new Alert(AlertType.CONFIRMATION, "Objekt " + this.newObjektID
-//                    + " skapades\nVill du lägga till kopior?");
-//            ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Skapa kopior");
-//            ((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Avsluta");
-//
-//            Optional<ButtonType> result = alert.showAndWait();
-//            if (result.isPresent() && result.get() == ButtonType.OK) {
-//                //NewKopiaController vill ha ett objekt och ingen bok. 
-//                Objekt objekt = selectedObjekt;
-//                loadPageNewKopia(event, objekt );
-//            }
-//        } else {
-//            alert = new Alert(AlertType.ERROR);
-//            alert.setContentText("Något gick fel.\nObjektet skapades inte");
-//            alert.show();
-//        }
-//                    if (button == ButtonType.OK) {
-//                loadPopup("NewKopia.fxml");
-//                Stage stage = App.getMainControll().getSearchController().getNewObjektStage();
-//                stage.hide();
-    //Get the button that was pressed. 
-//            Optional<ButtonType> result = alert.showAndWait();
-//            ButtonType button = result.orElse(ButtonType.OK);
-//            }
-    /**
-     * Adds chosen word, from a combobox, to a list and prints the list in a
-     * label.
-     *
-     * @param selectedWord, the name of the combobox where a word was chosen.
-     * @param list of already selected words.
-     * @param text, the lable where the result should be printed out.
-     */
-    private void addComboWordToList(ComboBox selectedWord, ArrayList<String> list,
-            Label text) {
-        //get the selected word from the ComboBox. 
-        String word = selectedWord.getValue().toString();
-        //Check if the word is aldready in the list before adding it. 
-        if (word != null) {
-            if (list.contains(word)) {
-                System.out.println(word + " aldready in selectSearchWords");
-            } else {
-                list.add(word);
-            }
+    private void setComboCategories() {
+        if (this.typ == Type.Bok) {
+            comboCategory.getItems().addAll("Bok, 30 dagar",
+                    "Kurslitteratur, 14 dagar",
+                    "Referenslitteratur, 0 dagar");
+        } else if (this.typ == Type.Film) {
+            comboCategory.getItems().addAll("Film, 7 dagar",
+                    "Kurslitteratur, 14 dagar",
+                    "Referenslitteratur, 0 dagar");
+        } else {
+            comboCategory.getItems().addAll("Referenslitteratur, 0 dagar");
         }
-        //Call function  that creates a string from the list
-        //Print the list in the text label. 
-        text.setText(Util.listToString(list));
     }
 
-    /**
-     * Removes chosen word, from a combobox, from a list and prints the list in
-     * a label.
-     *
-     * @param selectedWord, the name of the combobox where a word was chosen.
-     * @param list of already selected words.
-     * @param text, the lable where the result should be printed out.
-     */
-    private void removeComboWordFromList(ComboBox selectedWord, ArrayList<String> list, Label text) {
-        //get the selected word from the ComboBox.
-        String word = selectedWord.getValue().toString();
-        //Remove word if it was in the list. 
-        if (word != null) {
-            if (list.contains(word)) {
-                list.remove(word);
-            }
-        }
-        //Call function  that creates a string from the list
-        //Print the list in the text label. 
-        text.setText(Util.listToString(list));
-    }
-
-//    /**
-//     *
-//     * @param event
-//     * @param objekt
-//     * @return
-//     */
-//    public boolean loadPageNewKopia(ActionEvent event, Objekt objekt) {
+    //Table functions
+//    private void updateTableView() {
 //
-//        try {
+//        tblAddedCopies.getColumns().clear();
 //
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("NewKopia.fxml"));
+//        Field[] fields = listKopior.get(0).getClass().getDeclaredFields();
 //
-//            NewKopiaController controller = new NewKopiaController(objekt);
-//            loader.setController(controller);
-//            Parent root = loader.load();
-//            borderPane.setCenter(root);
+//        ObservableList<Kopia> observableKopior = FXCollections.observableArrayList(listKopior);
 //
-//            return true;
-//
-//        } catch (IOException ex) {
-//            System.out.println("Exception i klass NewObjektController.java, i "
-//                    + "metoden loadPage()");
-//            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-//            return false;
+//        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
+//        for (Field field : fields) {
+//            System.out.println(field);
+//            TableColumn<Map, String> column = new TableColumn<>(field.getName().toUpperCase());
+//            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
+//            tblAddedCopies.getColumns().add(column);
 //        }
+//        tblAddedCopies.setItems(observableKopior);
 //
 //    }
-//    public boolean loadPopup(String fxml) {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-//            Parent root = loader.load();
-//
-//            Stage stage = new Stage();
-//            Scene scene = new Scene(root);
-//            stage.setScene(scene);
-//            stage.show();
-//            return true;
-//
-//        } catch (IOException ex) {
-//            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return false;
-//    }
-    /**
-     * returns the title as string.
-     *
-     * @return
-     */
-    public String getTitle() {
-        return txtTitle.getText();
-    }
-
-    /**
-     * Sets variables used it the UI. E.g. Objekt variables, lists of authors,
-     * search words and ISBN numbers.
-     */
     private void setGeneralSettings() {
-        //Create a Bok instance. 
-        bok = connection.getBokFromDB(this.objektID);
+        //Set titel
+        lblTitel.setText(objektID + " - " + title);
 
-        // authors
-        authorsList = connection.getAllAuthors();
-        Collections.sort(authorsList);
-        comboAuthors.getItems().addAll(authorsList);
+        //Get Categories and add them to comboBox. 
+        setComboCategories();
 
-        //search words. 
-        swList = connection.getAllSearchWords();
-        Collections.sort(swList);
-        comboSearchWords.getItems().addAll(swList);
+        Util.updateTableView(tblAddedCopies, listKopior);
 
-        showBok(bok);
-
-        listAllISBN(bok);
-    }
-
-    private void listAllISBN(Bok bok) {
-        //get all ISBN numbers.
-        allISBN = connection.getAllISBN();
-        //then remove the ISBN of bok to make sure that that number is 
-        //allowed to be added. 
-        allISBN.remove(Integer.valueOf(bok.getISBN()));
-
-    }
-
-    private void showBok(Bok bok) {
-
-        selectAuthors = bok.getAuthors();
-        lblAuthor.setText(Util.listToString(selectAuthors));
-
-        selectSearchWords = bok.getSearchWordsAsList();
-        lblSearchWord.setText(Util.listToString(selectSearchWords));
-
-        lblObjektID.setText(Integer.toString(objektID));
-        txtTitle.setText(selectedObjekt.getTitel());
-        txtISBN.setText(Integer.toString(bok.getISBN()));
-
-        listAllISBN(bok);
-    }
-
-    private void UpdateBok() {
-
-    }
-
-    private Boolean checkIfCopyOnLoan(ArrayList<Kopia> listKopia) {
-        for (int i = 0; i < listKopia.size(); i++) {
-            //Check if each Kopia has any active loan. 
-            if (connection.getActiveLoan(listKopia.get(i).getStreckkod()) != null) {
-                return true;
-            }
-        }
-        //If no Kopia had active loan, return false. 
-        return false;
     }
 }

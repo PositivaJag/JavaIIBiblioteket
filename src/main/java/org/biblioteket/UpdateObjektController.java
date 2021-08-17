@@ -27,7 +27,7 @@ import org.biblioteket.Objects.Objekt.Type;
  *
  * @author jenni
  */
-public class UpdateObjektController {
+public class UpdateObjektController extends update {
 
     //FXML variables
     @FXML
@@ -195,17 +195,13 @@ public class UpdateObjektController {
         //if Bok instance was returned aka update succesed.
         //Show message and close down
         if (updateBok != null) { 
-            alert = new Alert(AlertType.INFORMATION, "Objekt " + Integer.toString(objektID)
-                    + " uppdaterades");
-            alert.showAndWait();
+            Util.simpleInfoAlert("Objekt "+Integer.toString(objektID)+" uppdaterades");
             ((Node) (event.getSource())).getScene().getWindow().hide();
             
         //if no Bok instance was returned aka update failed
         //Show message.
         } else {
-            alert = new Alert(AlertType.ERROR);
-            alert.setContentText("Något gick fel.\nObjektet uppdaterades inte");
-            alert.show();
+            Util.simpleErrorAlert("Något gick fel.\nObjektet uppdaterades inte");
         }
     }
 
@@ -221,11 +217,9 @@ public class UpdateObjektController {
         // Chekc if there are Kopior connected to the Objekt
         if (listKopia != null) { 
             noKopia = listKopia.size();
-            //Check if Objekt is on loan and can´t be deleted.
+            //Check if Kopia is on loan and can´t be deleted.
             if (checkIfCopyOnLoan(listKopia)) { 
-                alert = new Alert(AlertType.ERROR, "En kopia är utlånad. "
-                        + "Objektet kan därför inte tas bort.");
-                alert.showAndWait();
+                Util.simpleErrorAlert("En kopia är utlånad. Objektet kan därför inte tas bort.");
                 return;
             }
         }
@@ -234,7 +228,8 @@ public class UpdateObjektController {
         alert = new Alert(AlertType.CONFIRMATION, "Objekt "
                 + objektID + ", " + selectedObjekt.getTitel() 
                 + ", kommer att tas bort permanent.\n"
-                + noKopia + " kopior kommer att tas bort permanent");
+                + noKopia + " kopior kommer att tas bort permanent\n"
+                + "Lån förknippade med kopiorna tas bort permanent");
         //Set answers and get answers from user
         ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Ta bort permanent");
         ((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Avbryt");
@@ -243,15 +238,12 @@ public class UpdateObjektController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             //If Objekt was deleted successfully, show message and close. 
             if (connection.deleteBokObjekt(objektID)) {
-                alert = new Alert(AlertType.INFORMATION, "Objektet "
-                        + "raderades framgångsrikt.");
-                alert.showAndWait();
+                Util.simpleInfoAlert("Objektet raderades framgångsrikt.");
                 ((Node) (event.getSource())).getScene().getWindow().hide();
+                
             //If something went wrong, show message. 
             } else {
-                alert = new Alert(AlertType.ERROR, "Något gick fel, "
-                        + "objektet raderades inte.");
-                alert.show();
+                Util.simpleErrorAlert("Något gick fel, objektet raderades inte.");
             }
         }
     }
@@ -342,15 +334,7 @@ public class UpdateObjektController {
 
         showBok(bok);
 
-        listAllISBN(bok);
-    }
-
-    private void listAllISBN(Bok bok) {
-        //get all ISBN numbers.
-        allISBN = connection.getAllISBN();
-        //then remove the ISBN of bok to make sure that that number is 
-        //allowed to be added. 
-        allISBN.remove(Integer.valueOf(bok.getISBN()));
+        listAllISBN(bok, connection);
     }
 
     private void showBok(Bok bok) {
@@ -365,9 +349,9 @@ public class UpdateObjektController {
         txtTitle.setText(selectedObjekt.getTitel());
         txtISBN.setText(Integer.toString(bok.getISBN()));
 
-        listAllISBN(bok);
+        listAllISBN(bok, connection);
     }
-
+    
     private Boolean checkIfCopyOnLoan(ArrayList<Kopia> listKopia) {
         for (int i = 0; i < listKopia.size(); i++) {
             //Check if each Kopia has any active loan. 
@@ -378,4 +362,6 @@ public class UpdateObjektController {
         //If no Kopia had active loan, return false. 
         return false;
     }
+
+   
 }

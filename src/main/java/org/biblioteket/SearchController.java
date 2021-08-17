@@ -85,14 +85,14 @@ public class SearchController {
     private Stage newObjektStage;
     private Parent kopiaRoot;
     private Parent newObjektRoot;
+    private  DBConnection connection;
 
     /**
      *
      */
     public void initialize() {
-        
+        connection = DBConnection.getInstance();
         setLibrarianButtons();
-      
         setComboType();
         updateTableView(getObjekts());
         addTextFilter(observableResult, txtSearch, tblSearch);
@@ -125,7 +125,23 @@ public class SearchController {
 
     @FXML
     void pressUpdateKopia(ActionEvent event) {
-
+         setSelectedObjekt();
+        if (selectedObjekt.getType() != Type.Bok){
+            Alert alert = new Alert(AlertType.INFORMATION, "Programmet kan bara"
+                    + " hantera böcker för tillfället.");
+            alert.show();
+        }
+        
+        else if (connection.getObjektCopies(selectedObjekt, selectedObjekt.getType()) 
+                == null ){
+             Alert alert = new Alert(AlertType.INFORMATION, "Titeln "
+                     +selectedObjekt.getTitel() +"har inga kopior att uppdatera.");
+            alert.show();
+        }
+        else{
+            
+            loadPopupUpdateKopia();
+        }
     }
 
     @FXML
@@ -253,9 +269,27 @@ public class SearchController {
                     + "metoden loadPage()");
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+       
+        private void loadPopupUpdateKopia() {
+        try {
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateKopia.fxml"));
+             
+            UpdateKopiaController controller = new UpdateKopiaController(this.selectedObjekt);           
+            loader.setController(controller);
+            
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
 
-    
-        
+        } catch (IOException ex) {
+            System.out.println("Exception i klass Search.java, i "
+                    + "metoden loadPage()");
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     
@@ -349,7 +383,7 @@ public class SearchController {
      */
     public ArrayList<Objekt> getObjekts() {
 
-        DBConnection connection = DBConnection.getInstance();
+        
         try {
 
             //gets an arraylist with objects
@@ -414,7 +448,7 @@ public class SearchController {
     //Other functions
     private void setComboType() {
         comboType.getItems().add("Alla");
-        comboType.getItems().addAll(DBConnection.getInstance().getObjektTypes());
+        comboType.getItems().addAll(connection.getObjektTypes());
         comboType.setValue("Alla");
     }
 
@@ -484,5 +518,7 @@ public class SearchController {
     public void setNewObjektStage(Stage newObjektStage) {
         this.newObjektStage = newObjektStage;
     }
+
+   
 
 }

@@ -892,10 +892,7 @@ public class DBConnection {
         ResultSet resultSet = getResultSetFromDB(SQL, streckkod);
         
         ArrayList<Loan> loans =  getLoan(resultSet);
-        for (int i = 0; i <loans.size(); i++){
-            System.out.println(loans.get(i).getLoanID()+" "+loans.get(i).getTitel());
-        }
-        
+       
         return loans.get(0);
 
     }
@@ -1186,12 +1183,18 @@ public class DBConnection {
             return true;
     } 
     
-    public void deleteKopia(int streckkod) throws SQLException{
-        String SQL = "DELETE from kopia WHERE streckkod = ?";
-        PreparedStatement pState =  connection.prepareStatement(SQL);
-        pState.setInt(1, streckkod);
-        pState.executeUpdate();
-
+    public Boolean deleteKopia(int streckkod){
+        try {
+            String SQL = "DELETE from kopia WHERE streckkod = ?";
+            PreparedStatement pState =  connection.prepareStatement(SQL);
+            pState.setInt(1, streckkod);
+            pState.executeUpdate();
+            connection.commit();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
     public Boolean deleteBokObjekt(int objektID) {
        

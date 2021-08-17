@@ -30,7 +30,7 @@
             </Text>
             <VBox>
                <children>
-                  <GridPane hgap="10.0" style="-fx-border-color: #909090;" vgap="20.0">
+                  <GridPane fx:id="grdKopia" disable="true" hgap="10.0" style="-fx-border-color: #909090;" vgap="20.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="272.0" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="614.0" minWidth="10.0" prefWidth="610.0" />
@@ -55,7 +55,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </Label>
-                              <Button fx:id="btnAdd" disable="true" mnemonicParsing="false" onAction="#pressAddToList" text="Uppdatera kopia">
+                              <Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#pressUpdate" text="Uppdatera kopia">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -81,7 +81,7 @@
                      <children>
                         <HBox alignment="BOTTOM_LEFT" prefHeight="46.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Button mnemonicParsing="false" text="Ta bort kopia">
+                              <Button fx:id="btnDeleteKopia" mnemonicParsing="false" onAction="#pressDeleteKopia" text="Ta bort kopia">
                                  <HBox.margin>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </HBox.margin>
