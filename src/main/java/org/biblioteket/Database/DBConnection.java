@@ -605,7 +605,7 @@ public class DBConnection {
      * @param type
      * @return
      */
-    public ArrayList<Kopia> getObjectCopies(Objekt Objekt, Type type) {
+    public ArrayList<Kopia> getObjektCopies(Objekt Objekt, Type type) {
 
         try {
             int objektID = Objekt.getObjektID();
@@ -1191,13 +1191,21 @@ public class DBConnection {
         PreparedStatement pState =  connection.prepareStatement(SQL);
         pState.setInt(1, streckkod);
         pState.executeUpdate();
+
     }
-    public void deleteBokObjekt(int objektID) throws SQLException{
+    public Boolean deleteBokObjekt(int objektID) {
        
-        String SQL = "DELETE from objekt WHERE objektID = ?;";
-        PreparedStatement pState =  connection.prepareStatement(SQL);
-        pState.setInt(1, objektID);
-        pState.executeUpdate();
+        try {
+            String SQL = "DELETE from objekt WHERE objektID = ?;";
+            PreparedStatement pState =  connection.prepareStatement(SQL);
+            pState.setInt(1, objektID);
+            pState.execute();
+            connection.commit();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     private void insertKopia(int streckkod, int objektID, String kategori, String placering) throws SQLException {

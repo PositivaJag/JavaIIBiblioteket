@@ -1,8 +1,11 @@
 package org.biblioteket;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -27,7 +30,7 @@ import org.biblioteket.Objects.Objekt.Type;
  *
  * @author jenni
  */
-public class UpdateObjektController {
+public class UpdateKopiaController {
 
     //FXML variables
     @FXML
@@ -75,20 +78,19 @@ public class UpdateObjektController {
     private ArrayList<Integer> allISBN = new ArrayList<>();
 
     //Info about selected Objekt. 
-    private final int objektID;
+    private int objektID;
     private Objekt selectedObjekt;
     private Bok bok;
 
-
+    //Connections to DB.
     DBConnection connection;
-    Alert alert;
 
     /**
      * Construktor
      *
      * @param selectedObjekt
      */
-    public UpdateObjektController(Objekt selectedObjekt) {
+    public UpdateKopiaController(Objekt selectedObjekt) {
         this.selectedObjekt = selectedObjekt;
         this.objektID = selectedObjekt.getObjektID();
     }
@@ -187,73 +189,66 @@ public class UpdateObjektController {
      */
     @FXML
     void pressUpdate(ActionEvent event) {
-        
+
         Bok updateBok = connection.updateBok(objektID, txtTitle.getText(),
                 Integer.parseInt(txtISBN.getText()), selectAuthors,
                 selectSearchWords);
-        
-        //if Bok instance was returned aka update succesed.
-        //Show message and close down
-        if (updateBok != null) { 
+         Alert alert;
+        if (updateBok != null) {
+           
             alert = new Alert(AlertType.INFORMATION, "Objekt " + Integer.toString(objektID)
                     + " uppdaterades");
             alert.showAndWait();
             ((Node) (event.getSource())).getScene().getWindow().hide();
-            
-        //if no Bok instance was returned aka update failed
-        //Show message.
+
         } else {
             alert = new Alert(AlertType.ERROR);
             alert.setContentText("Något gick fel.\nObjektet uppdaterades inte");
             alert.show();
         }
+
     }
 
-    /**
-     * Calls function to delete Objekt. 
-     * @param event 
-     */
     @FXML
     void pressDelete(ActionEvent event) {
+        //Check if Objekt is on loan and can´t be deleted. 
         //Get all Kopia connected to the objekt. 
         ArrayList<Kopia> listKopia = connection.getObjektCopies(selectedObjekt, Type.Bok);
-        int noKopia = 0; 
-        // Chekc if there are Kopior connected to the Objekt
-        if (listKopia != null) { 
+        int noKopia = 0;
+        if (listKopia != null) { // If there are Kopia connected to the Objekt
             noKopia = listKopia.size();
-            //Check if Objekt is on loan and can´t be deleted.
-            if (checkIfCopyOnLoan(listKopia)) { 
-                alert = new Alert(AlertType.ERROR, "En kopia är utlånad. "
+            if (checkIfCopyOnLoan(listKopia)) { // Is any Kopia on loan?
+                Alert alert = new Alert(AlertType.ERROR, "En kopia är utlånad. "
                         + "Objektet kan därför inte tas bort.");
                 alert.showAndWait();
                 return;
             }
         }
 
-        //Do you really want to delete?
-        alert = new Alert(AlertType.CONFIRMATION, "Objekt "
-                + objektID + ", " + selectedObjekt.getTitel() 
-                + ", kommer att tas bort permanent.\n"
-                + noKopia + " kopior kommer att tas bort permanent");
-        //Set answers and get answers from user
-        ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Ta bort permanent");
-        ((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Avbryt");
-        Optional<ButtonType> result = alert.showAndWait();
-        //Delete if answer is OK
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            //If Objekt was deleted successfully, show message and close. 
-            if (connection.deleteBokObjekt(objektID)) {
-                alert = new Alert(AlertType.INFORMATION, "Objektet "
-                        + "raderades framgångsrikt.");
-                alert.showAndWait();
-                ((Node) (event.getSource())).getScene().getWindow().hide();
-            //If something went wrong, show message. 
-            } else {
-                alert = new Alert(AlertType.ERROR, "Något gick fel, "
-                        + "objektet raderades inte.");
-                alert.show();
+       String title = selectedObjekt.getTitel();
+
+        //Do you really want to delete.
+        Alert alert = new Alert(AlertType.CONFIRMATION, "Objekt "
+                +objektID+", "+title+", kommer att tas bort permanent.\n"
+                +noKopia+" kopior kommer att tas bort permanent");
+            ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Ta bort permanent");
+            ((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Avbryt");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                //Delete objekt
+                if (connection.deleteBokObjekt(objektID)){
+                   alert = new Alert(AlertType.INFORMATION, "Objektet "
+                    + "raderades framgångsrikt.");
+                   alert.showAndWait();
+                   ((Node) (event.getSource())).getScene().getWindow().hide();
+                }
+                else{
+                    alert = new Alert(AlertType.ERROR, "Något gick fel, "
+                            + "objektet raderades inte.");
+                   alert.show();}
             }
-        }
+
     }
 
     /**
@@ -264,8 +259,37 @@ public class UpdateObjektController {
     @FXML
     void pressCancel(ActionEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
+
     }
 
+//        Alert alert;
+//        //Om 
+//        if (selectedObjekt != null) {
+//            this.newObjektID = selectedObjekt.getObjektID();
+//            alert = new Alert(AlertType.CONFIRMATION, "Objekt " + this.newObjektID
+//                    + " skapades\nVill du lägga till kopior?");
+//            ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Skapa kopior");
+//            ((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Avsluta");
+//
+//            Optional<ButtonType> result = alert.showAndWait();
+//            if (result.isPresent() && result.get() == ButtonType.OK) {
+//                //NewKopiaController vill ha ett objekt och ingen bok. 
+//                Objekt objekt = selectedObjekt;
+//                loadPageNewKopia(event, objekt );
+//            }
+//        } else {
+//            alert = new Alert(AlertType.ERROR);
+//            alert.setContentText("Något gick fel.\nObjektet skapades inte");
+//            alert.show();
+//        }
+//                    if (button == ButtonType.OK) {
+//                loadPopup("NewKopia.fxml");
+//                Stage stage = App.getMainControll().getSearchController().getNewObjektStage();
+//                stage.hide();
+    //Get the button that was pressed. 
+//            Optional<ButtonType> result = alert.showAndWait();
+//            ButtonType button = result.orElse(ButtonType.OK);
+//            }
     /**
      * Adds chosen word, from a combobox, to a list and prints the list in a
      * label.
@@ -313,6 +337,49 @@ public class UpdateObjektController {
         text.setText(Util.listToString(list));
     }
 
+//    /**
+//     *
+//     * @param event
+//     * @param objekt
+//     * @return
+//     */
+//    public boolean loadPageNewKopia(ActionEvent event, Objekt objekt) {
+//
+//        try {
+//
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("NewKopia.fxml"));
+//
+//            NewKopiaController controller = new NewKopiaController(objekt);
+//            loader.setController(controller);
+//            Parent root = loader.load();
+//            borderPane.setCenter(root);
+//
+//            return true;
+//
+//        } catch (IOException ex) {
+//            System.out.println("Exception i klass NewObjektController.java, i "
+//                    + "metoden loadPage()");
+//            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+//            return false;
+//        }
+//
+//    }
+//    public boolean loadPopup(String fxml) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+//            Parent root = loader.load();
+//
+//            Stage stage = new Stage();
+//            Scene scene = new Scene(root);
+//            stage.setScene(scene);
+//            stage.show();
+//            return true;
+//
+//        } catch (IOException ex) {
+//            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return false;
+//    }
     /**
      * returns the title as string.
      *
@@ -351,6 +418,7 @@ public class UpdateObjektController {
         //then remove the ISBN of bok to make sure that that number is 
         //allowed to be added. 
         allISBN.remove(Integer.valueOf(bok.getISBN()));
+
     }
 
     private void showBok(Bok bok) {
@@ -366,6 +434,10 @@ public class UpdateObjektController {
         txtISBN.setText(Integer.toString(bok.getISBN()));
 
         listAllISBN(bok);
+    }
+
+    private void UpdateBok() {
+
     }
 
     private Boolean checkIfCopyOnLoan(ArrayList<Kopia> listKopia) {

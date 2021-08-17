@@ -48,7 +48,7 @@ public class KopiaController {
             selectObjekt = App.getMainControll().getSearchController().getSelectedObjekt();
 
             //Get list of copies for the Objekt. 
-            ArrayList<Kopia> Copies = connection.getObjectCopies(selectObjekt, selectObjekt.getType());
+            ArrayList<Kopia> Copies = connection.getObjektCopies(selectObjekt, selectObjekt.getType());
             if (Copies == null || Copies.isEmpty()) {
                 tblKopia.setVisible(false);
                 lblNoCopies.setVisible(true);
