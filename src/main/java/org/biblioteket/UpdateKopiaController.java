@@ -35,7 +35,7 @@ public class UpdateKopiaController extends update {
     private ComboBox comboCategory;
 
     @FXML
-    private TextField txtStreckkod;
+    private Label lblStreckkod;
 
     @FXML
     private TextField txtPlacement;
@@ -91,12 +91,12 @@ public class UpdateKopiaController extends update {
     public void initialize() {
 
         //Listener to make sure only numbers are added in streckkod filed. 
-        txtStreckkod.textProperty().addListener(new ChangeListener<String>() {
+        lblStreckkod.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                     String newValue) {
                 if (!newValue.matches("\\d*")) {
-                    txtStreckkod.setText(newValue.replaceAll("[^\\d]", ""));
+                    lblStreckkod.setText(newValue.replaceAll("[^\\d]", ""));
                 }
             }
         });
@@ -104,18 +104,18 @@ public class UpdateKopiaController extends update {
         //Listener to make sure all fields are filled in before a copy can be 
         //added to the list
         ChangeListener<String> allFieldsListener = ((observable, oldValue, newValue) -> {
-            if (!(txtStreckkod.getText().equalsIgnoreCase(""))
+            if (!(lblStreckkod.getText().equalsIgnoreCase(""))
                     && allStreckkod.contains(
-                            Integer.parseInt(txtStreckkod.getText()))) {
+                            Integer.parseInt(lblStreckkod.getText()))) {
                 btnUpdate.setDisable(true);
                 lblWarning.setText("Streckkod finns redan");
-            } else if (txtStreckkod.getText() == null
-                    || txtStreckkod.getText().equals("")
+            } else if (lblStreckkod.getText() == null
+                    || lblStreckkod.getText().equals("")
                     || txtPlacement.getText() == null
                     || txtPlacement.getText().equals("")
                     || comboCategory.getValue() == null
                     || allStreckkod.contains(Integer.parseInt(
-                            txtStreckkod.getText()))) {
+                            lblStreckkod.getText()))) {
                 btnUpdate.setDisable(true);
                 lblWarning.setText("");
             } else {
@@ -124,7 +124,7 @@ public class UpdateKopiaController extends update {
             }
         });
 
-        txtStreckkod.textProperty().addListener(allFieldsListener);
+        lblStreckkod.textProperty().addListener(allFieldsListener);
         txtPlacement.textProperty().addListener(allFieldsListener);
         comboCategory.valueProperty().addListener(allFieldsListener);
 
@@ -133,13 +133,13 @@ public class UpdateKopiaController extends update {
             if (newSelection != null) {
                 this.selectedKopia = (Kopia) tblAddedCopies.getSelectionModel().getSelectedItem();
                 grdKopia.setDisable(false);
-                txtStreckkod.setText(Integer.toString(selectedKopia.getStreckkod()));
+                lblStreckkod.setText(Integer.toString(selectedKopia.getStreckkod()));
                 comboCategory.setValue(selectedKopia.getLoanKategori());
                 txtPlacement.setText(selectedKopia.getPlacement());
             } else {
                 this.selectedKopia = null;
                 grdKopia.setDisable(true);
-                txtStreckkod.setText("");
+                lblStreckkod.setText("");
                 comboCategory.setValue("");
                 txtPlacement.setText("");
             }
@@ -200,16 +200,20 @@ public class UpdateKopiaController extends update {
 
     @FXML
     void pressUpdate(ActionEvent event) {
+     
+        if (connection.updateBokKopia( Integer.parseInt(lblStreckkod.getText()),
+                comboCategory.getValue().toString().split(",")[0], txtPlacement.getText())){
+            Util.simpleInfoAlert("Kopian uppdaterades");
+            //Uppdate list of copies. 
+            this.listKopior = connection.getObjektCopies(selectedObjekt, typ);
+            Util.updateTableView(tblAddedCopies, listKopior);
+        }
+        else{
+            Util.simpleErrorAlert("Något gick fel\nKopian uppdaterades inte.");
+        }
 
-        listKopior.add(new Kopia(Integer.parseInt(txtStreckkod.getText()), objektID,
-                comboCategory.getValue().toString(), txtPlacement.getText()));
-        allStreckkod.add(Integer.parseInt(txtStreckkod.getText()));
-//        btnCreateCopy.setDisable(false);
-        System.out.println(allStreckkod);
-        Util.updateTableView(tblAddedCopies, listKopior);
-
-        lblWarning.setText("Streckkod finns redan");
-        btnUpdate.setDisable(true);
+//        lblWarning.setText("Streckkod finns redan");
+//        btnUpdate.setDisable(true);
 
     }
 

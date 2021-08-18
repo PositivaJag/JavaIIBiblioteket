@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket;
 
 import javafx.event.ActionEvent;
@@ -15,6 +10,8 @@ import javafx.scene.paint.Color;
 
 import org.biblioteket.Database.DBConnection.LoginResult;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Node;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Persons.Person;
@@ -36,31 +33,38 @@ public class LoginController {
     @FXML
     private PasswordField password;
 
+    private MainController mainControll;
+    private DBConnection connection;
+
+    public void initialize() {
+        connection = DBConnection.getInstance();
+        mainControll = App.getMainControll();
+    }
+
     @FXML
-    void pressButtonLogin(ActionEvent event){
+    void pressButtonLogin(ActionEvent event) {
 
         String mail = txtEmail.getText();
         String pw = password.getText();
 
-        try {
-            //check if user is blank
-            if (mail.isEmpty()) {
-                labelMessage.setTextFill(Color.web("#FE0000"));
-                labelMessage.setText("Skriv in din mailadress");
-            } //check if password is empty
-            else if (pw.isEmpty()) {
-                labelMessage.setTextFill(Color.web("#FE0000"));
-                labelMessage.setText("Skriv in ditt lösenord");
-                //check if mail and password is correct
-            } else {
+        //check if user is blank
+        if (mail.isEmpty()) {
+            labelMessage.setTextFill(Color.web("#FE0000"));
+            labelMessage.setText("Skriv in din mailadress");
+        } //check if password is empty
+        else if (pw.isEmpty()) {
+            labelMessage.setTextFill(Color.web("#FE0000"));
+            labelMessage.setText("Skriv in ditt lösenord");
+            //check if mail and password is correct
+        } else {
 
+            try {
                 LoginResult logginCheck = login(mail, pw);
 
                 if (null == logginCheck) {
                     labelMessage.setTextFill(Color.web("#FE0000"));
                     labelMessage.setText("Något gick fel");
-                } //Login successfull
-                else {
+                } else {   //Login successfull
                     switch (logginCheck) {
                         case NO_SUCH_USER:
                         case WRONG_PASSWORD:
@@ -76,39 +80,35 @@ public class LoginController {
                             break;
                     }
                 }
+            } catch (Exception ex) {
+                Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (Exception e) {
-
         }
-
     }
 
     @FXML
     void pressButtonAvbryt(ActionEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
-
     }
 
     /**
-     *
+     * Checks if password and user name is ok and creates instances of Loantagare
+     * or Person if it is. 
+     * This method needs some work to look good. 
      * @param mail
      * @param password
      * @return
-     * @throws Exception
      */
-    public LoginResult login(String mail, String password) throws Exception {
-        MainController mainControll;
+    private LoginResult login(String mail, String password) {
         try {
             //Connect to db
-            DBConnection connection = DBConnection.getInstance();
-
             LoginResult checkUserPassw = connection.checkUserAndPassword(mail, password);
 
             //create loggin object if all is ok
             if (checkUserPassw == LoginResult.LOGIN_OK) {
-                mainControll = App.getMainControll();
+                //Create librarian
                 if (connection.chechIfLibrarian(mail)) {
-                    //System.out.println(mainControll.getActiveLibrarian().toString());
+
                     mainControll.setActiveLibrarian(new Person(mail));
                     mainControll.setPersonTyp(Person.PersonTyp.BIBLIOTEKARIE);
 
@@ -120,24 +120,24 @@ public class LoginController {
                     String label = mainControll.getActiveUser().getfName();
                     mainControll.setLabelInloggad(label);
                 }
-                mainControll.setLabelInloggad(getActiveName(mainControll));
+                mainControll.setLabelInloggad(getActiveName());
                 mainControll.setLibrarianButtons();
                 mainControll.setLogoutVisibility(true);
                 mainControll.setLoginVisibility(false);
             }
             return checkUserPassw;
-        } catch (SQLException e) {
-            System.out.println("error: " + e);
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        throw new Exception("Unknown error");
+        return null;
     }
 
     /**
-     *
-     * @param mainControll
+     * Creates a String with info about the active user to be printet in the GUI. 
+     * This could have been done in a better way. 
      * @return
      */
-    public String getActiveName(MainController mainControll) {
+    private String getActiveName() {
         String labelTxt = null;
         if (mainControll.getPersonTyp() == PersonTyp.BIBLIOTEKARIE) {
             labelTxt = "Inloggad som:\n" + mainControll.getActiveLibrarian().getfName() + " " + mainControll.getActiveLibrarian().getlName();

@@ -33,7 +33,7 @@ import org.biblioteket.Objects.Objekt;
  *
  * @author jenni
  */
-public class NewObjektController {
+public class NewObjektController extends Controllers {
 
     @FXML
     private BorderPane borderPane;
@@ -185,14 +185,6 @@ public class NewObjektController {
             alert.show();
         }
 
-//                    if (button == ButtonType.OK) {
-//                loadPopup("NewKopia.fxml");
-//                Stage stage = App.getMainControll().getSearchController().getNewObjektStage();
-//                stage.hide();
-        //Get the button that was pressed. 
-//            Optional<ButtonType> result = alert.showAndWait();
-//            ButtonType button = result.orElse(ButtonType.OK);
-//            }
     }
 
     //Other functions
@@ -246,22 +238,6 @@ public class NewObjektController {
 
     }
 
-//    public boolean loadPopup(String fxml) {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-//            Parent root = loader.load();
-//
-//            Stage stage = new Stage();
-//            Scene scene = new Scene(root);
-//            stage.setScene(scene);
-//            stage.show();
-//            return true;
-//
-//        } catch (IOException ex) {
-//            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return false;
-//    }
 
     //Setters
 

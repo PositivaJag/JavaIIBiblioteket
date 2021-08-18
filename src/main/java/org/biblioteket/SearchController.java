@@ -1,6 +1,5 @@
 package org.biblioteket;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -38,7 +37,7 @@ import static org.biblioteket.Objects.Objekt.Type.Bok;
  *
  * @author jenni
  */
-public class SearchController {
+public class SearchController extends Controllers{
 
     //FXML variables
     @FXML
@@ -87,9 +86,12 @@ public class SearchController {
     private Parent newObjektRoot;
     private  DBConnection connection;
 
-    /**
-     *
-     */
+
+    public void searchController(SearchController searchController){
+           this.searchController = searchController;
+    }
+    
+    
     public void initialize() {
         connection = DBConnection.getInstance();
         setLibrarianButtons();
@@ -116,8 +118,7 @@ public class SearchController {
             alert.show();
         }
         else{
-            
-            loadPopupUpdateObjekt();
+                loadPopup("UpdateObjekt", (Object) new UpdateObjektController(this.selectedObjekt));
         }
         
        
@@ -139,14 +140,13 @@ public class SearchController {
             alert.show();
         }
         else{
-            
-            loadPopupUpdateKopia();
+                loadPopup("UpdateKopia.fxml", (Object) new UpdateKopiaController(this.selectedObjekt));
         }
     }
 
     @FXML
     void pressNyttObjekt(ActionEvent event) {
-        loadPopupNewObjekt();
+        loadPopup("NewObjekt.fxml");
     }
 
     @FXML
@@ -154,7 +154,7 @@ public class SearchController {
         //Get selected item from list
         setSelectedObjekt();
         //Create popup and save as correct object. 
-        loadPopupKopia();
+        loadPopup("Kopia.fxml", (Object) new KopiaController(this.selectedObjekt));
     }
 
     @FXML
@@ -166,7 +166,7 @@ public class SearchController {
     void pressAddKopior(ActionEvent event) {
         //Get selected item from list
         setSelectedObjekt();
-        loadPopupNewKopia(selectedObjekt);
+           loadPopup("NewKopia.fxml", (Object) new NewKopiaController(selectedObjekt));
 
         //Create popup and save as correct object. 
     }
@@ -175,152 +175,6 @@ public class SearchController {
     void pressLateLoans(ActionEvent event) {
         loadPopup("LateLoans.fxml");
     }
-
-    //Load pages
-    private void loadPopupKopia() {
-        try {
-//            if (kopiaRoot == null){
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Kopia.fxml"));
-            kopiaRoot = loader.load();
-            App.getMainControll().getSearchController().setKopiaController(loader.getController());
-//            }
-            Stage stage = new Stage();
-            Scene scene = new Scene(kopiaRoot);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println("Fel i " + this.toString());
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void loadPopupNewKopia(Objekt objekt) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("NewKopia.fxml"));
-
-            NewKopiaController controller = new NewKopiaController(objekt);
-            loader.setController(controller);
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void loadPopupNewObjekt() {
-        try {
-//            if (kopiaRoot == null){
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("NewObjekt.fxml"));
-            newObjektRoot = loader.load();
-            App.getMainControll().getSearchController().setNewObjektController(loader.getController());
-//            }
-            Stage stage = new Stage();
-            Scene scene = new Scene(newObjektRoot);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException ex) {
-            System.out.println("Fel i " + this.toString());
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    /**
-     *
-     * @param fxml
-     */
-    public void loadPopup(String fxml) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException ex) {
-            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-    
-       public void loadPopupUpdateObjekt(){
-        try {
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateObjekt.fxml"));
-             
-            UpdateObjektController controller = new UpdateObjektController(this.selectedObjekt);           
-            loader.setController(controller);
-            
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException ex) {
-            System.out.println("Exception i klass NewObjektController.java, i "
-                    + "metoden loadPage()");
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-       
-        private void loadPopupUpdateKopia() {
-        try {
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateKopia.fxml"));
-             
-            UpdateKopiaController controller = new UpdateKopiaController(this.selectedObjekt);           
-            loader.setController(controller);
-            
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException ex) {
-            System.out.println("Exception i klass Search.java, i "
-                    + "metoden loadPage()");
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    
-
-
-//    private Boolean loadPopup(String fxml) {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-//            Parent root = loader.load();
-//
-//            Stage stage = new Stage();
-//            Scene scene = new Scene(root);
-//            stage.setScene(scene);
-//            stage.show();
-//            return true;
-//
-//        } catch (IOException ex) {
-//            Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return false;
-//    }
-
-    //Set FXML values 
-
-//    /**
-//     *
-//     * @param bool
-//     */
-//    public void setbtnUpdateObjektVisibility(Boolean bool) {
-//        btnUpdateObjekt.setVisible(bool);
-//    }
 
     /**
      *
@@ -354,11 +208,7 @@ public class SearchController {
 
         //Create ObservableList from list of objects. 
         observableResult = observableList(result);
-//        for (int i = 0; i <observableResult.size(); i++){
-//            System.out.println(observableResult.get(i));
-//        }
-        //Get felds from first Object. 
-        //Skapa tableColumns
+//       
         TableColumn<Objekt, String> colObjektID = new TableColumn<>("ObjektID");
         TableColumn<Objekt, String> colTitel = new TableColumn<>("Titel");
         TableColumn<Objekt, String> colTyp = new TableColumn<>("Typ");
@@ -382,10 +232,7 @@ public class SearchController {
      * @return
      */
     public ArrayList<Objekt> getObjekts() {
-
-        
         try {
-
             //gets an arraylist with objects
             result = connection.getObjektsFromDB(comboType.getValue().toString());
 
@@ -446,10 +293,14 @@ public class SearchController {
     }
 
     //Other functions
-    private void setComboType() {
+    public void setComboType() {
         comboType.getItems().add("Alla");
         comboType.getItems().addAll(connection.getObjektTypes());
         comboType.setValue("Alla");
+    }
+    
+    public void setComboTypeValue(String type){
+        comboType.setValue(type);
     }
 
     //Getters
@@ -487,13 +338,6 @@ public class SearchController {
         this.kopiaController = kopiaController;
     }
 
-    /**
-     *
-     * @return
-     */
-    public NewObjektController getNewObjektController() {
-        return newObjektController;
-    }
 
     /**
      *

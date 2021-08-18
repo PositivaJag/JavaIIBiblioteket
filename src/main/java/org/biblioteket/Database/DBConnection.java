@@ -348,7 +348,7 @@ public class DBConnection {
     }
 
     /**
-     *
+     * Returns true if the email belongs to a librarian.
      * @param email
      * @return
      */
@@ -480,7 +480,7 @@ public class DBConnection {
     //Objekts and copies
 
     /**
-     *
+     *Get all Objekts form DB that are of a certain type (or all types).
      * @param typ
      * @return
      */
@@ -1143,6 +1143,32 @@ public class DBConnection {
         pState.setString(2, skuld);
         pState.setInt(3, loanID);
         pState.executeUpdate();
+    }
+    
+
+    public Boolean updateBokKopia(int streckkod, String kategori, String placering) {
+
+        try {
+            String SQL = "update kopia set Lånekategori = ?, placering = ? where streckkod = ?;";
+            PreparedStatement pState =  connection.prepareStatement(SQL);
+            pState.setString(1, kategori);
+            pState.setString(2, placering);
+            pState.setInt(3, streckkod);
+            pState.executeUpdate();
+            connection.commit();
+            return true;
+
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+                System.out.println("Misslyckades att uppdatera kopior.\nRollback Ok.");
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex1) {
+                System.out.println("Misslyckades att uppdatera kopia.\nRollback ej ok.");
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+        return false;
     }
     
     public Bok updateBok(int objektID, String title, int ISBN, 

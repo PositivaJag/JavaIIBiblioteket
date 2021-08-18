@@ -32,10 +32,18 @@ public class KopiaController {
     private Label lblNoCopies;
 
     // The Objekt to get all the copies for. 
-    private Objekt selectObjekt;
+    private final Objekt selectObjekt;
     //Connection to DB. 
-    DBConnection connection;
+    private DBConnection connection;
 
+    /**
+     * Constructor
+     * @param objekt 
+     */
+    public KopiaController(Objekt objekt){
+        this.selectObjekt = objekt;
+    }
+    
     /**
      * The method is run automatically when the class is created.
      */
@@ -44,9 +52,6 @@ public class KopiaController {
         try {
             //Get connection to DB. 
             connection = DBConnection.getInstance();
-            //Get selected Objekt from SearcController. 
-            selectObjekt = App.getMainControll().getSearchController().getSelectedObjekt();
-
             //Get list of copies for the Objekt. 
             ArrayList<Kopia> Copies = connection.getObjektCopies(selectObjekt, selectObjekt.getType());
             if (Copies == null || Copies.isEmpty()) {

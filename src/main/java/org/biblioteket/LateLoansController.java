@@ -17,14 +17,12 @@ import org.biblioteket.Objects.Loan;
 public class LateLoansController {
 
     @FXML
-    private Text lblTitel;
-    @FXML
     private TableView<?> tblLateLoans;
     @FXML
     private Button btnClose;
     
-    ArrayList<Loan> lateLoans;
-    DBConnection connection;
+    private ArrayList<Loan> lateLoans;
+    private DBConnection connection;
     
     /**
      * The method is run automatically when the class is created.
@@ -45,5 +43,4 @@ public class LateLoansController {
     void pressClose(ActionEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
-   
 }

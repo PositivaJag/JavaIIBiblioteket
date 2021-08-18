@@ -1,8 +1,6 @@
 package org.biblioteket;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,7 +12,6 @@ import javafx.stage.Stage;
  * startinformation.
  */
 public class App extends Application {
-
     //Instans av controller för meny-sidan. 
     private static MainController mainControll;
 

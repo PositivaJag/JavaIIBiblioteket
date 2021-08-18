@@ -46,7 +46,6 @@
                         <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Lånekategori" GridPane.rowIndex="1" />
                         <ComboBox fx:id="comboCategory" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Placering" GridPane.rowIndex="2" />
-                        <TextField fx:id="txtStreckkod" GridPane.columnIndex="1" />
                         <TextField fx:id="txtPlacement" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <HBox alignment="BOTTOM_RIGHT" fillHeight="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <children>
@@ -62,6 +61,7 @@
                               </Button>
                            </children>
                         </HBox>
+                        <Label fx:id="lblStreckkod" prefHeight="18.0" prefWidth="225.0" GridPane.columnIndex="1" />
                      </children>
                      <padding>
                         <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
