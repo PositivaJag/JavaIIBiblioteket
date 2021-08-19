@@ -120,11 +120,11 @@ public class NewKopiaController extends Controllers{
         Boolean newKopior = connection.newKopior(listKopior);
         //Show messages depending on anser.
         if (newKopior) {
-            Util.simpleInfoAlert("Kopiorna skapades\n Fönstret stängs.");
+            simpleInfoAlert("Kopiorna skapades\n Fönstret stängs.");
             ((Node) (event.getSource())).getScene().getWindow().hide();
             
         } else {
-            Util.simpleErrorAlert("Något gick fel.\nKopiorna skapades inte");
+            simpleErrorAlert("Något gick fel.\nKopiorna skapades inte");
         }
     }
 /**

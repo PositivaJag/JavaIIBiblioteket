@@ -170,7 +170,7 @@ public class UpdateKopiaController extends Controllers{
         this.selectedKopia = (Kopia) tblAddedCopies.getSelectionModel().getSelectedItem();
         //If Kopia on loan
         if (selectedKopia.getAccess() == Kopia.AccessKopia.ON_LOAN) { 
-            Util.simpleInfoAlert("Kopian är utlånad och kan därför inte tas bort");
+            simpleInfoAlert("Kopian är utlånad och kan därför inte tas bort");
                 return;
             }
         
@@ -186,13 +186,13 @@ public class UpdateKopiaController extends Controllers{
         if (result.isPresent() && result.get() == ButtonType.OK) {
             //If Objekt was deleted successfully, show message and close. 
             if (connection.deleteKopia(selectedKopia.getStreckkod())) {
-                Util.simpleInfoAlert("Kopian raderades framgångsrikt.");
+                simpleInfoAlert("Kopian raderades framgångsrikt.");
                 listKopior.remove(selectedKopia);
                 updateTableView(tblAddedCopies, listKopior);
                 
             //If something went wrong, show message. 
             } else {
-                Util.simpleErrorAlert("Något gick fel, objektet raderades inte.");
+                simpleErrorAlert("Något gick fel, objektet raderades inte.");
             }
         }
         
@@ -203,13 +203,13 @@ public class UpdateKopiaController extends Controllers{
      
         if (connection.updateBokKopia( Integer.parseInt(lblStreckkod.getText()),
                 comboCategory.getValue().toString().split(",")[0], txtPlacement.getText())){
-            Util.simpleInfoAlert("Kopian uppdaterades");
+            simpleInfoAlert("Kopian uppdaterades");
             //Uppdate list of copies. 
             this.listKopior = connection.getObjektCopies(selectedObjekt, typ);
             updateTableView(tblAddedCopies, listKopior);
         }
         else{
-            Util.simpleErrorAlert("Något gick fel\nKopian uppdaterades inte.");
+            simpleErrorAlert("Något gick fel\nKopian uppdaterades inte.");
         }
 
 //        lblWarning.setText("Streckkod finns redan");

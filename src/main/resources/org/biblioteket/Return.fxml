@@ -73,7 +73,7 @@
                         </TableView>
                         <HBox alignment="BOTTOM_RIGHT">
                            <children>
-                              <Button fx:id="btnReturnTitles" mnemonicParsing="false" onAction="#pressReturnTitles" text="Lämna tillbaka titlar">
+                              <Button fx:id="btnReturn" mnemonicParsing="false" onAction="#pressReturn" text="Lämna tillbaka">
                                  <HBox.margin>
                                     <Insets bottom="5.0" right="10.0" />
                                  </HBox.margin>

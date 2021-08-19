@@ -194,7 +194,7 @@ public class LoanController extends Controllers{
             //If something went wrong and Loans were not added to DB, 
             //show message
         } else {
-           Util.simpleErrorAlert("Något gick fel.\n Inga lån skapades");
+           simpleErrorAlert("Något gick fel.\n Inga lån skapades");
         }
     }
 

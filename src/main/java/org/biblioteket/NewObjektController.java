@@ -175,7 +175,7 @@ public class NewObjektController extends Controllers {
                 loadPage("NewKopia.fxml", new NewKopiaController(objekt), borderPane);
             }
         } else {
-            Util.simpleErrorAlert("Något gick fel.\nObjektet skapades inte");   
+            simpleErrorAlert("Något gick fel.\nObjektet skapades inte");   
         }
     }
 }

@@ -1,19 +1,16 @@
 package org.biblioteket;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import org.biblioteket.Database.DBConnection;
-import org.biblioteket.Objects.Kopia;
 import org.biblioteket.Objects.Loan;
 
 /**
@@ -32,7 +29,7 @@ public class ReturnController extends Controllers{
     @FXML
     private TableView tblTitles;
     @FXML
-    private Button btnReturnTitles;
+    private Button btnReturn;
     
     private DBConnection connection;
     private ArrayList<Loan> loans;
@@ -83,7 +80,6 @@ public class ReturnController extends Controllers{
             lblInformation.setText("Titeln är redan tillagd i listan.");
             return;
         }
-
         //Check if Kopia utlånad
         Loan loan = (connection.getActiveLoan(streckkod));
         if (loan == null || loan.getActualReturnDate() != null) {
@@ -91,49 +87,29 @@ public class ReturnController extends Controllers{
                     + "vänligen kontakta personalen");
             return;
         }
-        //Create loan
+        //Create loan and update table
         loans.add(loan);
         addedStreckkoder.add(streckkod);
         updateTableView(tblTitles, loans);
     }
 
+    /**
+     * Ends loans by updating the DB
+     * @param event 
+     */
     @FXML
-    void pressReturnTitles(ActionEvent event) {
-        Boolean returnLoan = connection.returnLoan(loans);
+    void pressReturn(ActionEvent event) {
 
-        Alert alert;
+        Boolean returnLoan = connection.returnLoan(loans);
+        
         if (returnLoan) {
-            alert = new Alert(Alert.AlertType.INFORMATION, loans.size() + " titlar återlämnade.");
-            alert.show();
+            simpleInfoAlert(loans.size() + " titlar återlämnade.");
             txtStreckkod.setText("");
             tblTitles.getColumns().clear();
             initialize();
 
         } else {
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Något gick fel.\n Inga lån skapades");
-            alert.show();
+            simpleErrorAlert("Något gick fel.\n Inga lån skapades");
         }
-
     }
-
-//    private void updateTableView() {
-//
-//        tblTitles.getColumns().clear();
-//
-//        Field[] fields = loans.get(0).getClass().getDeclaredFields();
-//
-//        ObservableList<Loan> observableKopior = FXCollections.observableArrayList(loans);
-//
-//        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
-//        for (Field field : fields) {
-//            System.out.println(field);
-//            TableColumn<Map, String> column = new TableColumn<>(field.getName());
-//            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
-//            tblTitles.getColumns().add(column);
-//        }
-//        tblTitles.setItems(observableKopior);
-//
-//    }
-
 }

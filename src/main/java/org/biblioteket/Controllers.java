@@ -17,12 +17,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Bok;
@@ -163,7 +165,7 @@ public class Controllers {
         }
         //Call function  that creates a string from the list
         //Print the list in the text label. 
-        text.setText(Util.listToString(list));
+        text.setText(listToString(list));
     }
 
     /**
@@ -185,7 +187,7 @@ public class Controllers {
         }
         //Call function  that creates a string from the list
         //Print the list in the text label. 
-        text.setText(Util.listToString(list));
+        text.setText(listToString(list));
     }
     
      public ArrayList<Integer> listAllISBN(Bok bok, DBConnection connection) {
@@ -196,5 +198,37 @@ public class Controllers {
         allISBN.remove(Integer.valueOf(bok.getISBN()));
         return allISBN;
  }
+         /**
+     *
+     * @param list
+     * @return
+     */
+    public static String listToString(ArrayList<String> list){
+        String string = "";
+        for (int i = 0; i < list.size(); i++){
+            string += list.get(i)+"; ";
+        }
+        return string;
+    }
+     
+      /**
+     *
+     * @param name
+     */
+    public static void generalError(String name){
+        System.out.println("Ett fel har uppstått i klass" + name);
+    }
+    
+    public static void simpleInfoAlert(String message){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.showAndWait();
+    }
+
+      public static void simpleErrorAlert(String message){
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.showAndWait();
+    }
      
 }

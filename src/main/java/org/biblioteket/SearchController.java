@@ -7,18 +7,12 @@ import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import static javafx.collections.FXCollections.observableList;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -26,129 +20,85 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
-import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Objects.Objekt.Type;
-import static org.biblioteket.Objects.Objekt.Type.Bok;
 
 /**
+ * Anyone can serach for Objekts and Kopia, ibrarians can handle Kopia and
+ * Objekt.
  *
  * @author jenni
  */
-public class SearchController extends Controllers{
+public class SearchController extends Controllers {
 
-    //FXML variables
     @FXML
     private TextField txtSearch;
     @FXML
-//    private Button btnSearch;
-//    @FXML
-    private TableView tblSearch;
+    private Button btnSearch;
     @FXML
     private ComboBox comboType;
     @FXML
-    private Button btnDetails;
-    @FXML
-    private Button btnUpdateObjekt;
-    @FXML
-    private Button btnNyttObjekt;
-    @FXML
-    private Button btnAddKopior;
-    @FXML
-    private Button btnLateLoans;
-    @FXML
-    private Button btnSearch;
-
-    @FXML
-    private VBox vboxKopia;
-
+    private TableView tblSearch;
     @FXML
     private VBox vboxObjekt;
     @FXML
-    private VBox vboxLoan;
+    private Button btnNyttObjekt;
+    @FXML
+    private Button btnUpdateObjekt;
+    @FXML
+    private VBox vboxKopia;
+    @FXML
+    private Button btnAddKopior;
     @FXML
     private Button btnUpdateKopia;
+    @FXML
+    private VBox vboxLoan;
+    @FXML
+    private Button btnLateLoans;
+    @FXML
+    private Button btnDetails;
 
-    //Other variables
-    //List with types of objekts. 
-    private ObservableList<String> objektTyp = FXCollections.observableArrayList("Alla");
-    private ArrayList<Objekt> result;   //List of Objekts    
-    private ObservableList<Objekt> observableResult;  //Observable list with Objekts. 
-
+    //Lists with types of objekts. 
+    private ArrayList<Objekt> objekts;
+    private ObservableList<Objekt> observableObjekts;
     private Objekt selectedObjekt;
-    private KopiaController kopiaController;    //Controller object
-    private SearchController searchController;
-    private NewObjektController newObjektController;
-    private Stage newObjektStage;
-    private Parent kopiaRoot;
-    private Parent newObjektRoot;
-    private  DBConnection connection;
+    private DBConnection connection;
 
-
-    public void searchController(SearchController searchController){
-           this.searchController = searchController;
-    }
-    
-    
     public void initialize() {
         connection = DBConnection.getInstance();
+
+        //Set start values
         setLibrarianButtons();
         setComboType();
         updateTableView(getObjekts());
-        addTextFilter(observableResult, txtSearch, tblSearch);
+        addTextFilter(observableObjekts, txtSearch, tblSearch);
 
+//        Listener that updates the table when a new value has been chosen in 
+//          the combo box. 
         comboType.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                     String newValue) {
                 updateTableView(getObjekts());
-                addTextFilter(observableResult, txtSearch, tblSearch);
+                addTextFilter(observableObjekts, txtSearch, tblSearch);
             }
         });
     }
 
+    /**
+     * Lets the user search in the Objekt table. 
+     * @param event 
+     */
     @FXML
-    void pressUpdateObjekt(ActionEvent event) {
-        setSelectedObjekt();
-        if (selectedObjekt.getType() != Type.Bok){
-            Alert alert = new Alert(AlertType.INFORMATION, "Programmet kan bara"
-                    + " hantera böcker för tillfället.");
-            alert.show();
-        }
-        else{
-                loadPopup("UpdateObjekt.fxml", (Object) new UpdateObjektController(this.selectedObjekt));
-        }
-        
-       
+    void pressBtnSearch(ActionEvent event) {
+        addTextFilter(observableObjekts, txtSearch, tblSearch);
     }
-
-    @FXML
-    void pressUpdateKopia(ActionEvent event) {
-         setSelectedObjekt();
-        if (selectedObjekt.getType() != Type.Bok){
-            Alert alert = new Alert(AlertType.INFORMATION, "Programmet kan bara"
-                    + " hantera böcker för tillfället.");
-            alert.show();
-        }
-        
-        else if (connection.getObjektCopies(selectedObjekt, selectedObjekt.getType()) 
-                == null ){
-             Alert alert = new Alert(AlertType.INFORMATION, "Titeln "
-                     +selectedObjekt.getTitel() +"har inga kopior att uppdatera.");
-            alert.show();
-        }
-        else{
-                loadPopup("UpdateKopia.fxml", (Object) new UpdateKopiaController(this.selectedObjekt));
-        }
-    }
-
-    @FXML
-    void pressNyttObjekt(ActionEvent event) {
-        loadPopup("NewObjekt.fxml");
-    }
-
+    
+/**
+ * Opens a popup with the Kopias that are associated to the selected Objekt. 
+ * @param event 
+ */
     @FXML
     void pressDetalis(ActionEvent event) {
         //Get selected item from list
@@ -156,59 +106,89 @@ public class SearchController extends Controllers{
         //Create popup and save as correct object. 
         loadPopup("Kopia.fxml", (Object) new KopiaController(this.selectedObjekt));
     }
-
-    @FXML
-    void pressBtnSearch(ActionEvent event) {
-        addTextFilter(observableResult, txtSearch, tblSearch);
+    
+        @FXML
+    void pressNyttObjekt(ActionEvent event) {
+        loadPopup("NewObjekt.fxml");
     }
-
-    @FXML
+    
+     @FXML
     void pressAddKopior(ActionEvent event) {
         //Get selected item from list
         setSelectedObjekt();
-           loadPopup("NewKopia.fxml", (Object) new NewKopiaController(selectedObjekt));
-
-        //Create popup and save as correct object. 
+        loadPopup("NewKopia.fxml", new NewKopiaController(selectedObjekt));
     }
     
-        @FXML
+    /**
+     * Sends the Objekt selected in the table to the update Objekt page. Can
+     * only handle Bok objekt at the moment, not Film or Tidskrift.
+     * @param event
+     */
+    @FXML
+    void pressUpdateObjekt(ActionEvent event) {
+        setSelectedObjekt();
+
+        if (selectedObjekt.getType() != Type.Bok) {
+            simpleInfoAlert("Programmet kan bara hantera böcker för tillfället.");
+        } else {
+            loadPopup("UpdateObjekt.fxml", (Object) new UpdateObjektController(this.selectedObjekt));
+        }
+    }
+
+    /**
+     * Sends the Objekt selected in the table to the update Kopia page. Can only
+     * handle Bok objekt at the moment, not Film or Tidskrift.
+     * @param event
+     */
+    @FXML
+    void pressUpdateKopia(ActionEvent event) {
+        setSelectedObjekt();
+        //If selectedObjekt not Bok, show message
+        if (selectedObjekt.getType() != Type.Bok) {
+            simpleInfoAlert("Programmet kan bara hantera böcker för tillfället.");
+        } //If the Objekt has no Kopia to update, show message. 
+        else if (connection.getObjektCopies(selectedObjekt, 
+                selectedObjekt.getType()) == null) {
+            simpleInfoAlert("Titeln " + selectedObjekt.getTitel() 
+                    + "har inga kopior att uppdatera.");
+        } else {
+            loadPopup("UpdateKopia.fxml", (Object) new UpdateKopiaController(this.selectedObjekt));
+        }
+    }
+    
+    /**
+     * Opens a popup where the user can add new Kopias to the Objekt selected
+     * in the search table. 
+     * @param event 
+     */
+    @FXML
     void pressLateLoans(ActionEvent event) {
         loadPopup("LateLoans.fxml");
     }
 
     /**
-     *
+     * If a librarian is logged in, show the buttons for creating and updating
+     * Objekt and kopia and to see late loans. 
      */
-    public void setLibrarianButtons() {
+    private void setLibrarianButtons() {
         Boolean bool = App.getMainControll().checkIfLibrarianLoggedIn();
         vboxObjekt.setVisible(bool);
-            vboxKopia.setVisible(bool);
-            vboxLoan.setVisible(bool);
-//        setbtnUpdateObjektVisibility(bool);
-//        setbtnNyttObjektVisibility(bool);
-    }
-
-    /**
-     *
-     * @param bool
-     */
-    public void setbtnNyttObjektVisibility(Boolean bool) {
-        btnNyttObjekt.setVisible(bool);
+        vboxKopia.setVisible(bool);
+        vboxLoan.setVisible(bool);
     }
 
     //Table 
-
     /**
-     *
+     * Fills the table with Objekt from DB. 
      * @param result
      */
-    public void updateTableView(List<Objekt> result) {
+    private void updateTableView(List<Objekt> result) {
         //Clean table
         tblSearch.getColumns().clear();
 
         //Create ObservableList from list of objects. 
-        observableResult = observableList(result);
-//       
+        observableObjekts = observableList(result);
+        
         TableColumn<Objekt, String> colObjektID = new TableColumn<>("ObjektID");
         TableColumn<Objekt, String> colTitel = new TableColumn<>("Titel");
         TableColumn<Objekt, String> colTyp = new TableColumn<>("Typ");
@@ -222,34 +202,36 @@ public class SearchController extends Controllers{
         colSearchWord.setCellValueFactory(new PropertyValueFactory<>("searchWords"));
 
         tblSearch.getColumns().addAll(colObjektID, colTitel, colTyp, colCreator, colSearchWord);
-        tblSearch.setItems(observableResult);
+        tblSearch.setItems(observableObjekts);
 
         selectFirstEntry();
     }
 
     /**
-     *
+     * Retrieves all Objekts from DB and adds them to an ArrayList. 
      * @return
      */
-    public ArrayList<Objekt> getObjekts() {
+    private ArrayList<Objekt> getObjekts() {
         try {
             //gets an arraylist with objects
-            result = connection.getObjektsFromDB(comboType.getValue().toString());
+            objekts = connection.getObjektsFromDB(comboType.getValue().toString());
 
         } catch (Exception ex) {
             Logger.getLogger(SearchController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return result;
+        return objekts;
     }
 
     /**
-     *
+     * Handles searching in the table. 
+     * This function could use some more work. 
+     * 
      * @param <Objekt>
      * @param observList
      * @param txtSearch
      * @param tblSearch
      */
-    public static <Objekt> void addTextFilter(ObservableList<Objekt> observList,
+    private static <Objekt> void addTextFilter(ObservableList<Objekt> observList,
             TextField txtSearch, TableView tblSearch) {
 
         // skapa en lista med tabellens kolumner    
@@ -292,77 +274,13 @@ public class SearchController extends Controllers{
         tblSearch.getSelectionModel().selectFirst();
     }
 
-    //Other functions
-    public void setComboType() {
+    private void setComboType() {
         comboType.getItems().add("Alla");
         comboType.getItems().addAll(connection.getObjektTypes());
         comboType.setValue("Alla");
     }
-    
-    public void setComboTypeValue(String type){
-        comboType.setValue(type);
-    }
 
-    //Getters
-
-    /**
-     *
-     * @return
-     */
-    public Objekt getSelectedObjekt() {
-        return selectedObjekt;
-    }
-
-    /**
-     *
-     */
-    public void setSelectedObjekt() {
+    private void setSelectedObjekt() {
         this.selectedObjekt = (Objekt) tblSearch.getSelectionModel().getSelectedItem();
     }
-
-    /**
-     *
-     * @return
-     */
-    public KopiaController getKopiaController() {
-        return this.kopiaController;
-    }
-
-    //Setters   
-
-    /**
-     *
-     * @param kopiaController
-     */
-    public void setKopiaController(KopiaController kopiaController) {
-        this.kopiaController = kopiaController;
-    }
-
-
-    /**
-     *
-     * @param newObjektController
-     */
-    public void setNewObjektController(NewObjektController newObjektController) {
-        this.newObjektController = newObjektController;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Stage getNewObjektStage() {
-        return newObjektStage;
-    }
-
-    /**
-     *
-     * @param newObjektStage
-     */
-    public void setNewObjektStage(Stage newObjektStage) {
-        this.newObjektStage = newObjektStage;
-    }
-
-   
-
 }

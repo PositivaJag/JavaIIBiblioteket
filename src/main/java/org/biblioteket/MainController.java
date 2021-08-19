@@ -64,14 +64,14 @@ public class MainController extends Controllers {
                 break;
             case BIBLIOTEKARIE: //Only Loantagare can  loan Objekts.
             {
-                Util.simpleErrorAlert("Bibliotekarier kan inte "
+                simpleErrorAlert("Bibliotekarier kan inte "
                         + "låna böcker själv utan att logga in som en låntagare.\n"
                         + "gränssnittet för att hjälpa låntagare är inte klart ännu. ");
 
                 break;
             }
             default: {
-                Util.simpleErrorAlert("Något gick fel när sidan skulle laddas");
+                simpleErrorAlert("Något gick fel när sidan skulle laddas");
                 break;
             }
         }

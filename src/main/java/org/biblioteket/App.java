@@ -35,7 +35,7 @@ public class App extends Application {
             stage.show();
             
         } catch (IOException ex) {
-            Util.generalError(this.getClass().getName());
+            Controllers.generalError(this.getClass().getName());
         }
     }
     

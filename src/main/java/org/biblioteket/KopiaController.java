@@ -62,7 +62,7 @@ public class KopiaController extends Controllers{
                lblTitel.setText(selectObjekt.getTitel());
             }
         } catch (Exception ex) {
-            Util.generalError(this.getClass().getName());
+            generalError(this.getClass().getName());
             Logger.getLogger(KopiaController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

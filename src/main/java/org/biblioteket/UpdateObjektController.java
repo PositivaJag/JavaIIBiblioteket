@@ -195,13 +195,13 @@ public class UpdateObjektController extends Controllers {
         //if Bok instance was returned aka update succesed.
         //Show message and close down
         if (updateBok != null) { 
-            Util.simpleInfoAlert("Objekt "+Integer.toString(objektID)+" uppdaterades");
+            simpleInfoAlert("Objekt "+Integer.toString(objektID)+" uppdaterades");
             ((Node) (event.getSource())).getScene().getWindow().hide();
             
         //if no Bok instance was returned aka update failed
         //Show message.
         } else {
-            Util.simpleErrorAlert("Något gick fel.\nObjektet uppdaterades inte");
+            simpleErrorAlert("Något gick fel.\nObjektet uppdaterades inte");
         }
     }
 
@@ -219,7 +219,7 @@ public class UpdateObjektController extends Controllers {
             noKopia = listKopia.size();
             //Check if Kopia is on loan and can´t be deleted.
             if (checkIfCopyOnLoan(listKopia)) { 
-                Util.simpleErrorAlert("En kopia är utlånad. Objektet kan därför inte tas bort.");
+                simpleErrorAlert("En kopia är utlånad. Objektet kan därför inte tas bort.");
                 return;
             }
         }
@@ -238,12 +238,12 @@ public class UpdateObjektController extends Controllers {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             //If Objekt was deleted successfully, show message and close. 
             if (connection.deleteBokObjekt(objektID)) {
-                Util.simpleInfoAlert("Objektet raderades framgångsrikt.");
+                simpleInfoAlert("Objektet raderades framgångsrikt.");
                 ((Node) (event.getSource())).getScene().getWindow().hide();
                 
             //If something went wrong, show message. 
             } else {
-                Util.simpleErrorAlert("Något gick fel, objektet raderades inte.");
+                simpleErrorAlert("Något gick fel, objektet raderades inte.");
             }
         }
     }
@@ -295,10 +295,10 @@ public class UpdateObjektController extends Controllers {
     private void showBok(Bok bok) {
 
         selectAuthors = bok.getAuthors();
-        lblAuthor.setText(Util.listToString(selectAuthors));
+        lblAuthor.setText(listToString(selectAuthors));
 
         selectSearchWords = bok.getSearchWordsAsList();
-        lblSearchWord.setText(Util.listToString(selectSearchWords));
+        lblSearchWord.setText(listToString(selectSearchWords));
 
         lblObjektID.setText(Integer.toString(objektID));
         txtTitle.setText(selectedObjekt.getTitel());
