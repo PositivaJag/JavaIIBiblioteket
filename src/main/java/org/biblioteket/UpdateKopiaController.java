@@ -26,51 +26,43 @@ import org.biblioteket.Objects.Objekt.Type;
  *
  * @author jenni
  */
-public class UpdateKopiaController extends Controllers{
+public class UpdateKopiaController extends Controllers {
 
     @FXML
     private Text lblTitel;
-
     @FXML
     private ComboBox comboCategory;
-
     @FXML
     private Label lblStreckkod;
-
     @FXML
     private TextField txtPlacement;
-
     @FXML
     private Label lblWarning;
-
     @FXML
     private Button btnUpdate;
-
     @FXML
     private TableView tblAddedCopies;
-
     @FXML
     private Button btnDeleteKopia;
-
     @FXML
     private Button btnAvbryt;
-
     @FXML
     private GridPane grdKopia;
 
-    private Objekt selectedObjekt;
+    private final Objekt selectedObjekt;
     private Kopia selectedKopia;
-    int objektID;
-    private DBConnection connection;
-    private String title;
-    private Type typ;
+    private final int objektID;
+    private final DBConnection connection;
+    private final String title;
+    private final Type typ;
     private ArrayList<Kopia> listKopior;
-    private Bok bok;
+    private final Bok bok;
 
     private ArrayList<Integer> allStreckkod;
     private Alert alert;
 
     /**
+     * Constructor
      *
      * @param objekt
      */
@@ -85,9 +77,6 @@ public class UpdateKopiaController extends Controllers{
         this.allStreckkod = listAllISBN(bok, connection);
     }
 
-    /**
-     *
-     */
     public void initialize() {
 
         //Listener to make sure only numbers are added in streckkod filed. 
@@ -123,7 +112,6 @@ public class UpdateKopiaController extends Controllers{
                 lblWarning.setText("");
             }
         });
-
         lblStreckkod.textProperty().addListener(allFieldsListener);
         txtPlacement.textProperty().addListener(allFieldsListener);
         comboCategory.valueProperty().addListener(allFieldsListener);
@@ -144,36 +132,28 @@ public class UpdateKopiaController extends Controllers{
                 txtPlacement.setText("");
             }
         });
-        
-        setGeneralSettings();
+
+        lblTitel.setText(objektID + " - " + title);
+
+        //Get Categories and add them to comboBox. 
+        setComboCategories();
+        updateTableView(tblAddedCopies, listKopior);
     }
 
-//    @FXML
-//    void pressAddToDB(ActionEvent event) {
-//        Boolean newKopior = connection.newKopior(listKopior);
-//
-//        Alert alert;
-//        if (newKopior) {
-//            alert = new Alert(Alert.AlertType.INFORMATION, "Kopiorna skapades\n fönstret stängs.");
-//            alert.showAndWait();
-//            ((Node) (event.getSource())).getScene().getWindow().hide();
-//            
-//        } else {
-//            alert = new Alert(Alert.AlertType.ERROR);
-//            alert.setContentText("Något gick fel.\nKopiorna skapades inte");
-//            alert.show();
-//        }
-//
-//    }
+    /**
+     * Delets the selected Kopia. Asks for confirmation before deleting.
+     *
+     * @param event
+     */
     @FXML
     void pressDeleteKopia(ActionEvent event) {
         this.selectedKopia = (Kopia) tblAddedCopies.getSelectionModel().getSelectedItem();
         //If Kopia on loan
-        if (selectedKopia.getAccess() == Kopia.AccessKopia.ON_LOAN) { 
+        if (selectedKopia.getAccess() == Kopia.AccessKopia.ON_LOAN) {
             simpleInfoAlert("Kopian är utlånad och kan därför inte tas bort");
-                return;
-            }
-        
+            return;
+        }
+
         //Do you really want to delete?
         alert = new Alert(Alert.AlertType.CONFIRMATION, "Kopia "
                 + "selectedKopia.getStreckkod() kommer att tas bort permanent.\n"
@@ -189,32 +169,32 @@ public class UpdateKopiaController extends Controllers{
                 simpleInfoAlert("Kopian raderades framgångsrikt.");
                 listKopior.remove(selectedKopia);
                 updateTableView(tblAddedCopies, listKopior);
-                
-            //If something went wrong, show message. 
+
+                //If something went wrong, show message. 
             } else {
                 simpleErrorAlert("Något gick fel, objektet raderades inte.");
             }
         }
-        
+
     }
 
+    /**
+     * Updates the chosen Kopia. Does not check if any changes were made.
+     *
+     * @param event
+     */
     @FXML
     void pressUpdate(ActionEvent event) {
-     
-        if (connection.updateBokKopia( Integer.parseInt(lblStreckkod.getText()),
-                comboCategory.getValue().toString().split(",")[0], txtPlacement.getText())){
+
+        if (connection.updateBokKopia(Integer.parseInt(lblStreckkod.getText()),
+                comboCategory.getValue().toString().split(",")[0], txtPlacement.getText())) {
             simpleInfoAlert("Kopian uppdaterades");
-            //Uppdate list of copies. 
+            //Uppdate list of copies in the table
             this.listKopior = connection.getObjektCopies(selectedObjekt, typ);
             updateTableView(tblAddedCopies, listKopior);
-        }
-        else{
+        } else {
             simpleErrorAlert("Något gick fel\nKopian uppdaterades inte.");
         }
-
-//        lblWarning.setText("Streckkod finns redan");
-//        btnUpdate.setDisable(true);
-
     }
 
     @FXML
@@ -222,6 +202,12 @@ public class UpdateKopiaController extends Controllers{
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 
+    /**
+     * Decides what categories the Kopia can have, depending on the Objekt.
+     *
+     * @param objektID
+     * @param title
+     */
     private void setComboCategories() {
         if (this.typ == Type.Bok) {
             comboCategory.getItems().addAll("Bok, 30 dagar",
@@ -234,35 +220,5 @@ public class UpdateKopiaController extends Controllers{
         } else {
             comboCategory.getItems().addAll("Referenslitteratur, 0 dagar");
         }
-    }
-
-    //Table functions
-//    private void updateTableView() {
-//
-//        tblAddedCopies.getColumns().clear();
-//
-//        Field[] fields = listKopior.get(0).getClass().getDeclaredFields();
-//
-//        ObservableList<Kopia> observableKopior = FXCollections.observableArrayList(listKopior);
-//
-//        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
-//        for (Field field : fields) {
-//            System.out.println(field);
-//            TableColumn<Map, String> column = new TableColumn<>(field.getName().toUpperCase());
-//            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
-//            tblAddedCopies.getColumns().add(column);
-//        }
-//        tblAddedCopies.setItems(observableKopior);
-//
-//    }
-    private void setGeneralSettings() {
-        //Set titel
-        lblTitel.setText(objektID + " - " + title);
-
-        //Get Categories and add them to comboBox. 
-        setComboCategories();
-
-        updateTableView(tblAddedCopies, listKopior);
-
     }
 }

@@ -190,6 +190,13 @@ public class Controllers {
         text.setText(listToString(list));
     }
     
+    /**
+     * Creates a list of All ISBN numbers in the DB, except for the number of 
+     * bok. 
+     * @param bok
+     * @param connection
+     * @return 
+     */
      public ArrayList<Integer> listAllISBN(Bok bok, DBConnection connection) {
        //get all ISBN numbers.
         ArrayList<Integer> allISBN = connection.getAllISBN();

@@ -72,16 +72,15 @@ public class UpdateObjektController extends Controllers {
     private ArrayList<String> selectSearchWords;
 
     //Lists with all ISBN numbers. 
-    private ArrayList<Integer> allISBN = new ArrayList<>();
+    private ArrayList<Integer> allISBN;
 
     //Info about selected Objekt. 
     private final int objektID;
-    private Objekt selectedObjekt;
+    private final Objekt selectedObjekt;
     private Bok bok;
 
-
-    DBConnection connection;
-    Alert alert;
+    private DBConnection connection;
+    private Alert alert;
 
     /**
      * Construktor
@@ -100,6 +99,7 @@ public class UpdateObjektController extends Controllers {
     public void initialize() {
         connection = DBConnection.getInstance();
         setGeneralSettings();
+        allISBN = new ArrayList<>();
 
         //Listener that ensures that the ISBN is on the right format and
         //doesn't areadu exist. 
@@ -223,7 +223,6 @@ public class UpdateObjektController extends Controllers {
                 return;
             }
         }
-
         //Do you really want to delete?
         alert = new Alert(AlertType.CONFIRMATION, "Objekt "
                 + objektID + ", " + selectedObjekt.getTitel() 
@@ -257,23 +256,12 @@ public class UpdateObjektController extends Controllers {
     void pressCancel(ActionEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
-
-   
-
-    /**
-     * returns the title as string.
-     *
-     * @return
-     */
-    public String getTitle() {
-        return txtTitle.getText();
-    }
-
-    /**
+    
+       /**
      * Sets variables used it the UI. E.g. Objekt variables, lists of authors,
      * search words and ISBN numbers.
      */
-    public void setGeneralSettings() {
+    private void setGeneralSettings() {
         //Create a Bok instance. 
         bok = connection.getBokFromDB(this.objektID);
 
@@ -292,6 +280,10 @@ public class UpdateObjektController extends Controllers {
         listAllISBN(bok, connection);
     }
 
+    /**
+     * Shows the information for the chocen Bok to update. 
+     * @param bok 
+     */
     private void showBok(Bok bok) {
 
         selectAuthors = bok.getAuthors();
@@ -307,6 +299,12 @@ public class UpdateObjektController extends Controllers {
         listAllISBN(bok, connection);
     }
     
+    /**
+     * Checks if any of the Kopia in the list is currently on loan. 
+     * 
+     * @param listKopia
+     * @return Boolean
+     */
     private Boolean checkIfCopyOnLoan(ArrayList<Kopia> listKopia) {
         for (int i = 0; i < listKopia.size(); i++) {
             //Check if each Kopia has any active loan. 
@@ -317,6 +315,4 @@ public class UpdateObjektController extends Controllers {
         //If no Kopia had active loan, return false. 
         return false;
     }
-
-   
 }
