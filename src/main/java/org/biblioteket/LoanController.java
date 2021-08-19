@@ -20,10 +20,10 @@ import org.biblioteket.Objects.Loan;
 import org.biblioteket.Persons.Loantagare;
 
 /**
- *
+ * Handles Loans
  * @author jenni
  */
-public class LoanController {
+public class LoanController extends Controllers{
 
     @FXML
     private TextField txtStreckkod;
@@ -145,7 +145,7 @@ public class LoanController {
         loans.add(new Loan(today, latestReturnDate, loanDays, streckkod,
                 loantagareID, titel));
         addedStreckkoder.add(streckkod);
-        Util.updateTableView(tblTitles, loans);
+        updateTableView(tblTitles, loans);
 
         //Chech if maximun number of loans has been reached. 
         //Dissable adding more copies if that is tha case. 

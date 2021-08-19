@@ -27,7 +27,7 @@ import org.biblioteket.Objects.Objekt.Type;
  *
  * @author jenni
  */
-public class UpdateObjektController extends update {
+public class UpdateObjektController extends Controllers {
 
     //FXML variables
     @FXML
@@ -258,52 +258,7 @@ public class UpdateObjektController extends update {
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 
-    /**
-     * Adds chosen word, from a combobox, to a list and prints the list in a
-     * label.
-     *
-     * @param selectedWord, the name of the combobox where a word was chosen.
-     * @param list of already selected words.
-     * @param text, the lable where the result should be printed out.
-     */
-    private void addComboWordToList(ComboBox selectedWord, ArrayList<String> list,
-            Label text) {
-        //get the selected word from the ComboBox. 
-        String word = selectedWord.getValue().toString();
-        //Check if the word is aldready in the list before adding it. 
-        if (word != null) {
-            if (list.contains(word)) {
-                System.out.println(word + " aldready in selectSearchWords");
-            } else {
-                list.add(word);
-            }
-        }
-        //Call function  that creates a string from the list
-        //Print the list in the text label. 
-        text.setText(Util.listToString(list));
-    }
-
-    /**
-     * Removes chosen word, from a combobox, from a list and prints the list in
-     * a label.
-     *
-     * @param selectedWord, the name of the combobox where a word was chosen.
-     * @param list of already selected words.
-     * @param text, the lable where the result should be printed out.
-     */
-    private void removeComboWordFromList(ComboBox selectedWord, ArrayList<String> list, Label text) {
-        //get the selected word from the ComboBox.
-        String word = selectedWord.getValue().toString();
-        //Remove word if it was in the list. 
-        if (word != null) {
-            if (list.contains(word)) {
-                list.remove(word);
-            }
-        }
-        //Call function  that creates a string from the list
-        //Print the list in the text label. 
-        text.setText(Util.listToString(list));
-    }
+   
 
     /**
      * returns the title as string.
@@ -318,7 +273,7 @@ public class UpdateObjektController extends update {
      * Sets variables used it the UI. E.g. Objekt variables, lists of authors,
      * search words and ISBN numbers.
      */
-    private void setGeneralSettings() {
+    public void setGeneralSettings() {
         //Create a Bok instance. 
         bok = connection.getBokFromDB(this.objektID);
 

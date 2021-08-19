@@ -1,85 +1,50 @@
 package org.biblioteket;
 
-import Printer.Printer;
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Kopia;
 import org.biblioteket.Objects.Loan;
 
 /**
- *
+ *Handles returns 
  * @author jenni
  */
-public class ReturnController {
-
+public class ReturnController extends Controllers{
     @FXML
     private Text lblTitel;
-
     @FXML
     private TextField txtStreckkod;
-
     @FXML
     private Button btnAddKopia;
-
     @FXML
     private Label lblInformation;
-
-//    @FXML
-//    private GridPane lblLateLoans;
-//
-//    @FXML
-//    private Label lblNoLoan;
-//
-//    @FXML
-//    private Label lblExisitngLoans;
-//
-//    @FXML
-//    private Label lblFees;
-
     @FXML
     private TableView tblTitles;
-
     @FXML
     private Button btnReturnTitles;
+    
+    private DBConnection connection;
+    private ArrayList<Loan> loans;
+    private ArrayList<Integer> addedStreckkoder;
 
-    DBConnection connection;
-
-    LocalDate today = LocalDate.now();
-
-    ArrayList<Loan> loans;
-    ArrayList<Integer> addedStreckkoder;
-    ArrayList<Kopia> kopior;
-
-    /**
-     *
-     */
     public void initialize() {
         connection = DBConnection.getInstance();
 
         loans = new ArrayList<>();
         addedStreckkoder = new ArrayList<>();
-        kopior = new ArrayList<Kopia>();
         
+        //Listener to make sure only numbers are added in streckkod filed. 
         txtStreckkod.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
@@ -87,7 +52,6 @@ public class ReturnController {
                 if (!newValue.equals("")){
                 if (!newValue.matches("\\d*")) {
                     txtStreckkod.setText(newValue.replaceAll("[^\\d]", ""));
-
                 }
                 if (addedStreckkoder.contains(Integer.parseInt(txtStreckkod.getText()))) {
                     lblInformation.setText("Titeln är redan tillagd i listan.");
@@ -96,11 +60,14 @@ public class ReturnController {
                     lblInformation.setText("");
 
                 }}
-
             }
         });
     }
 
+    /**
+     * Checks some critera, creates a Loan instance and adds to table. 
+     * @param event 
+     */
     @FXML
     void pressAddKopia(ActionEvent event) {
         int streckkod = Integer.parseInt(txtStreckkod.getText());
@@ -127,7 +94,7 @@ public class ReturnController {
         //Create loan
         loans.add(loan);
         addedStreckkoder.add(streckkod);
-        Util.updateTableView(tblTitles, loans);
+        updateTableView(tblTitles, loans);
     }
 
     @FXML

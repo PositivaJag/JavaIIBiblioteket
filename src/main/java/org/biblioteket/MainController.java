@@ -2,12 +2,10 @@ package org.biblioteket;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Database.DBConnection.LoginResult;
 import org.biblioteket.Persons.Loantagare;
 import org.biblioteket.Persons.Person;
@@ -45,16 +43,10 @@ public class MainController extends Controllers {
     private Person activeLibrarian = null;
     private Loantagare activeUser = null;
 
-    private SearchController searchController;
-    private Parent searchRoot;  //Makes sure the same window opens every time
-
-    private DBConnection connection;
-
     /**
      *
      */
     public void initialize() {
-        connection = DBConnection.getInstance();
         setLibrarianButtons();
     }
 
@@ -129,7 +121,6 @@ public class MainController extends Controllers {
         this.activeUser = null;
         this.activeLibrarian = null;
         return LoginResult.LOGOUT;
-
     }
 
 
@@ -162,7 +153,6 @@ public class MainController extends Controllers {
         return activeUser;
     }
 
-
     public void setPersonTyp(PersonTyp personT) {
         this.personTyp = personT;
     }
@@ -170,8 +160,7 @@ public class MainController extends Controllers {
     public void setActiveLibrarian(Person activeLib) {
         this.activeLibrarian = activeLib;
     }
-
-
+    
     public void setActiveUser(Loantagare activeU) {
         this.activeUser = activeU;
     }

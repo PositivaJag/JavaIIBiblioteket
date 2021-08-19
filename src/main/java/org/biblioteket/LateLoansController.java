@@ -14,7 +14,7 @@ import org.biblioteket.Objects.Loan;
  * Prints a list of all loans that are late at the moment. 
  * @author jenni
  */
-public class LateLoansController {
+public class LateLoansController extends Controllers{
 
     @FXML
     private TableView<?> tblLateLoans;
@@ -32,7 +32,7 @@ public class LateLoansController {
         //Get all the late loans and show them in a table. 
         connection = DBConnection.getInstance();
         lateLoans = connection.getLateLoans();
-        Util.updateTableView(tblLateLoans, lateLoans);
+        updateTableView(tblLateLoans, lateLoans);
      }
 
     /**

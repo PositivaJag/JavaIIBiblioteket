@@ -118,7 +118,7 @@ public class SearchController extends Controllers{
             alert.show();
         }
         else{
-                loadPopup("UpdateObjekt", (Object) new UpdateObjektController(this.selectedObjekt));
+                loadPopup("UpdateObjekt.fxml", (Object) new UpdateObjektController(this.selectedObjekt));
         }
         
        

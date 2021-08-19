@@ -19,7 +19,7 @@ import org.biblioteket.Objects.Objekt;
  *
  * @author Jenni
  */
-public class KopiaController {
+public class KopiaController extends Controllers{
 
     //FXML variables
     @FXML
@@ -58,7 +58,7 @@ public class KopiaController {
                 tblKopia.setVisible(false);
                 lblNoCopies.setVisible(true);
             } else {
-                Util.updateTableView(tblKopia, Copies);
+                updateTableView(tblKopia, Copies);
                lblTitel.setText(selectObjekt.getTitel());
             }
         } catch (Exception ex) {

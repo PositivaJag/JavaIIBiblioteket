@@ -1,19 +1,12 @@
 package org.biblioteket;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -22,10 +15,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import org.biblioteket.Database.DBConnection;
-import javafx.event.*;
 import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Objekt;
 
@@ -76,31 +66,33 @@ public class NewObjektController extends Controllers {
     private int newObjektID;
     private Bok newBok;
 
-    DBConnection connection;
+    private DBConnection connection;
+    private Alert alert;
 
-    /**
-     *
-     */
+    
     public void initialize() {
         connection = DBConnection.getInstance();
-
+        
+        //authors
         authorsList = connection.getAllAuthors();
         Collections.sort(authorsList);
         comboAuthors.getItems().addAll(authorsList);
-
+       
+        //search words
         swList = connection.getAllSearchWords();
         Collections.sort(swList);
         comboSearchWords.getItems().addAll(swList);
 
         allISBN = connection.getAllISBN();
 
+        //Listener that ensures that the ISBN is on the right format and
+        //doesn't already exist. 
         txtISBN.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                     String newValue) {
                 if (!newValue.matches("\\d*")) {
                     txtISBN.setText(newValue.replaceAll("[^\\d]", ""));
-
                 }
                 if (allISBN.contains(Integer.parseInt(txtISBN.getText()))) {
                     lblWarning.setText("ISBN finns redan");
@@ -112,7 +104,9 @@ public class NewObjektController extends Controllers {
 
             }
         });
-
+        
+        //Listener that ensures that all fields are filled in before the update
+        //button becomes available.     
         ChangeListener<String> allFieldsListener = ((observable, oldValue, newValue) -> {
             if (txtTitle.getText() == null
                     || txtTitle.getText().equals("")
@@ -133,7 +127,6 @@ public class NewObjektController extends Controllers {
 
     }
 
-    //FXML functions
     @FXML
     void pressAddAuthor(ActionEvent event) {
         addComboWordToList(comboAuthors, selectAuthors, lblAuthor);
@@ -147,7 +140,6 @@ public class NewObjektController extends Controllers {
     @FXML
     void pressAddSearchWord(ActionEvent event) {
         addComboWordToList(comboSearchWords, selectSearchWords, lblSearchWord);
-
     }
 
     @FXML
@@ -157,15 +149,18 @@ public class NewObjektController extends Controllers {
 
     @FXML
     void pressCreate(ActionEvent event) {
-        newBok(event);
+        newBok();
     }
 
-    //Insert/update functions
-    private void newBok(ActionEvent event) {
-
+    /**
+     * Creates a Bok. 
+     * Sends messages to the user. 
+     * Can send the user to the page for adding Kopia. 
+     * @param event 
+     */
+    private void newBok() {
         newBok = connection.newBok(txtTitle.getText(), Integer.parseInt(txtISBN.getText()), selectAuthors, selectSearchWords);
      
-        Alert alert;
         if (newBok != null) {
             this.newObjektID = newBok.getObjektID();
             alert = new Alert(AlertType.CONFIRMATION, "Objekt " + this.newObjektID
@@ -177,108 +172,10 @@ public class NewObjektController extends Controllers {
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 //NewKopiaController vill ha ett objekt och ingen bok. 
                 Objekt objekt = newBok;
-                loadPageNewKopia(event, objekt );
+                loadPage("NewKopia.fxml", new NewKopiaController(objekt), borderPane);
             }
         } else {
-            alert = new Alert(AlertType.ERROR);
-            alert.setContentText("Något gick fel.\nObjektet skapades inte");
-            alert.show();
+            Util.simpleErrorAlert("Något gick fel.\nObjektet skapades inte");   
         }
-
     }
-
-    //Other functions
-    private void addComboWordToList(ComboBox selectedWord, ArrayList<String> list, Label text) {
-        String word = selectedWord.getValue().toString();
-        if (word != null) {
-            if (list.contains(word)) {
-                System.out.println(word + " aldready in selectSearchWords");
-            } else {
-                list.add(word);
-            }
-        }
-        text.setText(Util.listToString(list));
-    }
-
-    private void removeComboWordFromList(ComboBox selectedWord, ArrayList<String> list, Label text) {
-        String word = selectedWord.getValue().toString();
-        if (word != null) {
-            if (list.contains(word)) {
-                list.remove(word);
-            }
-        }
-        text.setText(Util.listToString(list));
-    }
-
-    /**
-     *
-     * @param event
-     * @param objekt
-     * @return
-     */
-    public boolean loadPageNewKopia (ActionEvent event, Objekt objekt ){
-
-        try {
-
-             FXMLLoader loader = new FXMLLoader(getClass().getResource("NewKopia.fxml"));
-            
-            NewKopiaController controller = new NewKopiaController(objekt);
-            loader.setController(controller);
-            Parent root = loader.load();
-            borderPane.setCenter(root);
-
-            return true;
-
-        } catch (IOException ex) {
-            System.out.println("Exception i klass NewObjektController.java, i "
-                    + "metoden loadPage()");
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
-
-    }
-
-
-    //Setters
-
-    /**
-     *
-     * @param bool
-     */
-    public void setDisableBtnCreate(Boolean bool) {
-        this.btnCreate.setDisable(bool);
-    }
-
-    /**
-     *
-     * @param text
-     */
-    public void setTextLblWarning(String text) {
-        this.lblWarning.setText(text);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getNewObjektID() {
-        return newObjektID;
-    }
-
-    /**
-     *
-     * @param newObjektID
-     */
-    public void setNewObjektID(int newObjektID) {
-        this.newObjektID = newObjektID;
-    }
-    
-    /**
-     *
-     * @return
-     */
-    public String getTitle(){
-        return txtTitle.getText();
-    }
-    
 }

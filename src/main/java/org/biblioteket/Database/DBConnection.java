@@ -1371,11 +1371,6 @@ public class DBConnection {
         return -1;
     }
 
-//    public ArrayList<String> getAllKopiaCategories() {
-//        String SQL = "select concat(Kategori, ', ', MaxLånetid, ' dagar') as KopiaCategory from maxlånetid;";
-//        return getStringsAsList(SQL);
-//    }
-
     /**
      *
      * @return

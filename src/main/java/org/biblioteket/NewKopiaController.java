@@ -6,7 +6,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -22,46 +21,35 @@ import org.biblioteket.Objects.Objekt.Type;
  *
  * @author jenni
  */
-public class NewKopiaController {
-
+public class NewKopiaController extends Controllers{
     @FXML
     private Text lblTitel;
-
     @FXML
     private ComboBox comboCategory;
-
     @FXML
     private TextField txtStreckkod;
-
     @FXML
     private TextField txtPlacement;
-
     @FXML
     private Label lblWarning;
-
     @FXML
     private Button btnAdd;
-
     @FXML
     private TableView tblAddedCopies;
-
     @FXML
     private Button btnCreateCopy;
     @FXML
     private Button btnAvbryt;
-
-    int newObjektID;
-    DBConnection connection = DBConnection.getInstance();
-    String title;
-    Type typ;
-    NewObjektController newObjektController;
-    private ArrayList<Kopia> listKopior = new ArrayList<>();
-    ;
     
-    ArrayList<Integer> allStreckkod;
+    private int newObjektID;
+    private DBConnection connection;
+    private final String title;
+    private final Type typ;
+    private ArrayList<Kopia> listKopior;
+    private ArrayList<Integer> allStreckkod;
 
     /**
-     *
+     *Constructor
      * @param objekt
      */
     public NewKopiaController(Objekt objekt) {
@@ -70,9 +58,6 @@ public class NewKopiaController {
         this.typ = objekt.getType();
     }
 
-    /**
-     *
-     */
     public void initialize() {
         //Set titel
         lblTitel.setText(newObjektID + " - " + title);
@@ -82,6 +67,7 @@ public class NewKopiaController {
 
         connection = DBConnection.getInstance();
         allStreckkod = connection.getAllSteckkod();
+        listKopior = new ArrayList<>();
         System.out.println(allStreckkod);
 
         //Listener to make sure only numbers are added in streckkod filed. 
@@ -119,50 +105,44 @@ public class NewKopiaController {
             }
         });
 
-//        ChangeListener<String> createButton = ((observable, oldValue, newValue) -> {
-//            if (tblAddedCopies.getItems().isEmpty()){
-//                btnCreateCopy.setDisable(true);
-//            }
-//                else{
-//                btnCreateCopy.setDisable(false);
-//            }
-//        });
         txtStreckkod.textProperty().addListener(allFieldsListener);
         txtPlacement.textProperty().addListener(allFieldsListener);
         comboCategory.valueProperty().addListener(allFieldsListener);
     }
 
+    /**
+     * Adds multiple new Kopia to DB. 
+     * @param event 
+     */
     @FXML
     void pressAddToDB(ActionEvent event) {
+        //Create Kopior, get boolean as answer. 
         Boolean newKopior = connection.newKopior(listKopior);
-
-        Alert alert;
+        //Show messages depending on anser.
         if (newKopior) {
-            alert = new Alert(Alert.AlertType.INFORMATION, "Kopiorna skapades\n fönstret stängs.");
-            alert.showAndWait();
+            Util.simpleInfoAlert("Kopiorna skapades\n Fönstret stängs.");
             ((Node) (event.getSource())).getScene().getWindow().hide();
             
         } else {
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Något gick fel.\nKopiorna skapades inte");
-            alert.show();
+            Util.simpleErrorAlert("Något gick fel.\nKopiorna skapades inte");
         }
-
     }
-
+/**
+ * Creates a Kopia object from the added values and adds it to the table. 
+ * @param event 
+ */
     @FXML
     void pressAddToList(ActionEvent event) {
-
+        //Create and add Kopia to list. 
         listKopior.add(new Kopia(Integer.parseInt(txtStreckkod.getText()), newObjektID,
                 comboCategory.getValue().toString(), txtPlacement.getText()));
         allStreckkod.add(Integer.parseInt(txtStreckkod.getText()));
+        //Enabled the create button when there is a Kopia in the list. 
         btnCreateCopy.setDisable(false);
-        System.out.println(allStreckkod);
-        Util.updateTableView(tblAddedCopies, listKopior);
-
+        updateTableView(tblAddedCopies, listKopior);
+        //Makes sure that one can´t add another Kopia with the same streckkod. 
         lblWarning.setText("Streckkod finns redan");
         btnAdd.setDisable(true);
-
     }
 
     @FXML
@@ -171,15 +151,10 @@ public class NewKopiaController {
     }
 
     /**
-     *
+     * Decides what categories the Kopia can have, depending on the Objekt. 
      * @param objektID
      * @param title
      */
-    public void initData(int objektID, String title) {
-        this.newObjektID = objektID;
-        this.title = title;
-    }
-
     private void setComboCategories() {
         if (this.typ == Type.Bok) {
             comboCategory.getItems().addAll("Bok, 30 dagar",
@@ -193,25 +168,4 @@ public class NewKopiaController {
             comboCategory.getItems().addAll("Referenslitteratur, 0 dagar");
         }
     }
-
-    //Table functions
-//    private void updateTableView() {
-//
-//        tblAddedCopies.getColumns().clear();
-//
-//        Field[] fields = listKopior.get(0).getClass().getDeclaredFields();
-//
-//        ObservableList<Kopia> observableKopior = FXCollections.observableArrayList(listKopior);
-//
-//        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
-//        for (Field field : fields) {
-//            System.out.println(field);
-//            TableColumn<Map, String> column = new TableColumn<>(field.getName().toUpperCase());
-//            column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
-//            tblAddedCopies.getColumns().add(column);
-//        }
-//        tblAddedCopies.setItems(observableKopior);
-//
-//    }
-
 }

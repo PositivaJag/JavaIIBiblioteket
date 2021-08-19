@@ -26,7 +26,7 @@ import org.biblioteket.Objects.Objekt.Type;
  *
  * @author jenni
  */
-public class UpdateKopiaController extends update {
+public class UpdateKopiaController extends Controllers{
 
     @FXML
     private Text lblTitel;
@@ -188,7 +188,7 @@ public class UpdateKopiaController extends update {
             if (connection.deleteKopia(selectedKopia.getStreckkod())) {
                 Util.simpleInfoAlert("Kopian raderades framgångsrikt.");
                 listKopior.remove(selectedKopia);
-                Util.updateTableView(tblAddedCopies, listKopior);
+                updateTableView(tblAddedCopies, listKopior);
                 
             //If something went wrong, show message. 
             } else {
@@ -206,7 +206,7 @@ public class UpdateKopiaController extends update {
             Util.simpleInfoAlert("Kopian uppdaterades");
             //Uppdate list of copies. 
             this.listKopior = connection.getObjektCopies(selectedObjekt, typ);
-            Util.updateTableView(tblAddedCopies, listKopior);
+            updateTableView(tblAddedCopies, listKopior);
         }
         else{
             Util.simpleErrorAlert("Något gick fel\nKopian uppdaterades inte.");
@@ -262,7 +262,7 @@ public class UpdateKopiaController extends update {
         //Get Categories and add them to comboBox. 
         setComboCategories();
 
-        Util.updateTableView(tblAddedCopies, listKopior);
+        updateTableView(tblAddedCopies, listKopior);
 
     }
 }
