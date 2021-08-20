@@ -156,7 +156,7 @@ public class UpdateKopiaController extends Controllers {
 
         //Do you really want to delete?
         alert = new Alert(Alert.AlertType.CONFIRMATION, "Kopia "
-                + "selectedKopia.getStreckkod() kommer att tas bort permanent.\n"
+                + selectedKopia.getStreckkod()+ " kommer att tas bort permanent.\n"
                 + "Lån förknippade med kopian tas bort permanent");
         //Set answers and get answers from user
         ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Ta bort permanent");

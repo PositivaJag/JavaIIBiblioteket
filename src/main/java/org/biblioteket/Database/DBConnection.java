@@ -41,6 +41,12 @@ public class DBConnection extends Controllers{
     
     private final String dataFromDBError = "Något gick fel, kunde inte "
             + "hämta data från databasen.";
+    private final String rollbackError = "Kunde inte uppdatera databasen, inga "
+            + "data har sparats.";
+    private final String rollbackOK = "\n Rollback OK.";
+    private final String rollbackFail = "\n Rollback misslyckades.";
+            
+    
 
     /**
      *Enum for login
@@ -450,7 +456,12 @@ public class DBConnection extends Controllers{
                 int objektID = resultSet.getInt(1);
                 String title = resultSet.getString(2);
                 Type type = Type.valueOf(resultSet.getString(3));
-                String creators = getCreatorsAsString(objektID, type);
+                String creators;
+                if (Type.Tidskrift != type){
+                creators = getCreatorsAsString(objektID, type);
+                }
+                else{ creators = "";}
+                    
                 String sw = getSearchWordsAsString(objektID);
 
                 result.add(new Objekt(objektID, title, type, creators, sw));
@@ -863,7 +874,7 @@ return null;
     }
 
     /**
-     *
+     * Insert a new Bok row to the DB. 
      * @param title
      * @param ISBN
      * @param authors
@@ -887,20 +898,19 @@ return null;
         } catch (SQLException ex) {
             try {
                 connection.rollback();
-                System.out.println("Misslyckades att spara objekt.\nRollback Ok.");
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                simpleErrorAlert(rollbackError +rollbackOK);
             } catch (SQLException ex1) {
-                System.out.println("Misslyckades att spara objekt.\nRollback ej ok.");
+              
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            simpleErrorAlert(rollbackError +rollbackFail);
             }
-
         }
-
         return null;
     }
 
     /**
-     *
+     * Insert new Kopias to DB. 
      * @param kopior
      * @return
      */
@@ -921,19 +931,20 @@ return null;
         } catch (SQLException ex) {
             try {
                 connection.rollback();
-                System.out.println("Misslyckades att spara kopior.\nRollback Ok.");
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                simpleErrorAlert(rollbackError +rollbackOK);
             } catch (SQLException ex1) {
-                System.out.println("Misslyckades att spara objekt.\nRollback ej ok.");
+              
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            simpleErrorAlert(rollbackError +rollbackFail);
+            
             }
         }
-
         return false;
     }
 
     /**
-     *
+     * Insert new Loans to DB. 
      * @param loans
      * @param userID
      * @return
@@ -956,8 +967,11 @@ return null;
             try {
                 connection.rollback();
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                simpleErrorAlert(rollbackError +rollbackOK);
             } catch (SQLException ex1) {
+              
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            simpleErrorAlert(rollbackError +rollbackFail);
             }
         }
         return false;
@@ -965,7 +979,7 @@ return null;
     }
 
     /**
-     *
+     * Handles updating returnes Loans. 
      * @param loans
      * @return
      */
@@ -983,12 +997,27 @@ return null;
             connection.commit();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+               connection.rollback();
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                simpleErrorAlert(rollbackError +rollbackOK);
+            } catch (SQLException ex1) {
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            simpleErrorAlert(rollbackError +rollbackFail);
+            }
         }
         return false;
-
     }
 
+    /**
+     * Inserts new Loan to DB.
+     * throws exception to the calling class to handle. 
+     * @param loanDate
+     * @param returnLatest
+     * @param streckkod
+     * @param loantagare
+     * @throws SQLException 
+     */
     private void insertLoan(LocalDate loanDate, LocalDate returnLatest,
             int streckkod, int loantagare) throws SQLException {
 
@@ -1002,6 +1031,13 @@ return null;
         pState.executeUpdate();
     }
 
+    /**
+     * Updates returned Loans in DB. 
+     * throws exception to the calling class to handle. 
+     * @param loanID
+     * @param skuld
+     * @throws SQLException 
+     */
     private void updateReturnLoan(int loanID, String skuld) throws SQLException {
 
         String SQL = "UPDATE lån SET DatumRetur = ?, Skuld = ? WHERE `lånID` = ?;";
@@ -1012,7 +1048,13 @@ return null;
         pState.executeUpdate();
     }
     
-
+/**
+ * Updates Kopia of Bok Objekt in DB. 
+ * @param streckkod
+ * @param kategori
+ * @param placering
+ * @return 
+ */
     public Boolean updateBokKopia(int streckkod, String kategori, String placering) {
 
         try {
@@ -1028,16 +1070,25 @@ return null;
         } catch (SQLException ex) {
             try {
                 connection.rollback();
-                System.out.println("Misslyckades att uppdatera kopior.\nRollback Ok.");
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                simpleErrorAlert(rollbackError +rollbackOK);
             } catch (SQLException ex1) {
-                System.out.println("Misslyckades att uppdatera kopia.\nRollback ej ok.");
+              
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            simpleErrorAlert(rollbackError +rollbackFail);
             }
         }
         return false;
     }
-    
+    /**
+     * Handles updating Bok objekts in the DB. 
+     * @param objektID
+     * @param title
+     * @param ISBN
+     * @param authors
+     * @param searchWords
+     * @return 
+     */
     public Bok updateBok(int objektID, String title, int ISBN, 
             ArrayList<String> authors, ArrayList<String> searchWords){
         try {
@@ -1056,15 +1107,27 @@ return null;
             
         } catch (SQLException ex) {
             try {
-                connection.rollback();
+               connection.rollback();
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                simpleErrorAlert(rollbackError +rollbackOK);
             } catch (SQLException ex1) {
+              
                 Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            simpleErrorAlert(rollbackError +rollbackFail);
             }
         }
         return null;
     }
     
+    /**
+     * Updates Bok objekt in DB.
+     * throws exception to the calling class to handle. 
+     * @param objektID
+     * @param title
+     * @param ISBN
+     * @return
+     * @throws SQLException 
+     */
     public Boolean updateBokObjekt(int objektID, String title, int ISBN) throws SQLException{
         
             String SQL = "UPDATE objekt SET Titel = ?, BokISBN = ? WHERE ObjektID = ?;";
@@ -1084,11 +1147,22 @@ return null;
             pState.executeUpdate();
             connection.commit();
             return true;
+            
         } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+               connection.rollback();
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                simpleErrorAlert(rollbackError +rollbackOK);
+            } catch (SQLException ex1) {
+              
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            simpleErrorAlert(rollbackError +rollbackFail);
+            }
         }
         return false;
     }
+    
+    
     public Boolean deleteBokObjekt(int objektID) {
        
         try {
@@ -1099,11 +1173,28 @@ return null;
             connection.commit();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+               connection.rollback();
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                simpleErrorAlert(rollbackError +rollbackOK);
+            } catch (SQLException ex1) {
+              
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex1);
+            simpleErrorAlert(rollbackError +rollbackFail);
+            }
         }
         return false;
     }
 
+    /**
+     * Isert new Kopia in DB.
+     * throws exception to the calling class to handle. 
+     * @param streckkod
+     * @param objektID
+     * @param kategori
+     * @param placering
+     * @throws SQLException 
+     */
     private void insertKopia(int streckkod, int objektID, String kategori, String placering) throws SQLException {
 
         String SQL = "INSERT INTO kopia (streckkod, ObjektID, LåneKategori, Placering) VALUES (?, ?, ?, ?);";
@@ -1115,6 +1206,13 @@ return null;
         pState.executeUpdate();
     }
 
+    /**
+     * INserts new Bok in DB. 
+     * throws exception to the calling class to handle. 
+     * @param title
+     * @param ISBN
+     * @throws SQLException 
+     */
     private void insertBok(String title, int ISBN) throws SQLException {
 
         String SQLBok = "INSERT INTO objekt (Titel, Typ, BokISBN) VALUES (?,'Bok',?);";
@@ -1126,7 +1224,8 @@ return null;
     }
 
     /**
-     *
+     * Adds a new connection between an author and a Bok in DB. 
+     * throws exception to the calling class to handle. 
      * @param authors
      * @param objektID
      * @throws SQLException
@@ -1147,7 +1246,13 @@ return null;
             }
         }
     }
-    
+    /**
+     * Deletes a connection between an author and a Bok in DB.
+     * throws exception to the calling class to handle. 
+     * @param objektID
+     * @param authors
+     * @throws SQLException 
+     */
     public void deleteBokAuthors(int objektID, ArrayList<String> authors) throws SQLException{
         
             //Get existing authors
@@ -1167,6 +1272,13 @@ return null;
 
     }
     
+    /**
+     * Deletes a connection between a search word and a Bok in DB.
+     * throws exception to the calling class to handle. 
+     * @param objektID
+     * @param sw
+     * @throws SQLException 
+     */
     public void deleteBokSearchWords(int objektID, ArrayList<String> sw) throws SQLException {
 
         //Get existing search words
@@ -1187,7 +1299,8 @@ return null;
     }
 
     /**
-     *
+     * Inserts a connection between a search word and a Bok in DB.
+     * throws exception to the calling class to handle. 
      * @param searchWords
      * @param objektID
      * @throws SQLException
@@ -1196,7 +1309,7 @@ return null;
 
         ArrayList<String> existing = getSearchWordsAsList(objektID);
         for (int i = 0; i < searchWords.size(); i++) {
-            //Only add author if it doesn´t already exist. 
+            //Only add search word if it doesn´t already exist. 
             if (!existing.contains(searchWords.get(i))) {
 
                 int swID = getSearchWordID(searchWords.get(i));
@@ -1212,7 +1325,7 @@ return null;
     }
 
     /**
-     *
+     *Returns an ArrayList of Strings with all authors in the DB. 
      * @return
      */
     public ArrayList<String> getAllAuthors() {
@@ -1221,6 +1334,11 @@ return null;
 
     }
 
+    /**
+     * Returns the ID of an author from a String with first and last names. 
+     * @param name
+     * @return 
+     */
     private int getAuthorID(String name) {
         try {
             String SQL = "select författareID from (select FörfattareID, concat(fNamn, ' ', eNamn) as namn from Författare) as T where T.namn = ?;";
@@ -1232,21 +1350,22 @@ return null;
             return authorID;
 
         } catch (SQLException ex) {
-            System.out.println("Kunde inte hitta författare " + name + ".");
+            simpleErrorAlert(dataFromDBError);
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return -1;
     }
 
-    /**
-     *
-     * @return
-     */
     public ArrayList<String> getAllSearchWords() {
         String SQL = "select Ämnesord as seachWords from klassificering;";
         return getStringsAsList(SQL);
     }
 
+     /**
+     * Returns the ID of a search word from a String. 
+     * @param sw
+     * @return 
+     */
     private int getSearchWordID(String sw) {
         try {
             String SQL = "select KlassificeringID from klassificering where Ämnesord = ?;";
@@ -1258,26 +1377,18 @@ return null;
             return swID;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Kunde inte hitta sökord " + sw + ".");
+         simpleErrorAlert(dataFromDBError);
         }
-
         return -1;
     }
 
-    /**
-     *
-     * @return
-     */
+
     public ArrayList<Integer> getAllISBN() {
         String SQL = "select BokISBN from Objekt where typ = 'Bok';";
         return getIntsAsList(SQL);
-
     }
 
-    /**
-     *
-     * @return
-     */
+
     public ArrayList<Integer> getAllSteckkod() {
         String SQL = "select streckkod from kopia;";
         return getIntsAsList(SQL);
@@ -1296,62 +1407,8 @@ return null;
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+         simpleErrorAlert(dataFromDBError);
         }
         return -1;
     }
-
-    /**
-     *
-     * @param personID
-     * @return
-     */
-    public ArrayList<Loan> getLoans(int personID) {
-        ArrayList<Loan> result = new ArrayList<>();
-        try {
-            String SQL = "select * from lån where låntagare = ? and isNull(DatumRetur)";
-            PreparedStatement pState =  connection.prepareStatement(SQL);
-            pState.setInt(1, personID);
-            ResultSet resultSet = getQuery(pState);
-
-            while (resultSet.next()) {
-                int loanID = resultSet.getInt(1);
-                LocalDate loanDate = checkDate(resultSet.getDate(2));
-
-                //Check if actualReturn has a value in the DB
-                LocalDate actualReturn;
-                if (resultSet.getDate(4) == null) {
-                    actualReturn = null;
-                } else {
-                    actualReturn = checkDate(resultSet.getDate(4));
-                }
-
-                LocalDate latestReturn = checkDate(resultSet.getDate(3));
-                int streckkod = resultSet.getInt(5);
-                int loantagarID = resultSet.getInt(6);
-                String title = getTitle(streckkod);
-
-                Loan loan = new Loan(streckkod, loantagarID, title, loanDate,
-                        latestReturn, actualReturn, loanID);
-
-                result.add(loan);
-            }
-            Comparator<Loan> compareByReturnDate = (Loan o1, Loan o2) -> o1.getLatestReturnDate().compareTo(o2.getLatestReturnDate());
-            Collections.sort(result, compareByReturnDate);
-            return result;
-
-        } catch (SQLException ex) {
-
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    private LocalDate checkDate(java.sql.Date date) {
-        if (date == null) {
-            return null;
-        } else {
-            return date.toLocalDate();
-        }
-    }
-
 }

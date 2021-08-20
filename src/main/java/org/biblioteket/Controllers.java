@@ -242,7 +242,7 @@ public class Controllers {
      * Shows error alert. 
      * @param message 
      */
-      public void simpleErrorAlert(String message){
+      public static void simpleErrorAlert(String message){
         Alert alert = new Alert(Alert.AlertType.ERROR, message);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.showAndWait();

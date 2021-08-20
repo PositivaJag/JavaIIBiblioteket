@@ -21,10 +21,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.biblioteket.Controllers;
 import org.biblioteket.Objects.Loan;
 import org.biblioteket.Persons.Loantagare;
 
 /**
+ * Prints recipt on loans.
  *
  * @author jenni
  */
@@ -36,11 +38,12 @@ public class Printer {
     Font rubrik1 = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
     Font rubrik2 = FontFactory.getFont(FontFactory.COURIER, 14, BaseColor.BLACK);
     Font font = FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.BLACK);
-    
+
     Document document;
     String docName = "Temp.pdf";
 
     /**
+     * Creates and opens a PDF that the user can choose to print or save.
      *
      * @param loans
      * @param loantagare
@@ -54,41 +57,49 @@ public class Printer {
 
     }
 
+    /**
+     * Creates the pdf that is sent to pdf reader.
+     */
     private void createPDF() {
         try {
             //Create document
             document = new Document();
-            //Get writer instancce and choopse file
+            //Get writer instance and choose file
             PdfWriter.getInstance(document, new FileOutputStream(docName));
-            
-            //Write text
+
+            //Write general text
             document.open();
             Paragraph preface = new Paragraph();
             preface.add(new Paragraph("Kvitto lån " + LocalDate.now().toString(), rubrik1));
             preface.add(new Paragraph("\nLåntagarID: " + loantagare.getPersonID(), rubrik2));
             preface.add(new Paragraph(" "));
             document.add(preface);
-            
-            //add table and close document
+
+            //create and add table of loans and close document.
             document.add(createTable());
             document.close();
-            
-        } catch (DocumentException ex) {
-            Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileNotFoundException ex) {
+
+        } catch (DocumentException | FileNotFoundException ex) {
             Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
+    /**
+     * Creates tabel with all new loans.
+     *
+     * @return
+     */
     private PdfPTable createTable() {
-        //Table
+
+        //New table
         PdfPTable table = new PdfPTable(4);
         table.setHorizontalAlignment(Element.ALIGN_LEFT);
         PdfPCell c1 = new PdfPCell(new Phrase("Titel", rubrik2));
+
+        //Set column headers
         c1.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.addCell(c1);
-        
+
         c1 = new PdfPCell(new Phrase("Streckkod", rubrik2));
         c1.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.addCell(c1);
@@ -103,26 +114,15 @@ public class Printer {
 
         table.setHeaderRows(1);
 
+        //Add data from loans
         for (int i = 0; i < loans.size(); i++) {
             Loan loan = loans.get(i);
             table.addCell(new Phrase(loan.getTitel(), font));
             table.addCell(new Phrase(Integer.toString(loan.getStreckkod()), font));
             table.addCell(new Phrase(loan.getLoanDate().toString(), font));
             table.addCell(new Phrase(loan.getLatestReturnDate().toString(), font));
-            
         }
-
         return table;
-    }
-
-    private String getLateStatus(Loan loan) {
-        LocalDate latestreturn = loan.getLatestReturnDate();
-
-        if (latestreturn.isBefore(LocalDate.now())) {
-            return ChronoUnit.DAYS.between(latestreturn, LocalDate.now()) + " dagar sen";
-        } else {
-            return "";
-        }
     }
 
     private void openPdf() {
@@ -131,9 +131,9 @@ public class Printer {
                 File myFile = new File(docName);
                 Desktop.getDesktop().open(myFile);
             } catch (IOException ex) {
-                // no application registered for PDFs
+                Controllers.simpleErrorAlert("pdf-filen kunde inte öppnas\n"
+                        + "Kontrollera att en pdf-läsare finns på datorn");
             }
         }
     }
-
 }
