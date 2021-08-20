@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket;
 
 import java.io.IOException;
@@ -30,12 +25,18 @@ import org.biblioteket.Database.DBConnection;
 import org.biblioteket.Objects.Bok;
 
 /**
- *
+ * Superclass for all controllers that holds common functionality
  * @author jenni
  */
 public class Controllers {
     
-     public static void updateTableView(TableView table, List<?> list) {
+    /**
+     * Prints a list of instances in a table view. 
+     * Shows all fields form the instance class.
+     * @param table
+     * @param list 
+     */
+     public void updateTableView(TableView table, List<?> list) {
 
         table.getColumns().clear();
 
@@ -43,7 +44,7 @@ public class Controllers {
 
         ObservableList<?> observableList = FXCollections.observableArrayList(list);
 
-        // För varje fält, skapa en kolumn och lägg till i TableView (fxTable)
+        // For each field, create a column and add to TableView.
         for (Field field : fields) {
             System.out.println(field);
             TableColumn<Map, String> column = new TableColumn<>(field.getName());
@@ -51,8 +52,8 @@ public class Controllers {
             table.getColumns().add(column);
         }
         table.setItems(observableList);
-
     }
+     
     /**
      * Loads fxml into new Stage.
      * @param fxml
@@ -93,9 +94,7 @@ public class Controllers {
             stage.show();
 
         } catch (IOException ex) {
-            System.out.println("Exception i klass Search.java, i "
-                    + "metoden loadPage()");
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
      
@@ -113,9 +112,7 @@ public class Controllers {
             return true;
 
         } catch (IOException ex) {
-            System.out.println("Exception i klass MainController.java, i "
-                    + "metoden loadPage()");
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+           Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
@@ -127,7 +124,6 @@ public class Controllers {
  * @return 
  */
       public boolean loadPage(String fxml, Object controller, BorderPane borderPane) {
-
        
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
@@ -137,7 +133,7 @@ public class Controllers {
             borderPane.setCenter(root);
             return true;
         } catch (IOException ex) {
-            Logger.getLogger(Controllers.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
 
         return false;
@@ -146,7 +142,6 @@ public class Controllers {
        /**
      * Adds chosen word, from a combobox, to a list and prints the list in a
      * label.
-     *
      * @param selectedWord, the name of the combobox where a word was chosen.
      * @param list of already selected words.
      * @param text, the lable where the result should be printed out.
@@ -158,7 +153,6 @@ public class Controllers {
         //Check if the word is aldready in the list before adding it. 
         if (word != null) {
             if (list.contains(word)) {
-              
             } else {
                 list.add(word);
             }
@@ -206,11 +200,11 @@ public class Controllers {
         return allISBN;
  }
          /**
-     *
+     *Takes a list of strings and concatenates them to one string. 
      * @param list
      * @return
      */
-    public static String listToString(ArrayList<String> list){
+    public String listToString(ArrayList<String> list){
         String string = "";
         for (int i = 0; i < list.size(); i++){
             string += list.get(i)+"; ";
@@ -219,23 +213,38 @@ public class Controllers {
     }
      
       /**
-     *
+     * General error to use in exception handling. 
      * @param name
      */
     public static void generalError(String name){
         System.out.println("Ett fel har uppstått i klass" + name);
     }
     
-    public static void simpleInfoAlert(String message){
+    /**
+     * shows information alert. 
+     * @param message 
+     */
+    public void simpleInfoAlert(String message){
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.showAndWait();
     }
-
-      public static void simpleErrorAlert(String message){
-        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+    
+     public static void exceptionAlert(String className, String metod){
+         String string = "något gick fel i klass "+ className 
+                 + " , metod "+ metod;
+        Alert alert = new Alert(Alert.AlertType.ERROR, string);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.showAndWait();
     }
      
+    /**
+     * Shows error alert. 
+     * @param message 
+     */
+      public void simpleErrorAlert(String message){
+        Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.showAndWait();
+    }
 }

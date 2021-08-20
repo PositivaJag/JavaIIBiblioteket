@@ -1,25 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket.Database;
 
 import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.biblioteket.Controllers;
 import org.biblioteket.Objects.Bok;
 import org.biblioteket.Objects.Film;
 import org.biblioteket.Objects.Kopia;
@@ -29,114 +22,95 @@ import org.biblioteket.Objects.Loan.Skuld;
 import org.biblioteket.Objects.Objekt;
 import org.biblioteket.Objects.Objekt.Type;
 import org.biblioteket.Objects.Tidskrift;
-import org.biblioteket.Persons.Loantagare;
 
 /**
  *
  * @author Jenni
  */
-public class DBConnection {
+public class DBConnection extends Controllers{
 
     //Database parameters
-    private static String dbUrl = "jdbc:mysql://localhost:3306/javaiibiblioteket";
-    private static String dbUserName = "root";
-    private static String dbPassword = "B0b1gny";
+    private static final String dbUrl = "jdbc:mysql://localhost:3306/javaiibiblioteket";
+    private static final String dbUserName = "root";
+    private static final String dbPassword = "B0b1gny";
     private boolean connectedToDB = false;
 
     //Connection parameters
     private static DBConnection instance;
-    private final Connection connection;
-    private Statement statement;
-    //private PreparedStatement pState;
-    private ResultSetMetaData metadata;
-//    private Object resultSet;
-
-    //Enum for login
+    private Connection connection;
+    
+    private final String dataFromDBError = "Något gick fel, kunde inte "
+            + "hämta data från databasen.";
 
     /**
-     *
+     *Enum for login
      */
     public enum LoginResult {
-
-        /**
-         *
-         */
         LOGIN_OK,
-
-        /**
-         *
-         */
         WRONG_PASSWORD,
-
-        /**
-         *
-         */
         NO_SUCH_USER,
-
-        /**
-         *
-         */
         LOGOUT
     }
 
-//Constructor of connection
-    private DBConnection(String url, String username, String password) throws SQLException {
-        // connect to database
-        connection = DriverManager.getConnection(url, username, password);
-        connection.setAutoCommit(false);
-        // create Statement to query database                             
-        statement = connection.createStatement(
-                ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        // update database connection status
-        connectedToDB = true;
+    /**
+     * Constructor that connects to DB
+     * @param url
+     * @param username
+     * @param password
+     */
+    private DBConnection(String url, String username, String password) {
+        try {
+            // connect to database
+            connection = DriverManager.getConnection(url, username, password);
+            connection.setAutoCommit(false);
+            // update database connection status
+            connectedToDB = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert("Något gick fel\nKunde inte kontakta databasen. ");
+        }
+        
     }
 
-//General database SQL functions. 
 
     /**
-     *
+     * Singleton that gives all classes access to the same DB connection in order
+     * to not overload the DB. 
      * @return
      */
     public static DBConnection getInstance() {
         if (instance == null) {
-            try {
-                instance = new DBConnection(dbUrl, dbUserName, dbPassword);
-                System.out.println("Databaskontakt skapad");
-            } catch (SQLException ex) {
-                System.out.println("Ingen databaskontakt är skapad");
-                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            instance = new DBConnection(dbUrl, dbUserName, dbPassword);
+            System.out.println("Databaskontakt skapad");
         }
         System.out.println("Databaskontakt: " + instance.toString());
         return instance;
     }
 
-    /**
-     *
-     * @return
-     */
-    public boolean isConnectedToDB() {
-        return connectedToDB;
-    }
-
+/**
+ * 
+ * @param pState
+ * @return 
+ */
     private ResultSet getQuery(PreparedStatement pState) {
         //Check if we have contact with database
         if (connectedToDB == true) {
             try {
                 ResultSet resultSet = pState.executeQuery();
-                metadata = resultSet.getMetaData();
                 return resultSet;
             } catch (SQLException e) {
-                System.out.println("Något gick fel i getQuery i DBConnection.java");
+                simpleErrorAlert("Något gick fel när frågan skulle ställas till "
+                        + "databasen\n"+this.getClass().getName()+", getQuery");
             }
         } else {
-            System.out.println("Ingen kontakt med databasen");
+            simpleErrorAlert("Ingen kontakt med databasen");
         }
         return null;
     }
 
     /**
-     *
+     * Calls DB and returns a ResultSet. 
+     * Takes in a SQL query (with one variable, objektID) and the objektID.
      * @param SQL
      * @param objektID
      * @return
@@ -144,42 +118,42 @@ public class DBConnection {
     public ResultSet getResultSetFromDB(String SQL, int objektID) {
 
         try {
-
             PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setInt(1, objektID);
             ResultSet resultSet = getQuery(pState);
             return resultSet;
-
+       
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
     /**
-     *
+     * Calls DB and returns a ResultSet.Takes in a SQL query (with no variables)
      * @param SQL
      * @return
      */
     public ResultSet getResultSetFromDB(String SQL) {
-
         try {
-
             PreparedStatement pState =  connection.prepareStatement(SQL);
             ResultSet resultSet = getQuery(pState);
             return resultSet;
 
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
     /**
-     *
+     * Calls DB and returns a list of Strings. 
+     * Takes in a SQL query (with one variable, objektID) and the objektID.
      * @param SQL
      * @param objektID
-     * @return
+     * @return 
      */
     public ArrayList<String> getStringsAsList(String SQL, int objektID) {
         try {
@@ -193,6 +167,7 @@ public class DBConnection {
             return words;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
@@ -214,12 +189,13 @@ public class DBConnection {
             return words;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
     /**
-     *
+     *Calls DB and returns a list of Integers.
      * @param SQL
      * @return
      */
@@ -235,14 +211,13 @@ public class DBConnection {
             return words;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
-//Users
-
     /**
-     *
+     * Checks if a user with this combination of email and password exists. 
      * @param email
      * @param pwordIn
      * @return
@@ -250,35 +225,34 @@ public class DBConnection {
     public LoginResult checkUserAndPassword(String email, String pwordIn) {
         try {
             LoginResult result;
-
+            //Get resultset for user
             String SQL = "Select lösenord from person where eMail = ?";
             PreparedStatement pState =  connection.prepareStatement(SQL);
             pState.setString(1, email);
             ResultSet resultSet = getQuery(pState);
 
-            //Check if row exists
+            //Checkif a user witht the mail and password exists. 
             if (!resultSet.next()) {
                 result = LoginResult.NO_SUCH_USER;
             } else {
-                //System.out.println(resultSet.getString(1));
                 if (resultSet.getString(1).equals(pwordIn)) {
                     result = LoginResult.LOGIN_OK;
                 } else {
                     result = LoginResult.WRONG_PASSWORD;
                 }
             }
-
-            //System.out.println(result);
             return result;
         } catch (SQLException e) {
-            System.out.println("Något gick fel i checkUserAnPassword i DBConnection.java");
+             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, e);
+            simpleErrorAlert(dataFromDBError);
         }
         //System.out.println(99);  
         return null;
     }
 
     /**
-     *
+     * Gets data for user from DB and returns it as a list of Strings. 
+     * This method should be reworked. 
      * @param email
      * @return
      */
@@ -287,7 +261,6 @@ public class DBConnection {
         String[] userData = new String[0];
 
         try {
-
             //Get data from DB
             String SQL = "Select * from person where eMail = ?";
             PreparedStatement pState =  connection.prepareStatement(SQL);
@@ -307,14 +280,14 @@ public class DBConnection {
             return userData;
 
         } catch (SQLException e) {
-            System.out.println("Något gick fel i getPersonDataAsLlist i DBConnection.java");
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, e);
+            simpleErrorAlert(dataFromDBError);
         }
-
         return userData;
     }
 
     /**
-     *
+     * Gets data for Loantagare from DB and returns it as a list of Strings. 
      * @param personID
      * @return
      */
@@ -340,11 +313,10 @@ public class DBConnection {
             return LoantagareData;
 
         } catch (SQLException e) {
-            System.out.println("Något gick fel i GetLoantagareDataAsList i DBConnection.java");;
+             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, e);
+            simpleErrorAlert(dataFromDBError);
         }
-
         return LoantagareData;
-
     }
 
     /**
@@ -363,16 +335,12 @@ public class DBConnection {
             //System.out.println(resultSet.getString(1));
             return (resultSet.getString(1).equals("Bibliotekarie"));
         } catch (SQLException e) {
-            System.out.println("Något gick fel i checkIfLibrarian i DBConnection.java");
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, e);
+            simpleErrorAlert(dataFromDBError);
             return false;
         }
     }
 
-    /**
-     *
-     * @param personID
-     * @return
-     */
     public String getLoanCategory(String personID) {
         try {
             String SQL = "select låntagareKategori from låntagare where PersonID = ?;";
@@ -383,16 +351,17 @@ public class DBConnection {
             return resultSet.getString(1);
 
         } catch (SQLException ex) {
-            System.out.println("Något gick fel i DBConnection, getLoadCategory");
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
     /**
-     *
+     * Returns the maximum number of loans Loantagare in a certain category can
+     * have. 
      * @param Category
-     * @return
+     * @return int
      */
     public int getMaxNoLoan(String Category) {
         try {
@@ -404,14 +373,14 @@ public class DBConnection {
             return resultSet.getInt(1);
 
         } catch (SQLException ex) {
-            System.out.println("Något gick fel i DBConnection, getMaxNoLoan");
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
         return -1;
     }
 
     /**
-     *
+     * Returns the title of a Objekt connected to a Kopia (streckkod).
      * @param streckkod
      * @return
      */
@@ -425,14 +394,14 @@ public class DBConnection {
             return resultSet.getString(1);
 
         } catch (SQLException ex) {
-            System.out.println("Något gick fel i DBConnection");
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
     /**
-     *
+     * Return loanID for all active loand for a Loantagare. 
      * @param Loantagare
      * @return
      */
@@ -451,33 +420,11 @@ public class DBConnection {
 
             return loans;
         } catch (SQLException ex) {
-            System.out.println("Något gick fel i DBConnection, getLoanID");
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
-
-//     public ArrayList<Loan> getLoans(String Loantagare) {
-//try {
-//            String SQL = "select lånID from lån where Låntagare = ?;";
-//            PreparedStatement pState =  connection.prepareStatement(SQL);
-//            pState.setInt(1, Integer.parseInt(Loantagare));
-//            ResultSet resultSet = getQuery(pState);
-//            resultSet.next();
-//
-//            ArrayList<Integer> loans = new ArrayList<>();
-//            while (resultSet.next()) {
-//                loans.add(resultSet.getInt(1));
-//            }
-//
-//            return loans;
-//        } catch (SQLException ex) {
-//            System.out.println("Något gick fel i DBConnection, getLoanID");
-//            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
-    //Objekts and copies
 
     /**
      *Get all Objekts form DB that are of a certain type (or all types).
@@ -485,6 +432,7 @@ public class DBConnection {
      * @return
      */
     public ArrayList<Objekt> getObjektsFromDB(String typ) {
+
         try {
             String SQL;
             if (typ.equals("Alla")) {
@@ -509,15 +457,17 @@ public class DBConnection {
             }
 
             return result;
-        } catch (SQLException e) {
-            e.printStackTrace();
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
-        return null;
-
+return null;
     }
 
     /**
-     *
+     * Returns a Film instance from DB.
      * @param objektID
      * @return
      */
@@ -536,19 +486,18 @@ public class DBConnection {
             ArrayList<String> directors = getDirectorsAsList(objektID);
             ArrayList<String> actors = getActorsAsList(objektID);
 
-            System.out.println(title + " " + sw + " " + ageRating + " " + directors + " " + actors);
-
             return new Film(objektID, title, Type.Film, sw, ageRating, prodCountry,
                     directors, actors);
 
         } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
     /**
-     *
+     * Returns a Bok instance from DB. 
      * @param objektID
      * @return
      */
@@ -569,12 +518,13 @@ public class DBConnection {
 
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
     /**
-     *
+     * Returns a Tidskrift instance from DB.
      * @param objektID
      * @return
      */
@@ -595,12 +545,13 @@ public class DBConnection {
 
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
     /**
-     *
+     * Get an ArrayList with all Kopia that belongs to an Objekt. 
      * @param Objekt
      * @param type
      * @return
@@ -620,35 +571,14 @@ public class DBConnection {
             return getKopiorAsList(resultSet);
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
-
-    //Finns ingen användning
-
+    
     /**
-     *
-     * @param streckkod
-     * @return
-     */
-    public Kopia getKopia(int streckkod) {
-        try {
-            //Get kopia from DB
-            String SQL = "Select streckkod, lånekategori, placering, objektID from Kopia where streckkod = ?";
-            PreparedStatement pState =  connection.prepareStatement(SQL);
-            pState.setInt(1, streckkod);
-            ResultSet resultSet = getQuery(pState);
-            if (resultSet.next()) {
-                return getKopiorAsList(resultSet).get(0);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    /**
-     *
+     * Takes a resultSet with copies and returns an ArrayList with Kopia
+     * instances. 
      * @param resultSet
      * @return
      */
@@ -676,53 +606,12 @@ public class DBConnection {
 
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
-//    public Kopia getKopia(int streckkod) {
-//
-//        try {
-//            //Get kopia from DB
-//            String SQL = "Select objektID, lånekategori, placering from Kopia where streckkod = ?";
-//            PreparedStatement pState =  connection.prepareStatement(SQL);
-//            pState.setInt(1, streckkod);
-//            ResultSet resultSet = getQuery(pState);
-//
-//            //Check if there are any copies of the book. 
-//            if (resultSet.next() == false) {
-//                return null;
-//            }
-//                int objektID = resultSet.getInt(1);
-//                String loanKategori = resultSet.getString(2);
-//                String placement = resultSet.getString(3);
-//                AccessKopia access = AccessKopia.AVAILABLE;
-//                Date returnLatest = null;
-//
-//                ResultSet loanResultSet = getKopiaLoanInformation(streckkod);
-//                if (loanResultSet.next()) {
-//                    access = getKopiaAccess(loanResultSet.getDate(4));
-//                }
-//
-//                if (access == AccessKopia.ON_LOAN) {
-//                    returnLatest = loanResultSet.getDate(3);
-//                }
-//
-//               return new Kopia(streckkod, objektID, loanKategori,
-//                        placement, access, returnLatest);
-//
-//
-//
-//        } catch (SQLException ex) {
-//            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
 
-    /**
-     *
-     * @return
-     */
     public ArrayList<String> getObjektTypes() {
 
         ArrayList<String> types = new ArrayList();
@@ -745,13 +634,14 @@ public class DBConnection {
 
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
-
     }
 
     /**
-     *
+     * returns all search words associated with an Objekt as an ArrayList of 
+     * Strings. 
      * @param objektID
      * @return
      */
@@ -762,7 +652,8 @@ public class DBConnection {
     }
 
     /**
-     *
+     * returns all search words associated with an Objekt as one string of 
+     * Strings. 
      * @param objektID
      * @return
      */
@@ -792,16 +683,11 @@ public class DBConnection {
             return searchWords;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
-    /**
-     *
-     * @param objektID
-     * @param type
-     * @return
-     */
     public String getCreatorsAsString(int objektID, Type type) {
         String creators;
         String SQL;
@@ -826,50 +712,42 @@ public class DBConnection {
             resultSet.next();
             creators = resultSet.getString(1);
             return creators;
-        } catch (SQLException e) {
-            System.out.println("Något gick fel i getCreatorsAsString i DBConnection.java");;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
-    /**
-     *
-     * @param objektID
-     * @return
-     */
+
     public ArrayList<String> getActorsAsList(int objektID) {
         String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Skådis from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = 'Akt';";
         return getStringsAsList(SQL, objektID);
     }
 
-    /**
-     *
-     * @param objektID
-     * @return
-     */
+   
     public ArrayList<String> getAuthorsAsList(int objektID) {
         String SQL = "select concat(f.fNamn, ' ', f.eNamn) as Författare from författare f, bokförfattare b where f.FörfattareID = b.FörfattareID and b.ObjektID = ?;";
         return getStringsAsList(SQL, objektID);
     }
 
-    /**
-     *
-     * @param objektID
-     * @return
-     */
     public ArrayList<String> getDirectorsAsList(int objektID) {
         String SQL = "select concat(r.fNamn, ' ', r.eNamn)as Regissör from regisöraktör r, filmregisöraktör f where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = ? and f.typ = 'Reg';";
         return getStringsAsList(SQL, objektID);
     }
-
+/**
+ * 
+ * @param streckkod
+ * @return 
+ */
     public Boolean checkCopyOnLoan(int streckkod){
         try {
-            //Välj lånID för den rad där DatumRetur saknas. 
+            //Select row where return date is null
             String SQL = "select lånID from Lån where streckkod = ? and DatumRetur is null;";
             ResultSet resultSet = getResultSetFromDB(SQL, streckkod);
             
-            //Om resultSet har innehåll så är kopian utlånad. 
-            //Om resultSdet är tomt är kopian tillgänglig. 
+            //If the ResultSet is empty, the Kopia is available.
+            //Otherwise, it is on loan. 
             if (resultSet.next()){
                 return true;
             }
@@ -878,11 +756,13 @@ public class DBConnection {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
+    
     /**
-     *
+     * Returns an instance of Loan if there is an active loan. 
      * @param streckkod
      * @return
      */
@@ -897,11 +777,6 @@ public class DBConnection {
 
     }
     
-    
-    /**
-     *
-     * @return
-     */
     public ArrayList<Loan> getLateLoans(){
          String SQL = "select * from lån where DatumRetur is null and ReturSenast < now();";
         ResultSet resultSet = getResultSetFromDB(SQL);
@@ -909,7 +784,8 @@ public class DBConnection {
     }
 
     /**
-     *
+     * turns a resultSet into an ArrayList of Loans. 
+     * The resultset must contain Loans. 
      * @param resultSet
      * @return
      */
@@ -935,21 +811,13 @@ public class DBConnection {
 
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return null;
     }
 
-//    private AccessKopia getKopiaAccess(LocalDate returnDate) {
-//
-//        if (returnDate == null) {
-//            return AccessKopia.ON_LOAN;
-//        } else {
-//            return AccessKopia.AVAILABLE;
-//        }
-//    }
-
     /**
-     *
+     * Return number of days (int) that it is allowed to loan a Kopia. 
      * @param streckkod
      * @return
      */
@@ -962,15 +830,15 @@ public class DBConnection {
             resultSet.next();
             return resultSet.getInt(1);
 
-        } catch (SQLException ex) {
-            System.out.println("Något gick fel i DBConnection, getMaxNoLoan");
+        } catch (SQLException ex) {           
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return -1;
     }
 
     /**
-     *
+     * Check if the streckkod actually corresponds to a Kopia in the DB. 
      * @param streckkod
      * @return
      */
@@ -989,11 +857,10 @@ public class DBConnection {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+        simpleErrorAlert(dataFromDBError);
         }
         return false;
     }
-
-    //Create new
 
     /**
      *
