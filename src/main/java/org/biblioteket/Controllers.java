@@ -58,7 +58,7 @@ public class Controllers {
      * Loads fxml into new Stage.
      * @param fxml
      * @return 
-     */
+     */ 
     public boolean loadPopup(String fxml) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));

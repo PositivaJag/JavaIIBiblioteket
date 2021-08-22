@@ -1,47 +1,31 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.biblioteket.Persons;
 
 import org.biblioteket.Database.DBConnection;
-import java.sql.SQLException;
 
 /**
+ * Person that can access the library system. Are either bibliotekarie or
+ * loantagare. Loantagare can borrow books. Bibliotekarie can print list of late
+ * Kopia and handle Objekt and Kopia.
  *
  * @author Jenni
  */
 public class Person {
-    private String personID;
+
+    private final String personID;
     private String fName;
     private String lName;
     private String email;
     private String password;
-    private String personTyp;
-    
-    /**
-     *
-     */
-    public enum PersonTyp{
+    private final String personTyp;
 
-        /**
-         *
-         */
+    public enum PersonTyp {
         BIBLIOTEKARIE,
-
-        /**
-         *
-         */
-        LOANTAGARE, 
-
-        /**
-         *
-         */
+        LOANTAGARE,
         NONE
     }
 
     /**
+     * Constructor called from Loantagare.
      *
      * @param personID
      * @param fName
@@ -58,13 +42,14 @@ public class Person {
         this.password = password;
         this.personTyp = personTyp;
     }
-    
+
     /**
+     * Constructor with only email input. The constructor collects the rest of
+     * the info from DB.
      *
      * @param email
-     * @throws SQLException
      */
-    public Person (String email) throws SQLException{
+    public Person(String email) {
         //Check connection to DB
         DBConnection connection = DBConnection.getInstance();
         //Get user data
@@ -75,99 +60,56 @@ public class Person {
         this.email = email;
         this.password = personDB[4];
         this.personTyp = personDB[5];
-        
+
     }
 
-    /**
-     *
-     * @return
-     */
     public String getPersonID() {
         return personID;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getfName() {
         return fName;
     }
 
-    /**
-     *
-     * @param fName
-     */
     public void setfName(String fName) {
         this.fName = fName;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getlName() {
         return lName;
     }
 
-    /**
-     *
-     * @param lName
-     */
     public void setlName(String lName) {
         this.lName = lName;
-    }  
+    }
 
-    /**
-     *
-     * @return
-     */
     public String getEmail() {
         return email;
     }
 
-    /**
-     *
-     * @param email
-     */
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getPassword() {
         return password;
     }
 
-    /**
-     *
-     * @param password
-     */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getPersonTyp() {
         return personTyp;
     }
-    
+
     /**
+     * Can be used as help during development.
      *
      * @return
      */
     @Override
-    public String toString(){
-        return "Persondata\n"+personID+"\n"+fName+"\n"+lName+"\n"+password+"\n"+personTyp+"\n";
-        
-        
+    public String toString() {
+        return "Persondata\n" + personID + "\n" + fName + "\n" + lName + "\n" + password + "\n" + personTyp + "\n";
     }
-    
-    
 }

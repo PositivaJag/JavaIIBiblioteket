@@ -87,7 +87,7 @@ public class Objekt {
         this.titel = Titel;
     }
 
-    public String getStringSearchWords() {
+    public String getSearchWords() {
         return searchWords;
     }
     

@@ -1,4 +1,4 @@
-package Printer;
+package org.Printer;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;

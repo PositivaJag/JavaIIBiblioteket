@@ -100,36 +100,30 @@ public class LoginController {
      * @return
      */
     private LoginResult login(String mail, String password) {
-        try {
-            //Connect to db
-            LoginResult checkUserPassw = connection.checkUserAndPassword(mail, password);
-
-            //create loggin object if all is ok
-            if (checkUserPassw == LoginResult.LOGIN_OK) {
-                //Create librarian
-                if (connection.chechIfLibrarian(mail)) {
-
-                    mainControll.setActiveLibrarian(new Person(mail));
-                    mainControll.setPersonTyp(Person.PersonTyp.BIBLIOTEKARIE);
-
-                } //Create loantagare
-                else {
-                    String[] personDB = connection.getPersonDataAsList(mail);
-                    mainControll.setActiveUser(new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]));
-                    mainControll.setPersonTyp(Person.PersonTyp.LOANTAGARE);
-                    String label = mainControll.getActiveUser().getfName();
-                    mainControll.setLabelInloggad(label);
-                }
-                mainControll.setLabelInloggad(getActiveName());
-                mainControll.setLibrarianButtons();
-                mainControll.setLogoutVisibility(true);
-                mainControll.setLoginVisibility(false);
+        //Connect to db
+        LoginResult checkUserPassw = connection.checkUserAndPassword(mail, password);
+        //create loggin object if all is ok
+        if (checkUserPassw == LoginResult.LOGIN_OK) {
+            //Create librarian
+            if (connection.chechIfLibrarian(mail)) {
+                
+                mainControll.setActiveLibrarian(new Person(mail));
+                mainControll.setPersonTyp(Person.PersonTyp.BIBLIOTEKARIE);
+                
+            } //Create loantagare
+            else {
+                String[] personDB = connection.getPersonDataAsList(mail);
+                mainControll.setActiveUser(new Loantagare(personDB[0], personDB[1], personDB[2], personDB[3], personDB[4], personDB[5]));
+                mainControll.setPersonTyp(Person.PersonTyp.LOANTAGARE);
+                String label = mainControll.getActiveUser().getfName();
+                mainControll.setLabelInloggad(label);
             }
-            return checkUserPassw;
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            mainControll.setLabelInloggad(getActiveName());
+            mainControll.setLibrarianButtons();
+            mainControll.setLogoutVisibility(true);
+            mainControll.setLoginVisibility(false);
         }
-        return null;
+        return checkUserPassw;
     }
 
     /**

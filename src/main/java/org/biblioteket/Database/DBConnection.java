@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.biblioteket.Controllers;
@@ -30,7 +28,7 @@ import org.biblioteket.Objects.Tidskrift;
 public class DBConnection extends Controllers{
 
     //Database parameters
-    private static final String dbUrl = "jdbc:mysql://localhost:3306/javaiibiblioteket";
+    private static final String dbUrl = "jdbc:mysql://localhost:3306/Biblioteket_jenluj9";
     private static final String dbUserName = "root";
     private static final String dbPassword = "B0b1gny";
     private boolean connectedToDB = false;
@@ -447,7 +445,6 @@ public class DBConnection extends Controllers{
                 SQL = "Select ObjektID, Titel, Typ from Objekt "
                         + "Where Typ = '" + typ + "';";
             }
-            System.out.println(SQL);
             PreparedStatement pState =  connection.prepareStatement(SQL);
             ResultSet resultSet = getQuery(pState);
 
@@ -675,22 +672,22 @@ return null;
             ResultSet resultSet = getResultSetFromDB(SQL, objektID);
 
             int nr = 0;
+            //Add words to string. 
             while (resultSet.next()) {
-                if (nr == 3) {
-                    searchWords += "\n";
-                    nr = 0;
-                } else {
-                    nr++;
-                }
-
-                if (searchWords.equalsIgnoreCase("")) {
+                //Last word should not have comma at the end. 
+                if (resultSet.isLast()) {
                     searchWords += resultSet.getString(1);
                 } else {
-                    searchWords += ", " + resultSet.getString(1);
+                    searchWords += resultSet.getString(1) + ", ";
+                    if (nr == 2) {
+                        searchWords += "\n";
+                        nr = 0;
+                    } else {
+                        nr++;
+                    }
                 }
             }
 
-            System.out.println(searchWords);
             return searchWords;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -709,10 +706,10 @@ return null;
             {
                 switch (type) {
                     case Bok:
-                        SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn, '\\n')) as Skapare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
+                        SQL = "select group_concat(Concat(f.fNamn, ' ', f.eNamn)separator',\\n') as Skapare from författare f, bokförfattare b, objekt o where f.FörfattareID = b.FörfattareID and o.ObjektID = b.ObjektID and o.objektID = ? group by o.ObjektID;";
                         break;
                     case Film:
-                        SQL = "select group_concat(Concat(r.fNamn, ' ', r.eNamn, '\\n')) as Skapare from regisörAktör r, filmregisöraktör f, objekt o where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = o.ObjektID and o.ObjektID =  ? group by o.ObjektID;";
+                        SQL = "select group_concat(Concat(r.fNamn, ' ', r.eNamn)separator',\\n') as Skapare from regisörAktör r, filmregisöraktör f, objekt o where r.RegisörAktörID = f.RegisörAktörID and f.ObjektID = o.ObjektID and o.ObjektID =  ? group by o.ObjektID;";
                         break;
                     default:
                         return "";
@@ -783,8 +780,14 @@ return null;
         ResultSet resultSet = getResultSetFromDB(SQL, streckkod);
         
         ArrayList<Loan> loans =  getLoan(resultSet);
-       
+        
+        if (!loans.isEmpty()){
         return loans.get(0);
+        }
+        else{
+            return null;
+        }
+        
 
     }
     
