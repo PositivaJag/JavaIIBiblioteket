@@ -9,12 +9,12 @@ import org.biblioteket.Database.DBConnection;
  */
 public class Loantagare extends Person {
 
-    String telNr;
-    String gatuAdress;
-    String postNr;
-    String kategori;
-    int noOfLoans;
-    ArrayList<Integer> loans;   //lista av lånade streckkoder. 
+    private String telNr;
+    private String gatuAdress;
+    private String postNr;
+    private String kategori;
+    private int noOfLoans;
+    private ArrayList<Integer> loans;   //lista av lånade streckkoder. 
 
     /**
      * Constructor

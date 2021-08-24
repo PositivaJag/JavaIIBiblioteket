@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.LoginController">
+<VBox prefHeight="253.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.biblioteket.LoginController">
    <children>
       <Label text="Logga in">
          <font>
@@ -20,7 +19,7 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </VBox.margin>
       </Label>
-      <Label fx:id="labelMessage" prefHeight="25.0" prefWidth="180.0" textFill="#eb0707">
+      <Label fx:id="labelMessage" prefHeight="49.0" prefWidth="180.0" textFill="#eb0707" wrapText="true">
          <VBox.margin>
             <Insets />
          </VBox.margin>

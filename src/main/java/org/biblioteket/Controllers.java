@@ -46,7 +46,6 @@ public class Controllers {
 
         // For each field, create a column and add to TableView.
         for (Field field : fields) {
-            System.out.println(field);
             TableColumn<Map, String> column = new TableColumn<>(field.getName());
             column.setCellValueFactory(new PropertyValueFactory<>(field.getName()));
             table.getColumns().add(column);

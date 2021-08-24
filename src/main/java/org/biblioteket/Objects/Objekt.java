@@ -1,6 +1,5 @@
 package org.biblioteket.Objects;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.biblioteket.Database.DBConnection;
 
@@ -106,10 +105,6 @@ public class Objekt {
         else{
             return null;
         }
-    }
-    
-    public String printInfo(){
-         return "Denna funktion är inte klar i Objekt.";
     }
 
     public ArrayList<Integer> getCopies() {

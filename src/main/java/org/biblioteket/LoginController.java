@@ -9,7 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 
 import org.biblioteket.Database.DBConnection.LoginResult;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Node;

@@ -1,14 +1,14 @@
 package org.biblioteket.Objects;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  *
  * @author Jenni
  */
 public class Tidskrift extends Objekt{
-    Date magazineDate;
+    LocalDate magazineDate;
     int magazineNumber;
     private ArrayList<Kopia> Kopior;
     private ArrayList<String> SearchWords;
@@ -22,7 +22,7 @@ public class Tidskrift extends Objekt{
      * @param magazineNumber
      * @param sw
      */
-    public Tidskrift(int objektID, String title, Type type, Date magazineDate, 
+    public Tidskrift(int objektID, String title, Type type, LocalDate magazineDate, 
             int magazineNumber, ArrayList<String> sw) {
         super(objektID, title, type);
         this.magazineDate = magazineDate;
@@ -30,7 +30,7 @@ public class Tidskrift extends Objekt{
         this.SearchWords = sw;
     }
     
-    public Date getMagazineDate() {
+    public LocalDate getMagazineDate() {
         return magazineDate;
     }
 

@@ -68,7 +68,6 @@ public class NewKopiaController extends Controllers{
         connection = DBConnection.getInstance();
         allStreckkod = connection.getAllSteckkod();
         listKopior = new ArrayList<>();
-        System.out.println(allStreckkod);
 
         //Listener to make sure only numbers are added in streckkod filed. 
         txtStreckkod.textProperty().addListener(new ChangeListener<String>() {

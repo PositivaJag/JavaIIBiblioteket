@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.biblioteket.Controllers;
@@ -167,7 +166,6 @@ public class DBConnection extends Controllers{
             while (resultSet.next()) {
                 words.add(resultSet.getString(1));
             }
-            System.out.println(words.toString());
             return words;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -189,7 +187,6 @@ public class DBConnection extends Controllers{
             while (resultSet.next()) {
                 words.add(resultSet.getString(1));
             }
-            System.out.println(words.toString());
             return words;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -211,7 +208,6 @@ public class DBConnection extends Controllers{
             while (resultSet.next()) {
                 words.add(resultSet.getInt(1));
             }
-            System.out.println(words.toString());
             return words;
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -250,7 +246,6 @@ public class DBConnection extends Controllers{
              Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, e);
             simpleErrorAlert(dataFromDBError);
         }
-        //System.out.println(99);  
         return null;
     }
 
@@ -336,7 +331,6 @@ public class DBConnection extends Controllers{
             pState.setString(1, email);
             ResultSet resultSet = getQuery(pState);
             resultSet.next();
-            //System.out.println(resultSet.getString(1));
             return (resultSet.getString(1).equals("Bibliotekarie"));
         } catch (SQLException e) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, e);
@@ -545,7 +539,7 @@ return null;
 
             resultSet.next();
             String title = resultSet.getString(1);
-            Date datum = resultSet.getDate(2);
+            LocalDate datum = resultSet.getDate(2).toLocalDate();
             int nummer = resultSet.getInt(3);
             ArrayList<String> sw = getSearchWordsAsList(objektID);
 
@@ -569,7 +563,7 @@ return null;
         try {
             int objektID = Objekt.getObjektID();
             //Get objekt from DB
-            String SQL = "Select streckkod, lånekategori, placering, objektID from Kopia where ObjektID = ?";
+            String SQL = "Select k.streckkod, concat(m.Kategori, \", \", m.MaxLånetid, \" dagar\") as lånetid, k.placering, k.objektID from Kopia k, maxlånetid m where m.Kategori = k.Lånekategori and k.objektID = ?;";
             ResultSet resultSet = getResultSetFromDB(SQL, objektID);
 
             //Check if there are any copies of the book. 
@@ -634,7 +628,6 @@ return null;
             } else {
                 do {
                     types.add(resultSet.getString(1));
-                    System.out.println(resultSet.getString(1));
                 } while (resultSet.next());
 
                 return types;

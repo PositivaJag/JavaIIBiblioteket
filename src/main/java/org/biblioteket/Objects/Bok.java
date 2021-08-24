@@ -10,8 +10,8 @@ public class Bok extends Objekt{
     
     private int ISBN;
     private ArrayList<String> authors; 
-    private ArrayList<String> SearchWords;
-    private ArrayList<Kopia> Kopior;
+    private ArrayList<String> searchWords;
+    private ArrayList<Kopia> kopior;
 
     /**
      * Constructor 
@@ -27,7 +27,7 @@ public class Bok extends Objekt{
         super(objektID, title, type);
         this.ISBN = ISBN;
         this.authors = authors;
-        this.SearchWords = sw;
+        this.searchWords = sw;
     }
 
 
@@ -43,8 +43,18 @@ public class Bok extends Objekt{
         return authors;
     }
     
+    @Override
+    public String getSearchWords(){
+        String sw = "";
+        for (int i = 0; i<searchWords.size(); i++){
+            sw += searchWords.get(i);
+            sw += ", ";
+        }
+        return sw;
+    }
+    
     public ArrayList<String> getSearchWordsAsList() {
-        return SearchWords;
+        return searchWords;
     }
     
 }

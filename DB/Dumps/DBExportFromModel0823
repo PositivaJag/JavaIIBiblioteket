@@ -1,0 +1,320 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema test0823
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema test0823
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `test0823` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `test0823` ;
+
+-- -----------------------------------------------------
+-- Table `test0823`.`tidsskrifter`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`tidsskrifter` (
+  `TidskriftID` INT NOT NULL AUTO_INCREMENT,
+  `Namn` VARCHAR(45) NOT NULL,
+  `Aktiv` TINYINT NOT NULL,
+  PRIMARY KEY (`TidskriftID`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`objekt`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`objekt` (
+  `ObjektID` INT NOT NULL AUTO_INCREMENT,
+  `Titel` VARCHAR(45) NOT NULL,
+  `Typ` VARCHAR(45) NULL DEFAULT NULL COMMENT 'Bok, Tidsskrift, Film',
+  `BokISBN` VARCHAR(45) NULL DEFAULT NULL,
+  `FilmÅldersbegr` VARCHAR(45) NULL DEFAULT NULL COMMENT 'Klasser',
+  `FilmProdLand` VARCHAR(45) NULL DEFAULT NULL,
+  `TidskrifterID` INT NULL DEFAULT NULL,
+  `TidskriftDatum` DATE NULL DEFAULT NULL,
+  `TidskriftNr` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`ObjektID`),
+  UNIQUE INDEX `produktID_UNIQUE` (`ObjektID` ASC) VISIBLE,
+  INDEX `TidskriftID_idx` (`TidskrifterID` ASC) VISIBLE,
+  CONSTRAINT `TidskriftID`
+    FOREIGN KEY (`TidskrifterID`)
+    REFERENCES `test0823`.`tidsskrifter` (`TidskriftID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 99
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`författare`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`författare` (
+  `FörfattareID` INT NOT NULL AUTO_INCREMENT,
+  `fNamn` VARCHAR(45) NOT NULL,
+  `eNamn` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`FörfattareID`),
+  UNIQUE INDEX `författarID_UNIQUE` (`FörfattareID` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`bokförfattare`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`bokförfattare` (
+  `FörfattareID` INT NOT NULL,
+  `ObjektID` INT NOT NULL,
+  PRIMARY KEY (`FörfattareID`, `ObjektID`),
+  INDEX `fk_Författare_has_Produkt_Författare_idx` (`FörfattareID` ASC) VISIBLE,
+  INDEX `fk_BokFörfattare_Objekt1_idx` (`ObjektID` ASC) VISIBLE,
+  CONSTRAINT `fk_BokFörfattare_Objekt1`
+    FOREIGN KEY (`ObjektID`)
+    REFERENCES `test0823`.`objekt` (`ObjektID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_Författare_has_Produkt_Författare`
+    FOREIGN KEY (`FörfattareID`)
+    REFERENCES `test0823`.`författare` (`FörfattareID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`regisöraktör`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`regisöraktör` (
+  `RegisörAktörID` INT NOT NULL AUTO_INCREMENT,
+  `fNamn` VARCHAR(45) NOT NULL,
+  `eNamn` VARCHAR(45) NOT NULL,
+  `Regisör` TINYINT NOT NULL,
+  `Aktör` TINYINT NOT NULL,
+  PRIMARY KEY (`RegisörAktörID`),
+  UNIQUE INDEX `författarID_UNIQUE` (`RegisörAktörID` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`filmregisöraktör`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`filmregisöraktör` (
+  `RegisörAktörID` INT NOT NULL,
+  `ObjektID` INT NOT NULL,
+  `typ` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`RegisörAktörID`, `ObjektID`),
+  INDEX `fk_FilmRegisör_Författare_copy11_idx` (`RegisörAktörID` ASC) VISIBLE,
+  INDEX `fk_FilmRegisörAktör_Objekt1_idx` (`ObjektID` ASC) VISIBLE,
+  CONSTRAINT `fk_FilmRegisör_Författare_copy11`
+    FOREIGN KEY (`RegisörAktörID`)
+    REFERENCES `test0823`.`regisöraktör` (`RegisörAktörID`),
+  CONSTRAINT `fk_FilmRegisörAktör_Objekt1`
+    FOREIGN KEY (`ObjektID`)
+    REFERENCES `test0823`.`objekt` (`ObjektID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`klassificering`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`klassificering` (
+  `KlassificeringID` INT NOT NULL AUTO_INCREMENT,
+  `Ämnesord` VARCHAR(45) NOT NULL,
+  `KlassificeringTyp` VARCHAR(45) NULL DEFAULT NULL COMMENT 'Film, tidsskrift, bok\\n',
+  PRIMARY KEY (`KlassificeringID`),
+  UNIQUE INDEX `Ämnesord_UNIQUE` (`Ämnesord` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`maxlånetid`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`maxlånetid` (
+  `MaxLånetidID` INT NOT NULL AUTO_INCREMENT,
+  `Kategori` VARCHAR(20) NOT NULL,
+  `MaxLånetid` INT NOT NULL,
+  PRIMARY KEY (`MaxLånetidID`),
+  UNIQUE INDEX `kategoriID_UNIQUE` (`Kategori` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`kopia`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`kopia` (
+  `streckkod` INT NOT NULL,
+  `ObjektID` INT NOT NULL,
+  `LåneKategori` VARCHAR(20) NOT NULL,
+  `Placering` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`streckkod`),
+  INDEX `fk_Kopia_Produkt1_idx` (`ObjektID` ASC) VISIBLE,
+  INDEX `fk_Kopia_Lånetid1_idx` (`LåneKategori` ASC) VISIBLE,
+  CONSTRAINT `fk_Kopia_Lånetid1`
+    FOREIGN KEY (`LåneKategori`)
+    REFERENCES `test0823`.`maxlånetid` (`Kategori`),
+  CONSTRAINT `fk_Kopia_Produkt1`
+    FOREIGN KEY (`ObjektID`)
+    REFERENCES `test0823`.`objekt` (`ObjektID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`låntagarekategori`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`låntagarekategori` (
+  `LåntagareKategori` VARCHAR(22) NOT NULL,
+  `simultanaLån` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`LåntagareKategori`),
+  UNIQUE INDEX `LåntagareKategori_UNIQUE` (`LåntagareKategori` ASC) VISIBLE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`person`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`person` (
+  `PersonID` INT NOT NULL AUTO_INCREMENT,
+  `fNamn` VARCHAR(45) NOT NULL,
+  `eNamn` VARCHAR(45) NOT NULL,
+  `eMail` VARCHAR(45) NOT NULL,
+  `lösenord` VARCHAR(45) NOT NULL,
+  `personTyp` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`PersonID`),
+  UNIQUE INDEX `personID_UNIQUE` (`PersonID` ASC) VISIBLE,
+  UNIQUE INDEX `eMail_UNIQUE` (`eMail` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 19
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`låntagare`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`låntagare` (
+  `PersonID` INT NOT NULL,
+  `telNr` INT NOT NULL,
+  `gatuaddress` VARCHAR(45) NULL DEFAULT NULL,
+  `postNr` INT NOT NULL,
+  `låntagareKategori` VARCHAR(22) NOT NULL,
+  PRIMARY KEY (`PersonID`),
+  INDEX `fk_Låntagare_LåntagareKategori1_idx` (`låntagareKategori` ASC) VISIBLE,
+  INDEX `fk_låntagare_person1_idx` (`PersonID` ASC) VISIBLE,
+  CONSTRAINT `fk_Låntagare_LåntagareKategori1`
+    FOREIGN KEY (`låntagareKategori`)
+    REFERENCES `test0823`.`låntagarekategori` (`LåntagareKategori`),
+  CONSTRAINT `fk_låntagare_person1`
+    FOREIGN KEY (`PersonID`)
+    REFERENCES `test0823`.`person` (`PersonID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 19
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`lån`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`lån` (
+  `lånID` INT NOT NULL AUTO_INCREMENT,
+  `DatumLån` DATE NOT NULL,
+  `ReturSenast` DATE NOT NULL,
+  `DatumRetur` DATE NULL DEFAULT NULL,
+  `streckkod` INT NOT NULL,
+  `Skuld` VARCHAR(45) NULL DEFAULT NULL,
+  `Låntagare` INT NOT NULL,
+  PRIMARY KEY (`lånID`, `Låntagare`),
+  UNIQUE INDEX `lånID_UNIQUE` (`lånID` ASC) VISIBLE,
+  INDEX `fk_Lån_Kopia1_idx` (`streckkod` ASC) VISIBLE,
+  INDEX `fk_lån_låntagare1_idx` (`Låntagare` ASC) VISIBLE,
+  CONSTRAINT `fk_Lån_Kopia`
+    FOREIGN KEY (`streckkod`)
+    REFERENCES `test0823`.`kopia` (`streckkod`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_lån_låntagare1`
+    FOREIGN KEY (`Låntagare`)
+    REFERENCES `test0823`.`låntagare` (`PersonID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 74
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`objektklass`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`objektklass` (
+  `ObjektID` INT NOT NULL,
+  `KategoriID` INT NOT NULL,
+  PRIMARY KEY (`ObjektID`, `KategoriID`),
+  INDEX `fk_Produkt_has_Sökord_Produkt1_idx` (`ObjektID` ASC) VISIBLE,
+  INDEX `fk_objektklass_klassificering1_idx` (`KategoriID` ASC) VISIBLE,
+  CONSTRAINT `fk_Produkt_has_Sökord_Produkt1`
+    FOREIGN KEY (`ObjektID`)
+    REFERENCES `test0823`.`objekt` (`ObjektID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_objektklass_klassificering1`
+    FOREIGN KEY (`KategoriID`)
+    REFERENCES `test0823`.`klassificering` (`KlassificeringID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `test0823`.`reservation`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `test0823`.`reservation` (
+  `reservID` INT NOT NULL AUTO_INCREMENT,
+  `reservDatum` TIMESTAMP(6) NOT NULL,
+  `objektID` INT NOT NULL,
+  `låntagareID` INT NOT NULL,
+  PRIMARY KEY (`reservID`, `låntagareID`),
+  UNIQUE INDEX `reservID_UNIQUE` (`reservID` ASC) VISIBLE,
+  INDEX `fk_Reservation_Produkt1_idx` (`objektID` ASC) VISIBLE,
+  INDEX `fk_reservation_låntagare1_idx` (`låntagareID` ASC) VISIBLE,
+  CONSTRAINT `fk_Reservation_Produkt`
+    FOREIGN KEY (`objektID`)
+    REFERENCES `test0823`.`objekt` (`ObjektID`)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_reservation_låntagare1`
+    FOREIGN KEY (`låntagareID`)
+    REFERENCES `test0823`.`låntagare` (`PersonID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
